@@ -1,0 +1,42 @@
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+
+# Dependências (se um dia houver build)
+node_modules/
+dist/
+build/
+
+# Arquivos temporários
+*.tmp
+*.bak
+~$*
+
+# Privado / sensível
+.env
+.env.local
+*.key
+*.pem
+
+# Configurações locais do Claude Code
+.claude/
+
+# Outro projeto não relacionado (FiveM RP) — não deve ir para o repo Prolans
+/A FAMOSA CITY/
+
+# Instaladores não devem ir para o repo
+*.exe
+*.msi
+*.dmg

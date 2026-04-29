@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; script-src 'self' 'unsafe-inline'; connect-src 'self' https://viacep.com.br; frame-src https://www.google.com https://maps.google.com; base-uri 'self'; form-action 'self' https://wa.me; object-src 'none'; upgrade-insecure-requests" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta http-equiv="X-Content-Type-Options" content="nosniff" />
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()" />
+<title>Dashboard - Área do Cliente Prolans</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="assets/img/logo-prolans.png" />
+<link rel="stylesheet" href="assets/css/styles.css" />
+<link rel="stylesheet" href="assets/css/tech.css" />
+</head>
+<body>
+<canvas id="fx-particles"></canvas>
+<div id="fx-progress"></div>
+
+<button class="dash-mobile-toggle" aria-label="Menu">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+</button>
+
+<div class="dash">
+
+  <!-- SIDEBAR -->
+  <aside class="dash-sidebar">
+    <a class="logo" href="index.html"><span class="logo-mark has-img"><img src="assets/img/logo-prolans.png" alt="Prolans" /></span> Prolans</a>
+
+    <nav class="dash-nav">
+      <span class="group-label">Painel</span>
+      <a href="#" data-go="overview" class="active">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>
+        Visão geral
+      </a>
+      <a href="#" data-go="propostas">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        Propostas
+      </a>
+      <a href="#" data-go="servicos">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a4 4 0 0 0 5 5L17 14l3 3a2 2 0 0 1-3 3l-3-3-2.7 2.7a4 4 0 0 0-5-5L9 12 6 9a2 2 0 0 1 3-3l3 3 2.7-2.7z"/></svg>
+        Serviços
+      </a>
+      <a href="#" data-go="contratos">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Contratos
+      </a>
+      <a href="#" data-go="boletos">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M7 6V4M17 6V4M3 11h18"/></svg>
+        Pagamentos
+      </a>
+      <a href="#" data-go="notas">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+        Notas Fiscais
+      </a>
+
+      <span class="group-label">Suporte</span>
+      <a href="#" data-go="suporte">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></svg>
+        Abrir chamado
+      </a>
+      <a href="#" data-go="chat">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Chat
+      </a>
+      <a href="#" data-go="notif">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        Notificações
+      </a>
+
+      <span class="group-label">Conta</span>
+      <a href="#" data-go="perfil">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Meu perfil
+      </a>
+      <a href="#" data-logout>
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        Sair
+      </a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="dash-main">
+    <div class="dash-topbar">
+      <h1 id="dashTitle">Visão geral</h1>
+      <div class="user-pill">
+        <span class="av">CD</span>
+        <span class="name">Cliente</span>
+      </div>
+    </div>
+
+    <!-- VISÃO GERAL -->
+    <section data-panel="overview">
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="label">
+            <svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+            Propostas pendentes
+          </div>
+          <div class="value" id="kpiPropostas">0</div>
+          <div class="delta">aguardando aprovação</div>
+        </div>
+        <div class="kpi">
+          <div class="label">
+            <svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>
+            Serviços ativos
+          </div>
+          <div class="value" id="kpiAtivos">0</div>
+          <div class="delta">em andamento</div>
+        </div>
+        <div class="kpi">
+          <div class="label">
+            <svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/></svg>
+            Boletos a pagar
+          </div>
+          <div class="value" id="kpiBoletos">0</div>
+          <div class="delta" style="color:var(--warning)">verifique vencimentos</div>
+        </div>
+        <div class="kpi">
+          <div class="label">
+            <svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/></svg>
+            Contratos ativos
+          </div>
+          <div class="value" id="kpiContratos">0</div>
+          <div class="delta">Signature+ vigente</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Atividade recente</h3>
+          <a class="btn btn-ghost btn-sm" href="#" data-go="notif">Ver todas</a>
+        </div>
+        <div id="listNotif"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Propostas em aberto</h3>
+          <a class="btn btn-ghost btn-sm" href="#" data-go="propostas">Gerenciar</a>
+        </div>
+        <div id="listPropostas"></div>
+      </div>
+    </section>
+
+    <!-- PROPOSTAS -->
+    <section data-panel="propostas" style="display:none">
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Suas propostas</h3>
+          <a class="btn btn-primary btn-sm magnetic" href="orcamento.html" target="_blank">+ Solicitar nova</a>
+        </div>
+        <div id="listPropostas"></div>
+      </div>
+    </section>
+
+    <!-- SERVIÇOS -->
+    <section data-panel="servicos" style="display:none">
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Serviços e ordens de serviço</h3>
+        </div>
+        <div id="listServicos"></div>
+      </div>
+    </section>
+
+    <!-- CONTRATOS -->
+    <section data-panel="contratos" style="display:none">
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Contratos ativos</h3>
+          <a class="btn btn-ghost btn-sm" href="planos.html">+ Adicionar plano</a>
+        </div>
+        <div id="listContratos"></div>
+      </div>
+    </section>
+
+    <!-- BOLETOS -->
+    <section data-panel="boletos" style="display:none">
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Pagamentos e boletos</h3>
+        </div>
+        <div id="listBoletos"></div>
+      </div>
+    </section>
+
+    <!-- NOTAS FISCAIS -->
+    <section data-panel="notas" style="display:none">
+      <div class="panel">
+        <div class="panel-head"><h3>Notas Fiscais</h3></div>
+        <div id="listNotas"></div>
+      </div>
+    </section>
+
+    <!-- SUPORTE -->
+    <section data-panel="suporte" style="display:none">
+      <div class="panel">
+        <div class="panel-head"><h3>Abrir chamado de suporte</h3></div>
+        <form id="ticketForm">
+          <div class="form-grid">
+            <div class="field full">
+              <label>Título do problema *</label>
+              <input type="text" name="titulo" required placeholder="Ex.: Câmera da garagem sem imagem" />
+            </div>
+            <div class="field full">
+              <label>Categoria</label>
+              <select name="categoria">
+                <option>Câmeras / CFTV</option>
+                <option>Alarme</option>
+                <option>Fechadura digital</option>
+                <option>Automação</option>
+                <option>Rede / Wi-Fi</option>
+                <option>Outro</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label>Descrição</label>
+              <textarea name="descricao" placeholder="Conte-nos com detalhes o que está acontecendo."></textarea>
+            </div>
+            <div class="field full">
+              <label>Urgência</label>
+              <div class="radio-group">
+                <label><input type="radio" name="urgencia" value="baixa" /><span>Baixa</span></label>
+                <label><input type="radio" name="urgencia" value="media" checked /><span>Média</span></label>
+                <label><input type="radio" name="urgencia" value="alta" /><span>Alta</span></label>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary" type="submit" style="margin-top:18px">Abrir chamado</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- CHAT -->
+    <section data-panel="chat" style="display:none">
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Chat com a Prolans</h3>
+          <span class="tag in-progress">? Online</span>
+        </div>
+        <div class="chat">
+          <div class="chat-messages" id="chatLog"></div>
+          <form class="chat-input" id="chatForm">
+            <input type="text" placeholder="Digite uma mensagem." autocomplete="off" />
+            <button class="btn btn-primary" type="submit">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOTIFICAÇÕES -->
+    <section data-panel="notif" style="display:none">
+      <div class="panel">
+        <div class="panel-head"><h3>Notificações</h3></div>
+        <div id="listNotif"></div>
+      </div>
+    </section>
+
+    <!-- PERFIL -->
+    <section data-panel="perfil" style="display:none">
+      <div class="panel">
+        <div class="panel-head"><h3>Meu perfil</h3></div>
+        <div class="form-grid">
+          <div class="field"><label>Nome</label><input type="text" id="profileName" /></div>
+          <div class="field"><label>E-mail</label><input type="email" id="profileEmail" disabled /></div>
+          <div class="field"><label>Telefone</label><input type="tel" data-mask="phone" placeholder="(00) 00000-0000" /></div>
+          <div class="field"><label>CEP</label><input type="text" data-mask="cep" placeholder="00000-000" /></div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:18px" onclick="window.toast('Perfil atualizado!','success')">Salvar alterações</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="assets/js/main.js"></script>
+<script src="assets/js/tech-fx.js"></script>
+<script src="assets/js/area-cliente.js"></script>
+<script>
+  // Preenche perfil com dados de sessão
+  const session = localStorage.getItem("prolans:session");
+  const users = JSON.parse(localStorage.getItem("prolans:users") || "[]");
+  const u = users.find(x => x.email === session);
+  if (u) {
+    const n = document.getElementById("profileName");
+    const e = document.getElementById("profileEmail");
+    if (n) n.value = u.nome;
+    if (e) e.value = u.email;
+  }
+</script>
+</body>
+</html>

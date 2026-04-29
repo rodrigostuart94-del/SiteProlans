@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; script-src 'self' 'unsafe-inline'; connect-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta http-equiv="X-Content-Type-Options" content="nosniff" />
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()" />
+<meta name="robots" content="noindex,nofollow" />
+<title>Painel Administrativo — Prolans</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="assets/img/logo-prolans.png" />
+<link rel="stylesheet" href="assets/css/styles.css" />
+<link rel="stylesheet" href="assets/css/tech.css" />
+<style>
+  body { background: #07080f; }
+  .admin-shell { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+  .admin-side {
+    background: linear-gradient(180deg, rgba(15,21,37,.95), rgba(7,11,22,.95));
+    border-right: 1px solid var(--border);
+    padding: 24px 18px;
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  }
+  .admin-side .brand { display: flex; align-items: center; gap: 10px; padding-bottom: 18px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
+  .admin-side .brand img { width: 32px; height: 32px; border-radius: 8px; }
+  .admin-side .brand strong { font-size: 1rem; }
+  .admin-side .brand small { color: var(--text-dim); font-size: .7rem; letter-spacing: .15em; text-transform: uppercase; }
+  .admin-side nav { display: grid; gap: 2px; }
+  .admin-side nav a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 12px; border-radius: 10px;
+    color: var(--text); font-size: .9rem; cursor: pointer;
+    transition: all .18s;
+  }
+  .admin-side nav a:hover { background: rgba(255,255,255,.04); }
+  .admin-side nav a.active { background: rgba(0,212,255,.12); color: var(--primary); }
+  .admin-side nav a svg { width: 16px; height: 16px; }
+  .admin-side .danger { color: #ff7a7a; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+
+  .admin-main { padding: 28px 32px; min-width: 0; }
+  .admin-head { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 22px; flex-wrap: wrap; }
+  .admin-head h1 { font-size: 1.4rem; margin: 0; }
+  .admin-head .who { color: var(--text-dim); font-size: .85rem; }
+
+  .admin-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .stat-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+  .stat-card .lbl { font-size: .72rem; letter-spacing: .15em; text-transform: uppercase; color: var(--text-dim); }
+  .stat-card .val { font-size: 1.6rem; font-weight: 800; margin-top: 6px; }
+
+  .panel { background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px; padding: 22px; margin-top: 18px; }
+  .panel h2 { font-size: 1.05rem; margin: 0 0 14px; display: flex; align-items: center; gap: 10px; }
+  .panel h2 .count { color: var(--text-dim); font-size: .8rem; font-weight: 500; }
+  .panel .tools { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .panel input[type=text], .panel input[type=email], .panel input[type=number], .panel input[type=date], .panel input[type=password], .panel select, .panel textarea {
+    background: rgba(255,255,255,.04); border: 1px solid var(--border); padding: 10px 12px;
+    border-radius: 10px; color: #fff; font-family: inherit; font-size: .9rem; outline: none; box-sizing: border-box;
+    width: 100%;
+  }
+  .panel input:focus, .panel select:focus, .panel textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,212,255,.15); }
+  .panel select option { background: #0f1525; color: #fff; }
+  .panel table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  .panel th { text-align: left; padding: 10px 12px; color: var(--text-dim); font-weight: 600; font-size: .75rem; text-transform: uppercase; letter-spacing: .1em; border-bottom: 1px solid var(--border); }
+  .panel td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,.04); }
+  .panel tr:hover td { background: rgba(255,255,255,.02); }
+  .panel .row-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .panel .pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 99px; font-size: .7rem; font-weight: 700; }
+  .pill-pending { background: rgba(255,180,0,.12); color: #ffc25c; }
+  .pill-approved, .pill-active, .pill-done { background: rgba(0,212,150,.12); color: #6ee7b7; }
+  .pill-progress { background: rgba(0,212,255,.12); color: #9ee9ff; }
+  .pill-admin { background: rgba(255,89,89,.14); color: #ffb4b4; }
+  .pill-client { background: rgba(124,92,255,.12); color: #c4b5ff; }
+
+  .admin-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .admin-form-grid .full { grid-column: 1/-1; }
+  .admin-form-grid label { display: block; font-size: .76rem; color: var(--text-dim); margin-bottom: 4px; font-weight: 600; }
+
+  .modal-back { position: fixed; inset: 0; background: rgba(0,0,0,.65); display: none; place-items: center; z-index: 200; padding: 20px; backdrop-filter: blur(6px); }
+  .modal-back.open { display: grid; }
+  .modal { background: #0f1525; border: 1px solid var(--border); border-radius: 16px; padding: 26px; width: 100%; max-width: 720px; max-height: 90vh; overflow-y: auto; }
+  .modal h3 { margin: 0 0 16px; }
+  .modal .close { float: right; cursor: pointer; color: var(--text-dim); }
+
+  .empty { text-align: center; padding: 40px 20px; color: var(--text-dim); }
+
+  .btn-xs { padding: 6px 10px; font-size: .78rem; min-height: 32px; border-radius: 8px; }
+
+  @media (max-width: 980px) {
+    .admin-shell { grid-template-columns: 1fr; }
+    .admin-side { position: static; height: auto; }
+    .admin-main { padding: 20px; }
+    .admin-grid-3 { grid-template-columns: 1fr; }
+    .admin-form-grid { grid-template-columns: 1fr; }
+    .panel table { font-size: .82rem; }
+    .panel th, .panel td { padding: 8px 6px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="admin-shell" id="adminShell" hidden>
+
+  <aside class="admin-side">
+    <div class="brand">
+      <img src="assets/img/logo-prolans.png" alt="Prolans" />
+      <div>
+        <strong>Prolans</strong>
+        <div><small>ADMIN</small></div>
+      </div>
+    </div>
+    <nav>
+      <a data-go="overview" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Visão Geral
+      </a>
+      <a data-go="clientes">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Clientes
+      </a>
+      <a data-go="leads">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Orçamentos (Leads)
+      </a>
+      <a data-go="servicos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a4 4 0 0 0 5 5L17 14l3 3a2 2 0 0 1-3 3l-3-3-2.7 2.7a4 4 0 0 0-5-5L9 12 6 9a2 2 0 0 1 3-3l3 3 2.7-2.7z"/></svg>
+        Ordens de Serviço
+      </a>
+      <a data-go="boletos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Boletos
+      </a>
+      <a data-go="notas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+        Notas Fiscais
+      </a>
+      <a data-go="propostas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Propostas
+      </a>
+      <a data-go="contratos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        Contratos
+      </a>
+      <a data-go="config">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Configurações
+      </a>
+      <a data-logout class="danger">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        Sair
+      </a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-head">
+      <h1 id="panelTitle">Visão Geral</h1>
+      <div class="who">Logado como <strong id="adminEmail">—</strong></div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <section data-panel="overview">
+      <div class="admin-grid-3">
+        <div class="stat-card"><div class="lbl">Clientes ativos</div><div class="val gradient-text" id="kpiClients">0</div></div>
+        <div class="stat-card"><div class="lbl">Leads novos</div><div class="val gradient-text" id="kpiLeads">0</div></div>
+        <div class="stat-card"><div class="lbl">OS em andamento</div><div class="val gradient-text" id="kpiOS">0</div></div>
+        <div class="stat-card"><div class="lbl">Boletos a pagar</div><div class="val gradient-text" id="kpiBoletos">0</div></div>
+        <div class="stat-card"><div class="lbl">Receita prevista (mês)</div><div class="val gradient-text" id="kpiRevenue">R$ 0</div></div>
+        <div class="stat-card"><div class="lbl">Notas emitidas</div><div class="val gradient-text" id="kpiNFs">0</div></div>
+      </div>
+      <div class="panel">
+        <h2>Atalhos</h2>
+        <div class="tools">
+          <button class="btn btn-primary btn-sm" data-go="clientes">Gerenciar Clientes</button>
+          <button class="btn btn-ghost btn-sm" data-go="leads">Ver Orçamentos</button>
+          <button class="btn btn-ghost btn-sm" data-go="servicos">Nova OS</button>
+          <button class="btn btn-ghost btn-sm" data-go="boletos">Novo Boleto</button>
+          <button class="btn btn-ghost btn-sm" data-go="notas">Nova Nota Fiscal</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLIENTES -->
+    <section data-panel="clientes" hidden>
+      <div class="panel">
+        <h2>Clientes <span class="count" id="cntClients">0</span></h2>
+        <div class="tools">
+          <input type="text" id="searchClients" placeholder="Buscar por nome ou e-mail…" style="max-width:380px" />
+          <button class="btn btn-primary btn-sm" id="btnNewClient">+ Novo Cliente</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Nome</th><th>E-mail</th><th>Papel</th><th>Cadastro</th><th>Ações</th></tr></thead>
+            <tbody id="tblClients"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- LEADS -->
+    <section data-panel="leads" hidden>
+      <div class="panel">
+        <h2>Orçamentos recebidos <span class="count" id="cntLeads">0</span></h2>
+        <div class="tools">
+          <input type="text" id="searchLeads" placeholder="Buscar lead…" style="max-width:380px" />
+          <button class="btn btn-ghost btn-sm" id="btnExportLeads">Exportar JSON</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Protocolo</th><th>Cliente</th><th>Telefone</th><th>Serviço</th><th>Estimativa</th><th>Status</th><th>Ações</th></tr></thead>
+            <tbody id="tblLeads"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVIÇOS / OS -->
+    <section data-panel="servicos" hidden>
+      <div class="panel">
+        <h2>Ordens de Serviço <span class="count" id="cntOS">0</span></h2>
+        <div class="tools">
+          <select id="filterOSClient" style="max-width:280px"><option value="">Todos os clientes</option></select>
+          <button class="btn btn-primary btn-sm" id="btnNewOS">+ Nova OS</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>OS</th><th>Cliente</th><th>Título</th><th>Técnico</th><th>Início</th><th>Status</th><th>Ações</th></tr></thead>
+            <tbody id="tblOS"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOLETOS -->
+    <section data-panel="boletos" hidden>
+      <div class="panel">
+        <h2>Boletos <span class="count" id="cntBol">0</span></h2>
+        <div class="tools">
+          <select id="filterBolClient" style="max-width:280px"><option value="">Todos os clientes</option></select>
+          <button class="btn btn-primary btn-sm" id="btnNewBol">+ Novo Boleto</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>ID</th><th>Cliente</th><th>Descrição</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Ações</th></tr></thead>
+            <tbody id="tblBol"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOTAS FISCAIS -->
+    <section data-panel="notas" hidden>
+      <div class="panel">
+        <h2>Notas Fiscais <span class="count" id="cntNF">0</span></h2>
+        <div class="tools">
+          <select id="filterNFClient" style="max-width:280px"><option value="">Todos os clientes</option></select>
+          <button class="btn btn-primary btn-sm" id="btnNewNF">+ Emitir Nota</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Número</th><th>Cliente</th><th>Descrição</th><th>Valor</th><th>Emissão</th><th>Status</th><th>Ações</th></tr></thead>
+            <tbody id="tblNF"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROPOSTAS -->
+    <section data-panel="propostas" hidden>
+      <div class="panel">
+        <h2>Propostas <span class="count" id="cntProp">0</span></h2>
+        <div class="tools">
+          <select id="filterPropClient" style="max-width:280px"><option value="">Todos os clientes</option></select>
+          <button class="btn btn-primary btn-sm" id="btnNewProp">+ Nova Proposta</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>ID</th><th>Cliente</th><th>Serviço</th><th>Valor</th><th>Data</th><th>Status</th><th>Ações</th></tr></thead>
+            <tbody id="tblProp"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTRATOS -->
+    <section data-panel="contratos" hidden>
+      <div class="panel">
+        <h2>Contratos <span class="count" id="cntCtr">0</span></h2>
+        <div class="tools">
+          <select id="filterCtrClient" style="max-width:280px"><option value="">Todos os clientes</option></select>
+          <button class="btn btn-primary btn-sm" id="btnNewCtr">+ Novo Contrato</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>ID</th><th>Cliente</th><th>Título</th><th>Valor/mês</th><th>Início</th><th>Status</th><th>Ações</th></tr></thead>
+            <tbody id="tblCtr"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONFIG -->
+    <section data-panel="config" hidden>
+      <div class="panel">
+        <h2>Configurações administrativas</h2>
+        <div class="admin-form-grid">
+          <div class="full">
+            <label>Trocar minha senha (admin)</label>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <input type="password" id="newAdminPass" placeholder="Nova senha (mín. 8)" style="flex:1;min-width:240px" />
+              <button class="btn btn-primary btn-sm" id="btnChangeAdminPass">Atualizar senha</button>
+            </div>
+          </div>
+          <div class="full">
+            <label>Backup completo dos dados</label>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-ghost btn-sm" id="btnExportAll">Exportar tudo (JSON)</button>
+              <button class="btn btn-ghost btn-sm" id="btnImportAll">Importar JSON</button>
+              <input type="file" id="fileImport" accept="application/json" hidden />
+            </div>
+          </div>
+          <div class="full">
+            <label style="color:#ff7a7a">Zona perigosa</label>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-ghost btn-sm" id="btnClearLeads" style="border-color:#ff7a7a;color:#ff7a7a">Limpar leads de orçamento</button>
+              <button class="btn btn-ghost btn-sm" id="btnResetAll" style="border-color:#ff7a7a;color:#ff7a7a">Reset total dos dados</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- MODAL GENÉRICO -->
+<div class="modal-back" id="modal">
+  <div class="modal">
+    <span class="close" id="modalClose">✕</span>
+    <h3 id="modalTitle">Editar</h3>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script src="assets/js/main.js"></script>
+<script src="assets/js/tech-fx.js"></script>
+<script src="assets/js/admin.js"></script>
+</body>
+</html>

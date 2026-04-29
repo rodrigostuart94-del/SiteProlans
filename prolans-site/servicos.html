@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; script-src 'self' 'unsafe-inline'; connect-src 'self' https://viacep.com.br; frame-src https://www.google.com https://maps.google.com; base-uri 'self'; form-action 'self' https://wa.me; object-src 'none'; upgrade-insecure-requests" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta http-equiv="X-Content-Type-Options" content="nosniff" />
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()" />
+<title>Serviços e Preços - Prolans Segurança e Tecnologia | Teresópolis/RJ</title>
+<meta name="description" content="Tabela oficial de serviços Prolans: CFTV Wi-Fi/IP/Analógico, alarmes, controle de acesso, fechaduras, automação e muito mais. Valores a partir de." />
+<meta name="keywords" content="preço câmera segurança Teresópolis, valor instalação CFTV, preço fechadura digital, automação residencial preço, controle de acesso valor, Prolans serviços" />
+<link rel="icon" type="image/png" href="assets/img/logo-prolans.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css" />
+<link rel="stylesheet" href="assets/css/tech.css" />
+<style>
+  .price-table { background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 24px; }
+  .price-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; background: rgba(0,212,255,0.05); border-bottom: 1px solid var(--border); }
+  .price-head h4 { color: #fff; font-size: 1rem; }
+  .price-row { display: grid; grid-template-columns: 1fr auto auto; gap: 18px; align-items: center; padding: 14px 24px; border-bottom: 1px solid var(--border); }
+  .price-row:last-child { border-bottom: 0; }
+  .price-row .desc { color: var(--text); font-weight: 500; font-size: .95rem; }
+  .price-row .val { color: var(--primary); font-weight: 700; font-family: 'JetBrains Mono', monospace; font-size: .95rem; }
+  .price-row .from { color: var(--text-dim); font-size: .78rem; margin-right: 6px; }
+  .price-row .btn { font-size: .8rem; padding: 8px 14px; }
+  .svc-head-row { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+  .svc-head-row .icon { width:54px; height:54px; border-radius:14px; background:linear-gradient(135deg, rgba(0,212,255,.18), rgba(124,92,255,.18)); border:1px solid rgba(0,212,255,.25); display:grid; place-items:center; color:var(--primary); }
+  @media (max-width: 768px) { .price-row { grid-template-columns: 1fr; gap: 6px; padding: 14px 20px; } .price-row .val { font-size: 1.05rem; } }
+</style>
+</head>
+<body>
+
+<canvas id="fx-particles"></canvas>
+<div id="fx-progress"></div>
+
+<header class="header">
+  <div class="container">
+    <a class="logo" href="index.html"><span class="logo-mark has-img"><img src="assets/img/logo-prolans.png" alt="Prolans" /></span> Prolans</a>
+    <nav class="nav">
+      <a href="index.html">Início</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="servicos.html">Serviços</a>
+      <a href="produtos.html">Produtos</a>
+      <a href="planos.html">Signature+</a>
+      <a href="blog.html">Blog</a>
+      <a href="faq.html">FAQ</a>
+      <a href="contato.html">Contato</a>
+    </nav>
+    <div class="header-cta">
+      <a class="btn btn-ghost btn-sm" href="area-cliente.html">Área do Cliente</a>
+      <a class="btn btn-primary btn-sm magnetic" href="orcamento.html">Solicitar Orçamento</a>
+      <button class="mobile-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<section class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">Início</a> · Serviços e Preços</div>
+    <span class="hud-tag">TABELA OFICIAL · MÃO DE OBRA</span>
+    <h1 style="margin-top:14px">Serviços e <span class="gradient-text">preços</span> Prolans</h1>
+    <p>Valores a partir de - referentes apenas à mão de obra. Equipamentos cotados conforme projeto.</p>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container">
+    <div class="filters">
+      <a class="filter-chip" href="#cftv">CFTV</a>
+      <a class="filter-chip" href="#alarme">Alarmes</a>
+      <a class="filter-chip" href="#acesso">Controle de Acesso</a>
+      <a class="filter-chip" href="#fechadura">Fechaduras</a>
+      <a class="filter-chip" href="#portao">Portão Eletrônico</a>
+      <a class="filter-chip" href="#rede">Rede e Internet</a>
+      <a class="filter-chip" href="#automacao">Automação</a>
+      <a class="filter-chip" href="#interfone">Interfone</a>
+      <a class="filter-chip" href="#manutencao">Manutenção</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container" style="display:grid;gap:64px">
+
+    <article id="cftv" class="reveal">
+      <div class="svc-head-row">
+        <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M22 8l-6 4 6 4V8z"/></svg></div>
+        <div>
+          <span class="hud-tag">CÂMERAS DE SEGURANÇA</span>
+          <h2 style="margin-top:6px">CFTV - <span class="gradient-text">3 sistemas</span> para escolher</h2>
+        </div>
+      </div>
+      <p class="muted" style="margin-bottom:20px">Sistemas profissionais de monitoramento com câmeras HD, Full HD e 4K. Escolha o tipo de transmissão que melhor atende seu ambiente:</p>
+
+      <div class="price-table">
+        <div class="price-head"><h4>Sistema Wi-Fi · Residencial / Pequenos ambientes</h4><span class="muted" style="font-size:.78rem">sem cabeamento</span></div>
+        <div class="price-row"><span class="desc">Kit 02 câmeras</span><span class="val"><span class="from">a partir de</span>R$ 360,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=cftv">Solicitar</a></div>
+        <div class="price-row"><span class="desc">Kit 04 câmeras</span><span class="val"><span class="from">a partir de</span>R$ 700,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=cftv">Solicitar</a></div>
+        <div class="price-row"><span class="desc">Kit 06 câmeras</span><span class="val"><span class="from">a partir de</span>R$ 1.020,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=cftv">Solicitar</a></div>
+        <div class="price-row"><span class="desc">Kit 08 câmeras</span><span class="val"><span class="from">a partir de</span>R$ 1.320,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=cftv">Solicitar</a></div>
+      </div>
+
+      <div class="price-table">
+        <div class="price-head"><h4>Sistema Analógico · Cabeado, mais estável</h4><span class="muted" style="font-size:.78rem">tecnologia confiável</span></div>
+        <div class="price-row"><span class="desc">Kit 04 câmeras</span><span class="val"><span class="from">a partir de</span>R$ 800,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=cftv">Solicitar</a></div>
+        <div class="price-row"><span class="desc">Kit 08 câmeras</span><span class="val"><span class="from">a partir de</span>R$ 1.600,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=cftv">Solicitar</a></div>
+        <div class="price-row"><span class="desc">Kit 16 câmeras</span><span class="val"><span class="from">a partir de</span>R$ 3.000,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=cftv">Solicitar</a></div>
+        <div class="price-row"><span class="desc">Kit 32 câmeras</span><span class="val"><span class="from">a partir de</span>R$ 5.800,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=cftv">Solicitar</a></div>
+      </div>
+
+      <div class="price-table">
+        <div class="price-head"><h4>Sistema IP · Alta performance / Empresas</h4><span class="muted" style="font-size:.78rem">qualidade premium</span></div>
+        <div class="price-row"><span class="desc">Kit 04 câmeras</span><span class="val"><span class="from">a partir de</span>R$ 1.000,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=cftv">Solicitar</a></div>
+        <div class="price-row"><span class="desc">Kit 08 câmeras</span><span class="val"><span class="from">a partir de</span>R$ 2.000,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=cftv">Solicitar</a></div>
+        <div class="price-row"><span class="desc">Kit 16 câmeras</span><span class="val"><span class="from">a partir de</span>R$ 3.800,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=cftv">Solicitar</a></div>
+        <div class="price-row"><span class="desc">Kit 32 câmeras</span><span class="val"><span class="from">a partir de</span>R$ 7.200,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=cftv">Solicitar</a></div>
+      </div>
+    </article>
+
+    <article id="alarme" class="reveal">
+      <div class="svc-head-row">
+        <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg></div>
+        <div><span class="hud-tag">ALARMES</span><h2 style="margin-top:6px">Alarmes <span class="gradient-text">inteligentes</span></h2></div>
+      </div>
+      <p class="muted" style="margin-bottom:20px">Sensores sem fio, sirene de alta potência, integração com app e notificações em tempo real.</p>
+      <div class="price-table">
+        <div class="price-row"><span class="desc">Sistema de alarme completo</span><span class="val"><span class="from">a partir de</span>R$ 500,00</span><a class="btn btn-primary btn-sm magnetic" href="orcamento.html?s=alarme">Solicitar</a></div>
+      </div>
+    </article>
+
+    <article id="acesso" class="reveal">
+      <div class="svc-head-row">
+        <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div><span class="hud-tag">CONTROLE DE ACESSO</span><h2 style="margin-top:6px">Quem entra, <span class="gradient-text">quando entra</span>, por onde</h2></div>
+      </div>
+      <p class="muted" style="margin-bottom:20px">Para empresas, condomínios e residências de alto padrão. Logs, relatórios e integração com folha de ponto.</p>
+      <div class="price-table">
+        <div class="price-row"><span class="desc">Controle de acesso simples</span><span class="val"><span class="from">a partir de</span>R$ 350,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=acesso">Solicitar</a></div>
+        <div class="price-row"><span class="desc">Controle com biometria digital</span><span class="val"><span class="from">a partir de</span>R$ 500,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=acesso">Solicitar</a></div>
+        <div class="price-row"><span class="desc">Reconhecimento facial</span><span class="val"><span class="from">a partir de</span>R$ 800,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=acesso">Solicitar</a></div>
+      </div>
+    </article>
+
+    <article id="fechadura" class="reveal">
+      <div class="svc-head-row">
+        <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="14" r="2.5"/><path d="M12 16.5V19"/><rect x="4" y="9" width="16" height="13" rx="2"/></svg></div>
+        <div><span class="hud-tag">FECHADURAS DIGITAIS</span><h2 style="margin-top:6px">A chave que <span class="gradient-text">você nunca esquece</span></h2></div>
+      </div>
+      <p class="muted" style="margin-bottom:20px">Senha, biometria, cartão e abertura por app.</p>
+      <div class="price-table">
+        <div class="price-row"><span class="desc">Instalação sobrepor</span><span class="val">R$ 300,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=fechadura">Solicitar</a></div>
+        <div class="price-row"><span class="desc">Instalação embutir</span><span class="val">R$ 500,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=fechadura">Solicitar</a></div>
+      </div>
+    </article>
+
+    <article id="portao" class="reveal">
+      <div class="svc-head-row">
+        <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21V7l9-4 9 4v14"/><path d="M3 21h18M9 21V11M15 21V11"/></svg></div>
+        <div><span class="hud-tag">PORTÃO ELETRÔNICO</span><h2 style="margin-top:6px">Motores <span class="gradient-text">silenciosos</span> e duráveis</h2></div>
+      </div>
+      <div class="price-table">
+        <div class="price-row"><span class="desc">Automatização de portão (deslizante / basculante)</span><span class="val"><span class="from">a partir de</span>R$ 550,00</span><a class="btn btn-primary btn-sm magnetic" href="orcamento.html?s=portao">Solicitar</a></div>
+      </div>
+    </article>
+
+    <article id="rede" class="reveal">
+      <div class="svc-head-row">
+        <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14 0M1.4 9a16 16 0 0 1 21.2 0M8.5 16.1a6 6 0 0 1 7 0"/><circle cx="12" cy="20" r="1"/></svg></div>
+        <div><span class="hud-tag">REDE E INTERNET</span><h2 style="margin-top:6px"><span class="gradient-text">Conexão estável</span> em cada cômodo</h2></div>
+      </div>
+      <p class="muted" style="margin-bottom:20px">Cabeamento estruturado, redes mesh, organização de rack e configuração profissional.</p>
+      <div class="price-table">
+        <div class="price-row"><span class="desc">Instalação de ponto de rede</span><span class="val">R$ 150 - R$ 250</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=rede">Solicitar</a></div>
+        <div class="price-row"><span class="desc">Organização de rede / rack</span><span class="val"><span class="from">a partir de</span>R$ 300,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=rede">Solicitar</a></div>
+        <div class="price-row"><span class="desc">Configuração de roteador</span><span class="val">R$ 150,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=rede">Solicitar</a></div>
+        <div class="price-row"><span class="desc">Configuração de rede Mesh</span><span class="val"><span class="from">a partir de</span>R$ 300,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=rede">Solicitar</a></div>
+      </div>
+    </article>
+
+    <article id="automacao" class="reveal">
+      <div class="svc-head-row">
+        <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h2M19 12h2M12 3v2M12 19v2"/><circle cx="12" cy="12" r="4"/></svg></div>
+        <div><span class="hud-tag">AUTOMAÇÃO RESIDENCIAL / COMERCIAL</span><h2 style="margin-top:6px"><span class="gradient-text">Sua casa</span> obedecendo à sua voz</h2></div>
+      </div>
+      <p class="muted" style="margin-bottom:20px">Iluminação, tomadas e dispositivos integrados com Alexa e Google Home.</p>
+      <div class="price-table">
+        <div class="price-row"><span class="desc">Automação de interruptor (por ponto)</span><span class="val"><span class="from">a partir de</span>R$ 150,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=automacao">Solicitar</a></div>
+        <div class="price-row"><span class="desc">Automação de tomada (por ponto)</span><span class="val"><span class="from">a partir de</span>R$ 150,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=automacao">Solicitar</a></div>
+        <div class="price-row"><span class="desc">Integração com Alexa</span><span class="val"><span class="from">a partir de</span>R$ 200,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=automacao">Solicitar</a></div>
+        <div class="price-row"><span class="desc">Automação completa (iluminação + tomadas + cenas)</span><span class="val">Sob consulta</span><a class="btn btn-primary btn-sm magnetic" href="orcamento.html?s=automacao">Orçar</a></div>
+      </div>
+    </article>
+
+    <article id="interfone" class="reveal">
+      <div class="svc-head-row">
+        <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="2"/></svg></div>
+        <div><span class="hud-tag">INTERFONE</span><h2 style="margin-top:6px">Atenda da <span class="gradient-text">palma da mão</span></h2></div>
+      </div>
+      <div class="price-table">
+        <div class="price-row"><span class="desc">Instalação de interfone</span><span class="val"><span class="from">a partir de</span>R$ 250,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=interfone">Solicitar</a></div>
+        <div class="price-row"><span class="desc">Interfone com fechadura elétrica</span><span class="val"><span class="from">a partir de</span>R$ 400,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=interfone">Solicitar</a></div>
+      </div>
+    </article>
+
+    <article id="manutencao" class="reveal">
+      <div class="svc-head-row">
+        <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a4 4 0 0 0 5 5L17 14l3 3a2 2 0 0 1-3 3l-3-3-2.7 2.7a4 4 0 0 0-5-5L9 12 6 9a2 2 0 0 1 3-3l3 3 2.7-2.7z"/></svg></div>
+        <div><span class="hud-tag">MANUTENÇÃO</span><h2 style="margin-top:6px">Preventiva e <span class="gradient-text">corretiva</span></h2></div>
+      </div>
+      <p class="muted" style="margin-bottom:20px">Sistema sempre funcionando, sem sustos. Para cobertura contínua, conheça o <a href="planos.html" style="color:var(--primary)">Plano Signature+</a>.</p>
+      <div class="price-table">
+        <div class="price-row"><span class="desc">Manutenção corretiva (chamado avulso)</span><span class="val"><span class="from">a partir de</span>R$ 150,00</span><a class="btn btn-ghost btn-sm magnetic" href="orcamento.html?s=manutencao">Solicitar</a></div>
+        <div class="price-row"><span class="desc">Plano Signature+ - manutenção mensal</span><span class="val"><span class="from">a partir de</span>R$ 300,00/mês</span><a class="btn btn-primary btn-sm magnetic" href="planos.html">Conhecer</a></div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="cta-banner reveal">
+      <h2>Não sabe qual a melhor solução? <span class="gradient-text">A gente te ajuda.</span></h2>
+      <p>Visita técnica gratuita. Avaliamos seu projeto e indicamos a configuração ideal.</p>
+      <a class="btn btn-primary magnetic" href="orcamento.html">Solicitar Orçamento Personalizado</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="index.html"><span class="logo-mark has-img"><img src="assets/img/logo-prolans.png" alt="Prolans" /></span> Prolans</a>
+        <p>Prolans Segurança e Tecnologia · Teresópolis/RJ. Protegendo o presente, garantindo o futuro.</p>
+      </div>
+      <div><h4>Empresa</h4><ul><li><a href="sobre.html">Sobre nós</a></li><li><a href="planos.html">Signature+</a></li><li><a href="blog.html">Blog</a></li></ul></div>
+      <div><h4>Serviços</h4><ul><li><a href="servicos.html#cftv">CFTV</a></li><li><a href="servicos.html#alarme">Alarmes</a></li><li><a href="servicos.html#automacao">Automação</a></li></ul></div>
+      <div><h4>Suporte</h4><ul><li><a href="area-cliente.html">Área do Cliente</a></li><li><a href="faq.html">FAQ</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Prolans Segurança e Tecnologia · CNPJ 38.408.286/0001-11</span>
+      <span>Praça Baltazar da Silveira, 90 - Várzea, Teresópolis/RJ · contato@prolans.com.br</span>
+    </div>
+  </div>
+</footer>
+<a class="wa-float" href="https://wa.me/prolans" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.7-1-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.6.7.3 1.3.5 1.8.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.4zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg></a>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/tech-fx.js"></script>
+</body>
+</html>

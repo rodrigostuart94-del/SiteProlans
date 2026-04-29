@@ -1,0 +1,853 @@
+/* ============================================================
+   PROLANS — Camada Tecnológica
+   Cursor, partículas, terminal, scan, holograma, glitch
+   ============================================================ */
+
+/* Background canvas (partículas) */
+#fx-particles {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.7;
+}
+body { position: relative; }
+/* Tudo (exceto background fixos e elementos fixed/floating) fica acima do z-index 1 */
+body > *:not(#fx-particles):not(.fx-pattern):not(.fx-scanline):not(.wa-float):not(.fx-cursor):not(.fx-cursor-trail):not(#fx-progress):not(.toast):not(.dash-mobile-toggle) { position: relative; z-index: 2; }
+
+/* Grid de circuito sutil (background base, bem discreto) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.025) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse at 50% 30%, black 0%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 30%, black 0%, transparent 80%);
+}
+
+/* ============================================================
+   PATTERN DE ÍCONES TECNOLÓGICOS — desenhados por traços
+   Câmeras, alarmes, escudos, fechaduras, Wi-Fi, casa inteligente.
+   ============================================================ */
+.fx-pattern {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  /* Máscara em vinheta — concentra ícones na borda, deixa centro mais limpo */
+  mask-image: radial-gradient(ellipse at 50% 50%, transparent 18%, black 65%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 50%, transparent 18%, black 65%);
+}
+.fx-icon {
+  position: absolute;
+  color: rgba(0, 212, 255, 0.55);
+  filter: drop-shadow(0 0 6px rgba(0, 212, 255, 0.20));
+  opacity: 0;
+  transform: rotate(var(--rot, 0deg));
+}
+.fx-icon svg {
+  width: 100%; height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* CICLO de vida (loop): aparece desenhando linha, segura, some.
+   JS aplica .drawing + reposiciona aleatoriamente em cada ciclo. */
+.fx-icon.drawing {
+  animation: fxFade var(--cycle, 7s) ease forwards;
+}
+.fx-icon.drawing svg * {
+  stroke-dasharray: 220;
+  stroke-dashoffset: 220;
+  animation: fxStroke var(--cycle, 7s) ease forwards;
+}
+@keyframes fxFade {
+  0%   { opacity: 0; transform: rotate(var(--rot, 0deg)) scale(0.9); }
+  10%  { opacity: 1; transform: rotate(var(--rot, 0deg)) scale(1); }
+  80%  { opacity: 1; transform: rotate(var(--rot, 0deg)) scale(1); }
+  100% { opacity: 0; transform: rotate(var(--rot, 0deg)) scale(1.05); }
+}
+@keyframes fxStroke {
+  0%   { stroke-dashoffset: 220; }
+  45%  { stroke-dashoffset: 0; }
+  85%  { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -220; }
+}
+
+/* Linha de scan vertical sutil que atravessa a página */
+.fx-scanline {
+  position: fixed;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.35), transparent);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+  animation: fxScan 12s linear infinite;
+}
+@keyframes fxScan {
+  0%   { top: -10%; opacity: 0; }
+  10%  { opacity: 0.6; }
+  90%  { opacity: 0.6; }
+  100% { top: 110%; opacity: 0; }
+}
+
+/* Reduz movimento se preferência do usuário */
+@media (prefers-reduced-motion: reduce) {
+  .fx-icon, .fx-icon svg *, .fx-scanline { animation: none !important; }
+  .fx-icon svg * { stroke-dashoffset: 0; }
+}
+
+/* ============================================================
+   MARQUEE DE PARCEIROS — logo names circulando infinitamente
+   ============================================================ */
+.partners-marquee {
+  position: relative;
+  overflow: hidden;
+  margin-top: 32px;
+  padding: 12px 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+.partners-marquee + .partners-marquee { margin-top: 14px; }
+
+.partners-track {
+  display: flex;
+  gap: 14px;
+  width: max-content;
+  animation: marqueeL 70s linear infinite;
+}
+.partners-track.reverse {
+  animation-name: marqueeR;
+  animation-duration: 90s;
+}
+.partners-marquee:hover .partners-track {
+  animation-play-state: paused;
+}
+
+.partner-chip {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 24px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  transition: border-color .25s, color .25s, transform .25s, box-shadow .25s;
+  cursor: default;
+}
+.partner-chip::before {
+  content: "";
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 10px var(--primary);
+  flex: none;
+}
+.partner-chip:hover {
+  border-color: var(--border-strong);
+  color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -12px rgba(0, 212, 255, 0.5);
+}
+
+/* Card "+1500 clientes" em destaque */
+.partner-stat-chip {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(124, 92, 255, 0.10));
+  border-color: var(--border-strong);
+  color: var(--primary);
+  letter-spacing: 0.04em;
+  font-weight: 800;
+}
+.partner-stat-chip::before {
+  background: var(--success);
+  box-shadow: 0 0 12px var(--success);
+  animation: blink 1.4s ease-in-out infinite;
+}
+
+@keyframes marqueeL {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes marqueeR {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .partners-track { animation: none !important; }
+}
+
+/* ============================================================
+   CURSOR TECNOLÓGICO — substitui o cursor padrão do Windows
+   Mira menor, compacta, sempre visível.
+   ============================================================ */
+
+/* Esconde o cursor padrão do sistema em todos os elementos */
+*, *::before, *::after { cursor: none !important; }
+
+.fx-cursor {
+  position: fixed;
+  top: 0; left: 0;
+  width: 36px; height: 36px;
+  margin: -18px 0 0 -18px;
+  pointer-events: none;
+  z-index: 99999;
+  will-change: transform;
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.7));
+}
+.fx-cursor svg {
+  width: 100%; height: 100%;
+  overflow: visible;
+}
+/* Crosshair externo (linhas curtas — sem bolinha central pra
+   não competir com o cursor nativo do sistema) */
+.fx-cursor .cx-h, .fx-cursor .cx-v {
+  stroke: var(--primary);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+.fx-cursor .cx-dot { display: none; }
+/* Anel rotacionando */
+.fx-cursor .cx-ring {
+  fill: none;
+  stroke: rgba(0, 212, 255, 0.75);
+  stroke-width: 1.2;
+  stroke-dasharray: 6 4;
+  transform-origin: 50% 50%;
+  animation: cxSpin 6s linear infinite;
+}
+/* Brackets dos cantos */
+.fx-cursor .cx-bracket {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 4px rgba(0, 212, 255, 0.8));
+  transition: transform .25s cubic-bezier(.2,.7,.2,1), stroke .2s, stroke-width .2s;
+  transform-origin: 50% 50%;
+}
+/* Glow externo */
+.fx-cursor .cx-glow {
+  fill: rgba(0, 212, 255, 0.06);
+  filter: blur(2px);
+}
+/* Pontinho rastro (segue suave) */
+.fx-cursor-trail {
+  position: fixed;
+  top: 0; left: 0;
+  width: 4px; height: 4px;
+  margin: -2px 0 0 -2px;
+  background: var(--primary);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99998;
+  box-shadow: 0 0 8px var(--primary), 0 0 18px rgba(0, 212, 255, 0.55);
+  will-change: transform;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+@keyframes cxSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* Estado HOVER em elementos interativos */
+.fx-cursor.hover .cx-bracket {
+  stroke: #fff;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 8px var(--primary));
+}
+.fx-cursor.hover .cx-bracket.tl { transform: translate(-3px, -3px); }
+.fx-cursor.hover .cx-bracket.tr { transform: translate(3px, -3px); }
+.fx-cursor.hover .cx-bracket.bl { transform: translate(-3px, 3px); }
+.fx-cursor.hover .cx-bracket.br { transform: translate(3px, 3px); }
+.fx-cursor.hover .cx-ring { stroke: rgba(0, 212, 255, 0.95); }
+
+/* Estado PRESS (clique) — contrai */
+.fx-cursor.press .cx-bracket.tl { transform: translate(2px, 2px); }
+.fx-cursor.press .cx-bracket.tr { transform: translate(-2px, 2px); }
+.fx-cursor.press .cx-bracket.bl { transform: translate(2px, -2px); }
+.fx-cursor.press .cx-bracket.br { transform: translate(-2px, -2px); }
+
+/* Touch puro (sem mouse): esconde o overlay decorativo. */
+@media (hover: none) and (pointer: coarse) {
+  .fx-cursor, .fx-cursor-trail { display: none; }
+}
+
+/* ============================================================
+   SCROLL PROGRESS BAR
+   ============================================================ */
+#fx-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0;
+  background: var(--gradient-primary);
+  z-index: 200;
+  transition: width 80ms linear;
+  box-shadow: 0 0 12px var(--primary);
+}
+
+/* ============================================================
+   LOGO MARK (substituindo o "P" pelo brasão real)
+   ============================================================ */
+.logo-mark.has-img {
+  background: transparent;
+  box-shadow: none;
+  width: 44px; height: 44px;
+  border-radius: 0;
+  overflow: visible;
+  padding: 0;
+}
+.logo-mark.has-img img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 14px rgba(0, 136, 255, 0.45));
+}
+
+/* ============================================================
+   HERO TECNOLÓGICO
+   ============================================================ */
+.tech-hero {
+  position: relative;
+  padding: calc(var(--header-h) + 80px) 0 100px;
+  overflow: hidden;
+}
+.tech-hero h1 { line-height: 1.2; }
+.tech-hero h1 .gradient-text { line-height: 1.2; padding-bottom: 0.1em; }
+.tech-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(900px 500px at 80% 20%, rgba(0, 102, 255, 0.18), transparent 60%),
+    radial-gradient(700px 500px at 10% 80%, rgba(0, 212, 255, 0.15), transparent 60%);
+  pointer-events: none;
+}
+
+/* ============================================================
+   COMMAND CENTER — frame premium com HUD
+   ============================================================ */
+.hud-frame {
+  position: relative;
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(20, 27, 48, 0.55), rgba(8, 12, 24, 0.65));
+  border: 1px solid rgba(0, 212, 255, 0.18);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 0 60px rgba(0, 102, 255, 0.18);
+}
+.hud-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(600px 400px at 50% 30%, rgba(0, 212, 255, 0.10), transparent 60%),
+    radial-gradient(500px 300px at 80% 80%, rgba(124, 92, 255, 0.10), transparent 60%);
+  pointer-events: none;
+}
+
+/* HUD top bar */
+.hud-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.12);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  color: var(--text-muted);
+}
+.hud-bar-left { display: flex; align-items: center; gap: 10px; color: var(--primary); font-weight: 700; }
+.hud-bar-right { color: var(--text-dim); }
+.hud-led {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 10px var(--success);
+  animation: blink 1.6s ease-in-out infinite;
+}
+
+/* HUD bottom status */
+.hud-status {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-top: 1px solid rgba(0, 212, 255, 0.12);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+}
+.hud-status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 10px var(--success);
+  animation: blink 1.6s ease-in-out infinite;
+  flex: none;
+}
+.hud-status-text { color: var(--text); font-weight: 600; flex: 1; }
+.hud-status-time { color: var(--primary); font-weight: 700; }
+
+/* SVG de linhas conectando shield → cards */
+.holo-grid {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.55;
+}
+.holo-grid .hud-line {
+  stroke: url(#line-grad);
+  stroke-width: 1.4;
+  stroke-dasharray: 6 4;
+  animation: hudFlow 3s linear infinite;
+}
+@keyframes hudFlow {
+  to { stroke-dashoffset: -20; }
+}
+
+/* "Holograma" — escudo central da Prolans */
+.holo {
+  position: relative;
+  width: 100%; aspect-ratio: 1;
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 18px 14px;
+}
+.holo-ring {
+  position: absolute;
+  inset: 4%;                                 /* anel EXTERNO — onde Revenda + SLA orbitam */
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 50%;
+  animation: holoRot 18s linear infinite;
+}
+.holo-ring::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border: 1px dashed rgba(0, 212, 255, 0.4);
+  border-radius: 50%;
+  animation: holoRot 24s linear infinite reverse;
+}
+.holo-ring.r2 { inset: 16%; opacity: .7; animation-duration: 14s; }  /* MEIO — 13+ anos */
+.holo-ring.r3 { inset: 26%; opacity: .55; animation-duration: 10s; } /* INTERNO — +1.500 */
+@keyframes holoRot { to { transform: rotate(360deg); } }
+
+.holo-shield {
+  position: absolute;
+  inset: 30%;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 35% 30%, rgba(0, 136, 255, 0.45), transparent 65%),
+    radial-gradient(circle at 50% 50%, rgba(0, 212, 255, 0.18), transparent 70%);
+  filter: drop-shadow(0 14px 40px rgba(0, 136, 255, 0.65));
+  z-index: 2;
+}
+.holo-shield img {
+  width: 90%; height: 90%;
+  object-fit: contain;
+  animation: holoFloat 5s ease-in-out infinite;
+}
+@keyframes holoFloat {
+  0%, 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 22px rgba(0, 212, 255, 0.55)); }
+  50%      { transform: translateY(-8px) scale(1.025); filter: drop-shadow(0 0 40px rgba(0, 212, 255, 0.85)); }
+}
+
+/* Linha de scan passando por cima do holo */
+.holo-scan {
+  position: absolute;
+  inset: 18%;
+  border-radius: 50%;
+  overflow: hidden;
+  pointer-events: none;
+}
+.holo-scan::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  box-shadow: 0 0 14px var(--primary);
+  animation: scanY 3.4s ease-in-out infinite;
+}
+@keyframes scanY {
+  0%, 100% { top: 0%; opacity: 0; }
+  10%      { opacity: 1; }
+  50%      { top: 100%; opacity: 1; }
+  60%      { opacity: 0; }
+}
+
+/* CREDENCIAIS em ÓRBITA GALÁCTICA ao redor do escudo
+   ────────────────────────────────────────────────────
+   Sistema de DOIS ANÉIS orbitais com VELOCIDADES E SENTIDOS DIFERENTES.
+   Cards alternam entre anel interno e externo — cruzam a todo momento. */
+
+/* Cada braço orbital tem o MESMO inset do anel correspondente — assim
+   o canto direito do braço coincide pixel-a-pixel com a linha visível.
+   O card é ancorado em (top:50%, left:100%) — exatamente sobre o anel. */
+.orbit-arm {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* a0 = anel INTERNO (mesma inset que .holo-ring.r3 = 26%)
+   a2 = anel MÉDIO  (mesma inset que .holo-ring.r2 = 16%)
+   a1 + a3 = anel EXTERNO (mesma inset que .holo-ring = 4%) */
+.orbit-arm.a0 { inset: 26%; animation: orbitCW  22s linear infinite; animation-delay: 0s;   }
+.orbit-arm.a2 { inset: 16%; animation: orbitCW  30s linear infinite; animation-delay: -14s; }
+.orbit-arm.a1 { inset: 4%;  animation: orbitCCW 38s linear infinite; animation-delay: -10s; }
+.orbit-arm.a3 { inset: 4%;  animation: orbitCCW 46s linear infinite; animation-delay: -28s; }
+
+@keyframes orbitCW  { from { transform: rotate(0deg);   } to { transform: rotate(360deg);  } }
+@keyframes orbitCCW { from { transform: rotate(0deg);   } to { transform: rotate(-360deg); } }
+
+/* Pause ao passar o mouse sobre o frame (permite ler todos os cards) */
+.hud-frame:hover .orbit-arm,
+.hud-frame:hover .orbit-arm > .holo-cred {
+  animation-play-state: paused;
+}
+
+.holo-cred {
+  position: absolute;
+  /* Ancorado no canto direito (3 horas) do braço — exatamente sobre a linha do anel */
+  top: 50%;
+  left: 100%;
+  pointer-events: auto;
+  background: linear-gradient(180deg, rgba(20, 27, 48, 0.94), rgba(10, 15, 28, 0.96));
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(0, 212, 255, 0.30);
+  border-radius: 10px;
+  padding: 7px 11px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(0, 212, 255, 0.08),
+    0 0 18px rgba(0, 212, 255, 0.25);
+  white-space: nowrap;
+  z-index: 4;
+}
+
+/* Cada card contra-rotaciona na mesma duração do braço-pai para ficar reto. */
+.orbit-arm.a0 > .holo-cred { animation: counterCW  22s linear infinite; animation-delay: 0s;   }
+.orbit-arm.a1 > .holo-cred { animation: counterCCW 38s linear infinite; animation-delay: -10s; }
+.orbit-arm.a2 > .holo-cred { animation: counterCW  30s linear infinite; animation-delay: -14s; }
+.orbit-arm.a3 > .holo-cred { animation: counterCCW 46s linear infinite; animation-delay: -28s; }
+
+/* O translate(-50%, -50%) centraliza o card sobre o ponto da linha (3 horas) */
+@keyframes counterCW {
+  from { transform: translate(-50%, -50%) rotate(0deg);    }
+  to   { transform: translate(-50%, -50%) rotate(-360deg); }
+}
+@keyframes counterCCW {
+  from { transform: translate(-50%, -50%) rotate(0deg);   }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+.holo-cred::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.5), transparent 50%, rgba(124, 92, 255, 0.4));
+  z-index: -1;
+  opacity: 0.6;
+}
+.holo-cred .cred-num {
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 800;
+  font-size: 0.95rem;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  flex: none;
+}
+.holo-cred .cred-num sup { font-size: 0.7em; vertical-align: super; }
+.holo-cred .cred-label {
+  font-size: 0.55rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  line-height: 1.15;
+  white-space: normal;
+  max-width: 78px;
+}
+.holo-cred .cred-icon {
+  font-size: 0.95rem;
+  color: var(--primary);
+  filter: drop-shadow(0 0 8px var(--primary));
+  flex: none;
+}
+.holo-cred .cred-text { display: flex; flex-direction: column; min-width: 0; }
+.holo-cred .cred-text strong {
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.holo-cred .cred-text span {
+  color: var(--primary);
+  font-size: 0.52rem;
+  font-family: "JetBrains Mono", monospace;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin-top: 2px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.holo-cred.top-left     { top: 0;    left: 0;    animation-delay: 0s; }
+.holo-cred.top-right    { top: 0;    right: 0;   animation-delay: 1.5s; }
+.holo-cred.bottom-left  { bottom: 0; left: 0;    animation-delay: 3s; }
+.holo-cred.bottom-right { bottom: 0; right: 0;   animation-delay: 4.5s; }
+
+@keyframes credFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+
+/* ============================================================
+   TERMINAL animado (HUD da Prolans)
+   ============================================================ */
+.terminal {
+  background: linear-gradient(180deg, #0a0f1c, #060912);
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  font-family: "JetBrains Mono", "Consolas", monospace;
+  font-size: 0.85rem;
+  color: #b9d6e8;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(0, 212, 255, 0.06);
+  overflow: hidden;
+}
+.terminal-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--border);
+}
+.terminal-head .dot {
+  width: 11px; height: 11px; border-radius: 50%;
+}
+.terminal-head .dot.r { background: #ff5f57; }
+.terminal-head .dot.y { background: #febc2e; }
+.terminal-head .dot.g { background: #28c840; }
+.terminal-head .title {
+  margin-left: auto;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.term-out {
+  padding: 16px 18px;
+  height: 240px;
+  overflow: hidden;
+}
+.term-line {
+  margin-bottom: 6px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  line-height: 1.4;
+}
+.term-line.ok .term-pf, .term-line.ok .term-txt { color: var(--success); }
+.term-line.warn .term-pf, .term-line.warn .term-txt { color: var(--warning); }
+.term-line.dim { color: var(--text-dim); }
+.term-line.head .term-txt { color: var(--primary); font-weight: 700; }
+.term-pf { color: var(--primary); flex: none; }
+.term-txt { color: #d8e8f4; word-break: break-all; }
+.term-line:last-child .term-txt::after {
+  content: "▍";
+  color: var(--primary);
+  margin-left: 4px;
+  animation: caret 1s steps(1) infinite;
+}
+@keyframes caret { 50% { opacity: 0; } }
+
+/* ============================================================
+   SECTIONS HUD (rótulos com timestamp/coords)
+   ============================================================ */
+.hud-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: "JetBrains Mono", "Consolas", monospace;
+  font-size: 0.72rem;
+  color: var(--primary);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.hud-tag::before {
+  content: "";
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 12px var(--success);
+  animation: blink 1.6s ease-in-out infinite;
+}
+@keyframes blink { 50% { opacity: 0.3; } }
+
+/* ============================================================
+   TILT card — adicional ao .card existente
+   ============================================================ */
+.tilt {
+  transform-style: preserve-3d;
+  transition: transform 0.18s cubic-bezier(.2,.7,.2,1);
+}
+.tilt > * { transform: translateZ(20px); }
+
+/* ============================================================
+   GLITCH text (h1 hero) — sem cobrir o texto original
+   ============================================================ */
+.glitch {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+}
+.glitch::before, .glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: var(--gradient-accent);
+  mix-blend-mode: screen;
+  opacity: 0;
+}
+.glitch::before {
+  text-shadow: 2px 0 rgba(0, 212, 255, 0.7);
+  animation: glitchA 6s infinite steps(1);
+}
+.glitch::after {
+  text-shadow: -2px 0 rgba(124, 92, 255, 0.7);
+  animation: glitchB 6s infinite steps(1);
+}
+@keyframes glitchA {
+  0%, 88%, 100% { opacity: 0; transform: translate(0); }
+  89% { opacity: .9; transform: translate(-2px, 0); }
+  90% { opacity: 0; }
+  93% { opacity: .9; transform: translate(2px, 1px); }
+  94% { opacity: 0; }
+}
+@keyframes glitchB {
+  0%, 88%, 100% { opacity: 0; transform: translate(0); }
+  91% { opacity: .9; transform: translate(2px, 0); }
+  92% { opacity: 0; }
+  95% { opacity: .9; transform: translate(-2px, -1px); }
+  96% { opacity: 0; }
+}
+
+/* ============================================================
+   MAGNETIC button transition
+   ============================================================ */
+.magnetic { transition: transform 0.25s cubic-bezier(.2, .7, .2, 1), box-shadow .2s; }
+
+/* ============================================================
+   STAT chip (live numbers)
+   ============================================================ */
+.live-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(0, 230, 168, 0.08);
+  border: 1px solid rgba(0, 230, 168, 0.25);
+  color: var(--success);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.live-chip::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success);
+  animation: blink 1.4s ease-in-out infinite;
+}
+
+/* ============================================================
+   GRADIENT BORDER (cartão com borda gradiente)
+   ============================================================ */
+.gborder {
+  position: relative;
+  background: var(--surface-2);
+  border-radius: var(--radius-lg);
+}
+.gborder::before {
+  content: "";
+  position: absolute; inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.6), rgba(124, 92, 255, 0.4), rgba(0, 102, 255, 0.6));
+  z-index: -1;
+  filter: blur(0.5px);
+}
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+@media (max-width: 768px) {
+  .hud-frame { max-width: 100%; border-radius: 18px; }
+  .hud-bar, .hud-status { padding: 10px 14px; font-size: 0.65rem; letter-spacing: 0.10em; }
+  .hud-bar-right, .hud-status-time { display: none; }
+  .holo { padding: 14px; max-width: 100%; }
+  .holo-cred { padding: 6px 9px; }
+  .holo-cred .cred-num { font-size: 0.85rem; }
+  .holo-cred .cred-label { font-size: 0.5rem; max-width: 64px; }
+  .holo-cred .cred-text strong { font-size: 0.62rem; }
+  .holo-cred .cred-text span { font-size: 0.48rem; }
+  .term-out { height: 180px; font-size: 0.78rem; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  body::before, .holo-ring, .holo-shield img, .holo-scan::before, .live-chip::before, .hud-tag::before { animation: none !important; }
+}

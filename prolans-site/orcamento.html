@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; script-src 'self' 'unsafe-inline'; connect-src 'self' https://viacep.com.br; frame-src https://www.google.com https://maps.google.com; base-uri 'self'; form-action 'self' https://wa.me; object-src 'none'; upgrade-insecure-requests" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta http-equiv="X-Content-Type-Options" content="nosniff" />
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()" />
+<title>Solicitar Orçamento - Prolans Segurança e Tecnologia</title>
+<meta name="description" content="Calcule seu orçamento de CFTV, alarme, automação e mais. Tabela oficial Prolans, envio direto ao WhatsApp." />
+<meta name="keywords" content="orçamento câmera de segurança Teresópolis, orçamento alarme, automação residencial Teresópolis, instalação CFTV, fechadura digital, controle de acesso, Prolans" />
+<link rel="icon" type="image/png" href="assets/img/logo-prolans.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css" />
+<link rel="stylesheet" href="assets/css/tech.css" />
+<style>
+  /* Fitment dedicado ao card "Dados do projeto" */
+  #orcamentoForm{padding:32px 30px;display:flex;flex-direction:column;min-width:0}
+  #orcamentoForm h3{font-size:1.25rem;margin:0 0 4px}
+  #orcamentoForm > p.muted{margin:0 0 22px;font-size:.92rem}
+
+  #orcamentoForm .form-grid{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0,1fr));
+    gap:16px 18px;
+  }
+  #orcamentoForm .form-grid .field{min-width:0;display:flex;flex-direction:column;gap:6px}
+  #orcamentoForm .form-grid .field.full{grid-column:1/-1}
+  #orcamentoForm .form-grid label{font-size:.82rem;font-weight:600;color:var(--text);letter-spacing:.2px}
+  #orcamentoForm .form-grid .hint{font-size:.74rem;color:var(--text-dim);margin-top:2px}
+
+  #orcamentoForm input[type="text"],
+  #orcamentoForm input[type="tel"],
+  #orcamentoForm input[type="email"],
+  #orcamentoForm input[type="datetime-local"],
+  #orcamentoForm select,
+  #orcamentoForm textarea{
+    width:100%;
+    box-sizing:border-box;
+    padding:12px 14px;
+    background:rgba(255,255,255,.04);
+    border:1px solid var(--border);
+    border-radius:12px;
+    color:#fff;
+    font-family:inherit;
+    font-size:.94rem;
+    outline:none;
+    transition:border-color .18s ease, box-shadow .18s ease, background .18s ease;
+  }
+  #orcamentoForm input:focus,
+  #orcamentoForm select:focus,
+  #orcamentoForm textarea:focus{
+    border-color:rgba(0,212,255,.55);
+    box-shadow:0 0 0 3px rgba(0,212,255,.15);
+    background:rgba(255,255,255,.06);
+  }
+  #orcamentoForm textarea{min-height:100px;resize:vertical}
+
+  /* Dropdown legível em tema escuro (Windows tende a herdar fundo branco no <option>) */
+  #orcamentoForm select{
+    appearance:none;-webkit-appearance:none;-moz-appearance:none;
+    background-image:linear-gradient(45deg, transparent 50%, #9ee9ff 50%), linear-gradient(135deg, #9ee9ff 50%, transparent 50%);
+    background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat:no-repeat;
+    padding-right:38px;
+  }
+  #orcamentoForm select option,
+  #orcamentoForm select optgroup{
+    background-color:#0f1525;
+    color:#fff;
+  }
+  #orcamentoForm select option:checked,
+  #orcamentoForm select option:hover{
+    background-color:#15324a;
+    color:#fff;
+  }
+
+  /* Cidade/UF: empilha quando o card aperta */
+  #orcamentoForm .field .city-uf{display:flex;gap:8px;min-width:0}
+  #orcamentoForm .field .city-uf input[name="cidade"]{flex:1;min-width:0}
+  #orcamentoForm .field .city-uf input[name="uf"]{width:72px;flex:none;text-transform:uppercase;text-align:center}
+
+  /* Radio group: tipo de imóvel */
+  #orcamentoForm .radio-group{
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0,1fr));
+    gap:10px;
+  }
+  #orcamentoForm .radio-group label{
+    display:flex;flex-direction:column;align-items:flex-start;gap:4px;
+    padding:14px 14px;border:1px solid var(--border);border-radius:14px;
+    background:rgba(255,255,255,.03);cursor:pointer;
+    transition:border-color .18s ease, background .18s ease, transform .18s ease;
+    min-width:0;
+  }
+  #orcamentoForm .radio-group label span{font-weight:700;color:#fff;font-size:.92rem}
+  #orcamentoForm .radio-group label small{color:var(--text-dim);font-size:.72rem}
+  #orcamentoForm .radio-group input[type="radio"]{display:none}
+  #orcamentoForm .radio-group label:has(input:checked){
+    border-color:rgba(0,212,255,.55);
+    background:rgba(0,212,255,.08);
+    box-shadow:0 0 0 3px rgba(0,212,255,.10);
+  }
+
+  @media (max-width: 720px){
+    #orcamentoForm{padding:26px 22px}
+    #orcamentoForm .form-grid{grid-template-columns:1fr;gap:14px}
+    #orcamentoForm .radio-group{grid-template-columns:1fr}
+  }
+
+  /* Scrollbar customizada do card "Por que fechar com a Prolans?" */
+  .why-scroll{scrollbar-width:thin;scrollbar-color:rgba(0,212,255,.45) transparent}
+  .why-scroll::-webkit-scrollbar{width:6px}
+  .why-scroll::-webkit-scrollbar-track{background:transparent}
+  .why-scroll::-webkit-scrollbar-thumb{background:linear-gradient(180deg, rgba(0,212,255,.55), rgba(124,92,255,.55));border-radius:99px}
+  .why-scroll::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg, rgba(0,212,255,.85), rgba(124,92,255,.85))}
+
+  /* Em telas baixas, reduz ainda mais o card para nunca exceder a viewport */
+  @media (max-height: 820px){
+    .why-prolans h3{font-size:1.05rem !important}
+    .why-prolans .why-item p{font-size:.74rem !important}
+  }
+  @media (max-width: 980px){
+    aside{position:static !important;max-height:none !important}
+    .why-scroll{overflow:visible !important}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="fx-particles"></canvas>
+<div id="fx-progress"></div>
+
+<header class="header">
+  <div class="container">
+    <a class="logo" href="index.html">
+      <span class="logo-mark has-img"><img src="assets/img/logo-prolans.png" alt="Prolans" /></span>
+      Prolans
+    </a>
+    <nav class="nav">
+      <a href="index.html">Início</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="servicos.html">Serviços</a>
+      <a href="produtos.html">Produtos</a>
+      <a href="planos.html">Signature+</a>
+      <a href="blog.html">Blog</a>
+      <a href="faq.html">FAQ</a>
+      <a href="contato.html">Contato</a>
+    </nav>
+    <div class="header-cta">
+      <a class="btn btn-ghost btn-sm" href="area-cliente.html">Área do Cliente</a>
+      <a class="btn btn-primary btn-sm magnetic" href="orcamento.html">Solicitar Orçamento</a>
+      <button class="mobile-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<section class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">Início</a> · Orçamento</div>
+    <span class="hud-tag">SOLICITAÇÃO ONLINE</span>
+    <h1 style="margin-top:14px">Preencha e <span class="gradient-text">envie no WhatsApp</span></h1>
+    <p>Envio Automático para nosso atendimento.</p>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container">
+    <div class="grid grid-2" style="gap:36px;align-items:start">
+
+      <form id="orcamentoForm" class="card">
+        <h3 style="margin-bottom:6px">Dados do projeto</h3>
+        <p class="muted" style="margin-bottom:24px;font-size:.95rem">Quanto mais detalhes, mais precisa será nossa proposta.</p>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>Nome completo *</label>
+            <input type="text" name="nome" required placeholder="Seu nome" />
+          </div>
+          <div class="field">
+            <label>WhatsApp *</label>
+            <input type="tel" name="telefone" data-mask="phone" required placeholder="(00) 00000-0000" />
+          </div>
+          <div class="field full">
+            <label>E-mail</label>
+            <input type="email" name="email" placeholder="voce@email.com" />
+          </div>
+          <div class="field">
+            <label>CEP</label>
+            <input type="text" name="cep" data-mask="cep" placeholder="00000-000" />
+            <span class="hint">Buscamos seu endereço automaticamente</span>
+          </div>
+          <div class="field">
+            <label>Número</label>
+            <input type="text" name="numero" placeholder="123" />
+          </div>
+          <div class="field full">
+            <label>Rua</label>
+            <input type="text" name="rua" placeholder="-" />
+          </div>
+          <div class="field">
+            <label>Bairro</label>
+            <input type="text" name="bairro" />
+          </div>
+          <div class="field">
+            <label>Cidade / UF</label>
+            <div class="city-uf">
+              <input type="text" name="cidade" placeholder="Cidade" />
+              <input type="text" name="uf" maxlength="2" placeholder="UF" />
+            </div>
+          </div>
+
+          <div class="field full">
+            <label>Tipo de imóvel *</label>
+            <div class="radio-group">
+              <label><input type="radio" name="imovel" value="casa" required checked /><span>?? Casa</span><small>Residencial</small></label>
+              <label><input type="radio" name="imovel" value="condominio" /><span>?? Condomínio</span><small>Multi-unidade</small></label>
+              <label><input type="radio" name="imovel" value="empresa" /><span>?? Empresa</span><small>Comercial</small></label>
+            </div>
+          </div>
+
+          <div class="field full">
+            <label>Categoria do serviço *</label>
+            <select name="servico" required>
+              <option value="">Selecione.</option>
+              <option value="cftv">Câmeras de Segurança (CFTV)</option>
+              <option value="alarme">Alarmes</option>
+              <option value="acesso">Controle de Acesso</option>
+              <option value="fechadura">Fechaduras Digitais</option>
+              <option value="portao">Portão Eletrônico</option>
+              <option value="automacao">Automação Residencial / Comercial</option>
+              <option value="rede">Rede e Internet</option>
+              <option value="interfone">Interfone</option>
+              <option value="manutencao">Manutenção</option>
+            </select>
+          </div>
+
+          <div id="subOptions" class="form-grid" style="grid-column:1/-1;display:contents"></div>
+
+          <div class="field full">
+            <label>Observações</label>
+            <textarea name="observacoes" placeholder="Ex.: 4 câmeras (frente, fundos, garagem, sala), gostaria de gravação em nuvem..."></textarea>
+          </div>
+
+          <div class="field full">
+            <label>Informar Disponibilidade para Visita Técnica (Opcional)</label>
+            <input type="datetime-local" name="agendamento" />
+            <span class="hint">Os horários podem não estar disponíveis, consultar atendente no WhatsApp.</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-block magnetic" type="submit" style="margin-top:24px">
+          Enviar e abrir no WhatsApp
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+        <p class="muted" style="font-size:.82rem;text-align:center;margin-top:12px">Ao enviar, você concorda em receber contato pelo WhatsApp. Seus dados são armazenados apenas para nosso atendimento.</p>
+      </form>
+
+      <aside style="position:sticky;top:100px;display:flex;flex-direction:column;gap:14px;max-height:calc(100vh - 120px)">
+        <div class="card why-prolans" style="padding:22px 22px 18px;position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:0;flex:1">
+          <div style="position:absolute;inset:-1px;background:radial-gradient(800px 240px at 100% 0%, rgba(0,212,255,.18), transparent 60%), radial-gradient(600px 200px at 0% 100%, rgba(124,92,255,.14), transparent 60%);pointer-events:none;border-radius:inherit"></div>
+
+          <div style="position:relative;flex-shrink:0;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06)">
+            <span class="hud-tag" style="display:inline-flex;align-items:center;gap:6px;font-size:.66rem">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/></svg>
+              CONFIANÇA · QUALIDADE · PAZ
+            </span>
+            <h3 style="margin:8px 0 4px;font-size:1.12rem;line-height:1.25">Por que fechar com a <span class="gradient-text">Prolans</span>?</h3>
+            <p class="muted" style="font-size:.78rem;line-height:1.5;margin:0">Mais que comparar preços - é confiança, qualidade e proteger o que realmente importa.</p>
+          </div>
+
+          <div class="why-scroll" style="position:relative;overflow-y:auto;padding:14px 4px 4px 0;margin-right:-4px;flex:1;min-height:0">
+            <div style="display:grid;gap:11px">
+              <div class="why-item" style="display:flex;gap:10px;align-items:flex-start">
+                <span style="flex-shrink:0;width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:rgba(0,212,255,.10);border:1px solid rgba(0,212,255,.25);color:#9ee9ff">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                </span>
+                <div style="min-width:0">
+                  <strong style="color:#fff;font-size:.85rem;display:block;line-height:1.25">Análise personalizada</strong>
+                  <p class="muted" style="font-size:.76rem;line-height:1.5;margin:2px 0 0">Entendemos sua necessidade antes de indicar. Você não gasta a mais - nem fica vulnerável.</p>
+                </div>
+              </div>
+
+              <div class="why-item" style="display:flex;gap:10px;align-items:flex-start">
+                <span style="flex-shrink:0;width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:rgba(124,92,255,.10);border:1px solid rgba(124,92,255,.30);color:#b6a5ff">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a4 4 0 0 0 5 5L17 14l3 3a2 2 0 0 1-3 3l-3-3-2.7 2.7a4 4 0 0 0-5-5L9 12 6 9a2 2 0 0 1 3-3l3 3 2.7-2.7z"/></svg>
+                </span>
+                <div style="min-width:0">
+                  <strong style="color:#fff;font-size:.85rem;display:block;line-height:1.25">Padrão de execução</strong>
+                  <p class="muted" style="font-size:.76rem;line-height:1.5;margin:2px 0 0">Organização, acabamento e planejamento. Funciona hoje e continua funcionando com qualidade.</p>
+                </div>
+              </div>
+
+              <div class="why-item" style="display:flex;gap:10px;align-items:flex-start">
+                <span style="flex-shrink:0;width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:rgba(0,212,255,.10);border:1px solid rgba(0,212,255,.25);color:#9ee9ff">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </span>
+                <div style="min-width:0">
+                  <strong style="color:#fff;font-size:.85rem;display:block;line-height:1.25">Suporte contínuo</strong>
+                  <p class="muted" style="font-size:.76rem;line-height:1.5;margin:2px 0 0">Disponíveis para manutenção, ajustes e melhorias sempre que precisar.</p>
+                </div>
+              </div>
+
+              <div class="why-item" style="display:flex;gap:10px;align-items:flex-start">
+                <span style="flex-shrink:0;width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:rgba(124,92,255,.10);border:1px solid rgba(124,92,255,.30);color:#b6a5ff">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-8h6v8"/></svg>
+                </span>
+                <div style="min-width:0">
+                  <strong style="color:#fff;font-size:.85rem;display:block;line-height:1.25">Investimento que dura</strong>
+                  <p class="muted" style="font-size:.76rem;line-height:1.5;margin:2px 0 0">Durabilidade, eficiência e expansão - acompanha o crescimento da sua casa ou empresa.</p>
+                </div>
+              </div>
+
+              <div style="margin-top:6px;padding:12px 14px;border-radius:11px;background:linear-gradient(135deg, rgba(0,212,255,.08), rgba(124,92,255,.08));border:1px solid rgba(0,212,255,.25)">
+                <p style="font-size:.78rem;line-height:1.5;color:var(--text);margin:0">Construímos <strong style="color:#fff">relações de confiança</strong>. Cada serviço carrega o compromisso de proteger, facilitar e trazer tranquilidade.</p>
+                <p style="font-size:.74rem;line-height:1.45;color:var(--text-dim);margin:6px 0 0">Não se trata apenas de tecnologia - é <strong style="color:#9ee9ff">segurança, confiança e paz de espírito</strong>.</p>
+              </div>
+            </div>
+          </div>
+
+          <p style="position:relative;margin:10px 0 0;font-family:var(--font-mono, 'JetBrains Mono', monospace);font-size:.7rem;color:var(--text-dim);text-align:center;letter-spacing:.5px;flex-shrink:0;padding-top:10px;border-top:1px solid rgba(255,255,255,.06)">
+            <span class="gradient-text" style="font-weight:700">Prolans</span> · protegendo o presente, garantindo o futuro
+          </p>
+        </div>
+
+        <div class="card" style="padding:14px 18px;display:flex;align-items:center;gap:14px;flex-shrink:0">
+          <span style="flex-shrink:0;width:34px;height:34px;display:grid;place-items:center;border-radius:9px;background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.30);color:#25d366">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.7-1-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.6.7.3 1.3.5 1.8.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.4z"/></svg>
+          </span>
+          <div style="min-width:0;flex:1">
+            <strong style="color:#fff;font-size:.86rem;display:block;line-height:1.2">Resposta rápida no WhatsApp</strong>
+            <p class="muted" style="font-size:.74rem;line-height:1.4;margin:2px 0 0">Visita técnica gratuita · Sem compromisso</p>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="index.html"><span class="logo-mark has-img"><img src="assets/img/logo-prolans.png" alt="Prolans" /></span> Prolans</a>
+        <p>Prolans Segurança e Tecnologia · Teresópolis/RJ. Protegendo o presente, garantindo o futuro.</p>
+      </div>
+      <div><h4>Empresa</h4><ul><li><a href="sobre.html">Sobre</a></li><li><a href="planos.html">Signature+</a></li><li><a href="blog.html">Blog</a></li></ul></div>
+      <div><h4>Serviços</h4><ul><li><a href="servicos.html#cftv">CFTV</a></li><li><a href="servicos.html#alarme">Alarmes</a></li><li><a href="servicos.html#automacao">Automação</a></li></ul></div>
+      <div><h4>Suporte</h4><ul><li><a href="area-cliente.html">Área do Cliente</a></li><li><a href="faq.html">FAQ</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Prolans Segurança e Tecnologia · CNPJ 38.408.286/0001-11</span>
+      <span>Praça Baltazar da Silveira, 90 - Várzea, Teresópolis/RJ · contato@prolans.com.br</span>
+    </div>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/prolans" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.7-1-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.6.7.3 1.3.5 1.8.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.4zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg></a>
+
+<script src="assets/js/main.js"></script>
+<script src="assets/js/tech-fx.js"></script>
+<script src="assets/js/orcamento.js"></script>
+</body>
+</html>

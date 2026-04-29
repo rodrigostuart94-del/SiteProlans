@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; script-src 'self' 'unsafe-inline'; connect-src 'self' https://viacep.com.br; frame-src https://www.google.com https://maps.google.com; base-uri 'self'; form-action 'self' https://wa.me; object-src 'none'; upgrade-insecure-requests" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta http-equiv="X-Content-Type-Options" content="nosniff" />
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()" />
+<title>Blog — Prolans Segurança e Tecnologia</title>
+<meta name="description" content="Conteúdos sobre segurança eletrônica, automação, redes, CFTV e tecnologia para sua casa, comércio ou condomínio." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="assets/img/logo-prolans.png" />
+<link rel="stylesheet" href="assets/css/styles.css" />
+<link rel="stylesheet" href="assets/css/tech.css" />
+<style>
+  .blog-card{padding:0;overflow:hidden;display:flex;flex-direction:column}
+  .blog-card .blog-cover{aspect-ratio:16/10;display:grid;place-items:center;position:relative;overflow:hidden}
+  .blog-card .blog-cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(7,11,22,.85));pointer-events:none}
+  .blog-card .blog-body{padding:22px 24px 26px;display:flex;flex-direction:column;gap:10px;flex:1}
+  .blog-card h3{margin:6px 0;font-size:1.18rem;line-height:1.3}
+  .blog-card .lede{color:var(--text-dim);font-size:.93rem;line-height:1.55}
+  .blog-card details{margin-top:6px;border-top:1px dashed rgba(255,255,255,.08);padding-top:12px}
+  .blog-card details[open]{padding-bottom:6px}
+  .blog-card details summary{list-style:none;cursor:pointer;color:var(--primary);font-weight:600;font-size:.92rem;display:inline-flex;align-items:center;gap:8px;user-select:none}
+  .blog-card details summary::-webkit-details-marker{display:none}
+  .blog-card details summary::after{content:"→";transition:transform .25s ease;display:inline-block}
+  .blog-card details[open] summary::after{transform:rotate(90deg)}
+  .blog-card details .article-body{margin-top:14px;color:var(--text);font-size:.95rem;line-height:1.7}
+  .blog-card details .article-body p{margin:0 0 12px}
+  .blog-card details .article-body p:last-child{margin-bottom:0}
+  .blog-card details .article-body strong{color:#fff}
+  .blog-card details .article-cta{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+  .blog-meta{display:flex;gap:14px;color:var(--text-dim);font-size:.78rem;margin-top:auto;padding-top:8px;flex-wrap:wrap}
+  .blog-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.25);color:#9ee9ff;font-size:.7rem;letter-spacing:.5px;text-transform:uppercase;font-weight:700;width:max-content}
+  @media (max-width: 880px){
+    .blog-card h3{font-size:1.05rem}
+  }
+</style>
+</head>
+<body>
+<canvas id="fx-particles"></canvas>
+<div id="fx-progress"></div>
+
+<header class="header">
+  <div class="container">
+    <a class="logo" href="index.html"><span class="logo-mark has-img"><img src="assets/img/logo-prolans.png" alt="Prolans" /></span> Prolans</a>
+    <nav class="nav">
+      <a href="index.html">Início</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="servicos.html">Serviços</a>
+      <a href="produtos.html">Produtos</a>
+      <a href="planos.html">Signature+</a>
+      <a href="blog.html">Blog</a>
+      <a href="faq.html">FAQ</a>
+      <a href="contato.html">Contato</a>
+    </nav>
+    <div class="header-cta">
+      <a class="btn btn-ghost btn-sm" href="area-cliente.html">Área do Cliente</a>
+      <a class="btn btn-primary btn-sm magnetic" href="orcamento.html">Solicitar Orçamento</a>
+      <button class="mobile-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<section class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">Início</a> · Blog</div>
+    <span class="eyebrow">Conteúdos Prolans</span>
+    <h1 style="margin-top:14px">Blog <span class="gradient-text">Prolans</span></h1>
+    <p>Tudo o que você precisa saber sobre segurança, automação, redes e tecnologia — escrito por quem instala todos os dias.</p>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container">
+
+    <article class="card reveal" style="display:grid;grid-template-columns:1.2fr 1fr;gap:36px;align-items:center;padding:36px;margin-bottom:48px">
+      <div style="aspect-ratio:16/10;border-radius:var(--radius);background:radial-gradient(circle at 30% 30%, rgba(0,212,255,.28), rgba(15,21,37,1));display:grid;place-items:center;position:relative;overflow:hidden">
+        <svg width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="1.3"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+      </div>
+      <div>
+        <span class="blog-tag">Em destaque · Residencial</span>
+        <h2 style="margin:14px 0">Sua casa está realmente segura? Descubra os sinais que ninguém te conta</h2>
+        <p class="muted">Você tranca portas, fecha janelas e acredita que está tudo certo. Mas a verdade é que segurança não é apenas sobre fechar a casa — é sobre prever riscos que você nem percebe.</p>
+        <details style="margin-top:14px">
+          <summary style="cursor:pointer;color:var(--primary);font-weight:700">Ler artigo completo →</summary>
+          <div class="article-body" style="margin-top:16px;line-height:1.7;color:var(--text)">
+            <p>Muitas residências hoje se tornam vulneráveis não por falta de cuidado, mas por <strong>excesso de rotina</strong>. Horários previsíveis, ausência durante o dia, iluminação externa fraca e falta de monitoramento são fatores que, juntos, criam oportunidades silenciosas para invasões.</p>
+            <p>Um ponto que poucos consideram é que invasores evitam locais com <strong>monitoramento visível</strong>. A presença de câmeras não é apenas para gravar — é um fator psicológico de dissuasão.</p>
+            <p>Outro detalhe importante é o <strong>posicionamento</strong>. Não adianta ter câmeras se elas não cobrem pontos estratégicos como entrada principal, garagem e áreas laterais.</p>
+            <p>A grande pergunta não é "minha casa é segura?", e sim:<br><strong>"Ela parece segura para quem está do lado de fora?"</strong></p>
+          </div>
+        </details>
+        <div style="display:flex;gap:14px;margin-top:18px;color:var(--text-dim);font-size:.85rem">
+          <span>Residencial</span>
+          <span>4 min de leitura</span>
+        </div>
+        <a class="btn btn-primary btn-sm magnetic" style="margin-top:18px" href="orcamento.html">Solicitar avaliação gratuita →</a>
+      </div>
+    </article>
+
+    <div class="grid grid-3">
+
+      <article class="card blog-card reveal">
+        <div class="blog-cover" style="background:radial-gradient(circle at 70% 30%, rgba(124,92,255,.28), rgba(15,21,37,1))">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#7c5cff" stroke-width="1.4"><path d="M5 12.55a11 11 0 0 1 14 0M1.4 9a16 16 0 0 1 21.2 0M8.5 16.4a6 6 0 0 1 7 0"/><circle cx="12" cy="20" r="1" fill="#7c5cff"/></svg>
+        </div>
+        <div class="blog-body">
+          <span class="blog-tag">Residencial · Home Office</span>
+          <h3>Internet lenta em casa? O problema pode estar na sua estrutura, não no plano</h3>
+          <p class="lede">Você contrata um plano rápido, mas a internet continua travando. Isso acontece porque a velocidade contratada é apenas uma parte da equação.</p>
+          <details>
+            <summary>Ler artigo completo</summary>
+            <div class="article-body">
+              <p>O sinal Wi-Fi funciona como ondas. Ele sofre interferência de paredes, móveis, espelhos, eletrodomésticos e até outros roteadores próximos.</p>
+              <p>Além disso, muitas casas possuem apenas um roteador, geralmente instalado próximo à entrada — o que faz com que o sinal não alcance todos os cômodos com qualidade.</p>
+              <p>Outro erro comum é não utilizar a frequência correta (<strong>2.4GHz ou 5GHz</strong>), ou usar equipamentos que não suportam alta demanda de dispositivos conectados.</p>
+              <p>A solução está em um <strong>projeto de rede</strong>, com distribuição inteligente do sinal — muitas vezes utilizando sistemas <strong>Mesh</strong>.</p>
+              <p>Uma rede bem estruturada transforma completamente a experiência: <strong>sem travamentos, sem quedas, sem estresse.</strong></p>
+              <div class="article-cta"><a class="btn btn-primary btn-sm" href="orcamento.html">Quero um projeto de rede →</a></div>
+            </div>
+          </details>
+          <div class="blog-meta"><span>Redes &amp; Wi-Fi</span><span>3 min</span></div>
+        </div>
+      </article>
+
+      <article class="card blog-card reveal">
+        <div class="blog-cover" style="background:radial-gradient(circle at 30% 30%, rgba(0,212,255,.28), rgba(15,21,37,1))">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="1.4"><rect x="4" y="9" width="16" height="13" rx="2"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/><circle cx="12" cy="14.5" r="1.6" fill="#00d4ff"/><path d="M12 16v2.5"/></svg>
+        </div>
+        <div class="blog-body">
+          <span class="blog-tag">Residencial moderno</span>
+          <h3>Fechadura digital: tecnologia ou necessidade? A verdade pode te surpreender</h3>
+          <p class="lede">A maioria das pessoas só percebe a importância de uma fechadura digital quando enfrenta um problema com chaves.</p>
+          <details>
+            <summary>Ler artigo completo</summary>
+            <div class="article-body">
+              <p>Perder a chave, esquecer dentro de casa ou precisar trocar fechadura após alguém ter acesso são situações comuns — e <strong>evitáveis</strong>.</p>
+              <p>A fechadura digital resolve isso ao eliminar a dependência de chave física. Mas o grande diferencial está no <strong>controle</strong>.</p>
+              <p>Você pode criar acessos temporários, monitorar entradas e até integrar com automação da casa.</p>
+              <p>Outro ponto importante é a segurança. Diferente do que muitos pensam, fechaduras digitais possuem sistemas avançados contra invasões, como <strong>bloqueio por tentativas erradas</strong> e alertas de uso.</p>
+              <p>Não se trata apenas de conforto. É sobre <strong>controle, praticidade e segurança</strong> no dia a dia.</p>
+              <div class="article-cta"><a class="btn btn-primary btn-sm" href="produtos.html#fechadura">Ver fechaduras Intelbras →</a></div>
+            </div>
+          </details>
+          <div class="blog-meta"><span>Fechaduras</span><span>3 min</span></div>
+        </div>
+      </article>
+
+      <article class="card blog-card reveal">
+        <div class="blog-cover" style="background:radial-gradient(circle at 70% 30%, rgba(255,89,89,.22), rgba(15,21,37,1))">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ff8a8a" stroke-width="1.4"><path d="M12 2v4M4.9 4.9l2.8 2.8M2 12h4M4.9 19.1l2.8-2.8M12 22v-4M19.1 19.1l-2.8-2.8M22 12h-4M19.1 4.9l-2.8 2.8"/><circle cx="12" cy="12" r="4"/></svg>
+        </div>
+        <div class="blog-body">
+          <span class="blog-tag">Residencial · Comércio</span>
+          <h3>Alarme ou câmera: qual protege mais? A resposta não é o que você espera</h3>
+          <p class="lede">Essa dúvida é extremamente comum — e a resposta pode mudar totalmente sua forma de pensar segurança.</p>
+          <details>
+            <summary>Ler artigo completo</summary>
+            <div class="article-body">
+              <p>O <strong>alarme</strong> tem um papel imediato: ele reage. Ao detectar uma invasão, dispara som e alerta.</p>
+              <p>Já a <strong>câmera</strong> tem um papel contínuo: ela observa, registra e permite acompanhamento em tempo real.</p>
+              <p>O problema é escolher apenas um. Sem alarme, você pode descobrir uma invasão tarde demais. Sem câmera, você pode não saber o que aconteceu.</p>
+              <p>A proteção real está na <strong>integração dos dois sistemas</strong>. Um previne e reage, o outro monitora e registra.</p>
+              <p>Segurança eficiente não é sobre escolher… é sobre <strong>combinar estratégias</strong>.</p>
+              <div class="article-cta"><a class="btn btn-primary btn-sm" href="servicos.html">Ver soluções integradas →</a></div>
+            </div>
+          </details>
+          <div class="blog-meta"><span>Segurança</span><span>3 min</span></div>
+        </div>
+      </article>
+
+      <article class="card blog-card reveal">
+        <div class="blog-cover" style="background:radial-gradient(circle at 30% 30%, rgba(124,92,255,.28), rgba(15,21,37,1))">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#b6a5ff" stroke-width="1.4"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 14h2M7 17h2M13 14h4M13 17h4"/></svg>
+        </div>
+        <div class="blog-body">
+          <span class="blog-tag">Empresários</span>
+          <h3>Os erros de segurança que estão deixando seu comércio vulnerável</h3>
+          <p class="lede">Muitos empresários acreditam que apenas instalar câmeras resolve o problema de segurança. Mas existem falhas silenciosas que comprometem todo o sistema.</p>
+          <details>
+            <summary>Ler artigo completo</summary>
+            <div class="article-body">
+              <p>Um dos principais erros é o <strong>posicionamento inadequado</strong> das câmeras. Áreas críticas como caixa, estoque e entradas muitas vezes ficam mal cobertas.</p>
+              <p>Outro problema é a <strong>falta de controle de acesso</strong>. Funcionários, fornecedores e terceiros circulam sem registro, o que dificulta qualquer rastreabilidade.</p>
+              <p>Além disso, sistemas <strong>sem manutenção</strong> podem falhar sem aviso, deixando o local vulnerável.</p>
+              <p>Segurança empresarial exige planejamento, não improviso. Quem investe da forma correta não só protege o patrimônio, mas também <strong>melhora a gestão do negócio</strong>.</p>
+              <div class="article-cta"><a class="btn btn-primary btn-sm" href="planos.html">Conheça o Signature+ →</a></div>
+            </div>
+          </details>
+          <div class="blog-meta"><span>Empresas</span><span>3 min</span></div>
+        </div>
+      </article>
+
+      <article class="card blog-card reveal">
+        <div class="blog-cover" style="background:radial-gradient(circle at 70% 30%, rgba(0,212,255,.28), rgba(15,21,37,1))">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="1.4"><circle cx="12" cy="13" r="3"/><path d="M3 17V8a2 2 0 0 1 2-2h3l2-2h4l2 2h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        </div>
+        <div class="blog-body">
+          <span class="blog-tag">Residencial · Empresas</span>
+          <h3>Câmeras Wi-Fi ou com cabo: qual é a melhor escolha para você?</h3>
+          <p class="lede">Essa escolha depende mais do ambiente do que do produto.</p>
+          <details>
+            <summary>Ler artigo completo</summary>
+            <div class="article-body">
+              <p>As câmeras <strong>Wi-Fi</strong> são práticas, rápidas de instalar e ideais para locais menores ou com estrutura limitada.</p>
+              <p>Já as câmeras com <strong>cabeamento</strong> oferecem maior estabilidade, qualidade de imagem e menor risco de interferência.</p>
+              <p>Outro fator importante é a <strong>quantidade de câmeras</strong>. Sistemas maiores tendem a funcionar melhor com cabeamento estruturado.</p>
+              <p>A escolha errada pode gerar dor de cabeça no futuro. Por isso, o ideal não é escolher o mais barato ou o mais moderno — é escolher o <strong>mais adequado para sua realidade</strong>.</p>
+              <div class="article-cta"><a class="btn btn-primary btn-sm" href="orcamento.html">Quero ajuda para escolher →</a></div>
+            </div>
+          </details>
+          <div class="blog-meta"><span>CFTV</span><span>3 min</span></div>
+        </div>
+      </article>
+
+      <article class="card blog-card reveal">
+        <div class="blog-cover" style="background:radial-gradient(circle at 30% 30%, rgba(124,92,255,.28), rgba(15,21,37,1))">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#b6a5ff" stroke-width="1.4"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/><circle cx="12" cy="14" r="1.2" fill="#b6a5ff"/></svg>
+        </div>
+        <div class="blog-body">
+          <span class="blog-tag">Residencial moderno · Alto padrão</span>
+          <h3>Automação residencial: luxo desnecessário ou evolução inevitável?</h3>
+          <p class="lede">Automação já não é mais coisa de filme. Ela está presente em casas reais — e mudando completamente a forma como as pessoas vivem.</p>
+          <details>
+            <summary>Ler artigo completo</summary>
+            <div class="article-body">
+              <p>Controlar luzes, portões, câmeras e até eletrodomésticos pelo celular ou por voz não é apenas conforto. É <strong>eficiência</strong>.</p>
+              <p>Você pode programar horários, simular presença quando estiver fora, economizar energia e ter <strong>controle total</strong> da sua casa de qualquer lugar.</p>
+              <p>A automação também contribui diretamente para a segurança, integrando sistemas e permitindo respostas rápidas a qualquer situação.</p>
+              <p>Mais do que luxo, é uma <strong>nova forma de viver</strong>.</p>
+              <div class="article-cta"><a class="btn btn-primary btn-sm" href="produtos.html#automacao">Ver soluções de automação →</a></div>
+            </div>
+          </details>
+          <div class="blog-meta"><span>Automação</span><span>3 min</span></div>
+        </div>
+      </article>
+
+      <article class="card blog-card reveal">
+        <div class="blog-cover" style="background:radial-gradient(circle at 70% 30%, rgba(0,212,255,.28), rgba(15,21,37,1))">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#9ee9ff" stroke-width="1.4"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-2.4 2.5-2.5z"/></svg>
+        </div>
+        <div class="blog-body">
+          <span class="blog-tag">Condomínios · Empresas</span>
+          <h3>Por que a manutenção preventiva pode salvar seu sistema (e seu dinheiro)</h3>
+          <p class="lede">A maioria dos sistemas de segurança só recebe atenção quando para de funcionar.</p>
+          <details>
+            <summary>Ler artigo completo</summary>
+            <div class="article-body">
+              <p>O problema é que, quando isso acontece, o <strong>prejuízo já pode ter ocorrido</strong>.</p>
+              <p>A manutenção preventiva garante que tudo esteja funcionando corretamente <strong>antes de surgir um problema</strong>.</p>
+              <p>Cabos, conexões, equipamentos e configurações precisam ser verificados regularmente. Além disso, sistemas atualizados funcionam melhor e duram mais.</p>
+              <p>É como um carro: <strong>esperar quebrar sempre sai mais caro</strong>.</p>
+              <div class="article-cta"><a class="btn btn-primary btn-sm" href="planos.html">Plano Signature com manutenção →</a></div>
+            </div>
+          </details>
+          <div class="blog-meta"><span>Manutenção</span><span>2 min</span></div>
+        </div>
+      </article>
+
+      <article class="card blog-card reveal">
+        <div class="blog-cover" style="background:radial-gradient(circle at 30% 30%, rgba(124,92,255,.28), rgba(15,21,37,1))">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#b6a5ff" stroke-width="1.4"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 21V12h6v9"/><circle cx="12" cy="8" r="1.4" fill="#b6a5ff"/></svg>
+        </div>
+        <div class="blog-body">
+          <span class="blog-tag">Empresas · Condomínios</span>
+          <h3>Controle de acesso: o detalhe que separa empresas seguras de empresas vulneráveis</h3>
+          <p class="lede">Saber quem entra e sai de um ambiente é essencial para qualquer tipo de segurança.</p>
+          <details>
+            <summary>Ler artigo completo</summary>
+            <div class="article-body">
+              <p>Sem controle de acesso, qualquer pessoa pode circular sem registro — e isso gera <strong>riscos invisíveis</strong>.</p>
+              <p>Com sistemas modernos, é possível registrar entradas, limitar acessos e organizar fluxos.</p>
+              <p><strong>Biometria, senha e reconhecimento facial</strong> tornam o processo rápido e seguro.</p>
+              <p>Mais do que segurança, o controle de acesso traz <strong>organização e profissionalismo</strong>.</p>
+              <div class="article-cta"><a class="btn btn-primary btn-sm" href="produtos.html#acesso">Ver controle de acesso →</a></div>
+            </div>
+          </details>
+          <div class="blog-meta"><span>Controle de Acesso</span><span>2 min</span></div>
+        </div>
+      </article>
+
+      <article class="card blog-card reveal">
+        <div class="blog-cover" style="background:radial-gradient(circle at 70% 30%, rgba(0,212,255,.28), rgba(15,21,37,1))">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="1.4"><path d="M3 21V8l9-5 9 5v13"/><path d="M3 13h18"/><path d="M9 21v-8M15 21v-8"/></svg>
+        </div>
+        <div class="blog-body">
+          <span class="blog-tag">Residencial</span>
+          <h3>Portão eletrônico dando problema? Entenda o que pode estar errado</h3>
+          <p class="lede">Portões automáticos precisam de mais do que apenas um motor.</p>
+          <details>
+            <summary>Ler artigo completo</summary>
+            <div class="article-body">
+              <p><strong>Alinhamento, instalação correta, regulagem e qualidade dos componentes</strong> fazem toda a diferença.</p>
+              <p>Muitos problemas como travamentos, lentidão e falhas intermitentes são causados por <strong>instalação inadequada</strong>.</p>
+              <p>Outro ponto é a falta de manutenção, que desgasta o sistema ao longo do tempo.</p>
+              <p>Um portão bem instalado e ajustado funciona de forma <strong>suave, segura e durável</strong>.</p>
+              <p>No final, o barato pode sair caro — principalmente quando se trata de <strong>acesso à sua casa</strong>.</p>
+              <div class="article-cta"><a class="btn btn-primary btn-sm" href="orcamento.html">Solicitar visita técnica →</a></div>
+            </div>
+          </details>
+          <div class="blog-meta"><span>Portões</span><span>2 min</span></div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="cta-banner reveal">
+      <h2>Quer receber nossos <span class="gradient-text">conteúdos</span>?</h2>
+      <p>Inscreva-se na newsletter Prolans e receba dicas mensais de segurança e tecnologia.</p>
+      <form style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;max-width:480px;margin:0 auto" onsubmit="event.preventDefault();window.toast('Inscrição confirmada! Em breve você receberá novidades.','success');this.reset();">
+        <input type="email" placeholder="seu@email.com" required style="background:rgba(255,255,255,.05);border:1px solid var(--border);padding:14px 18px;border-radius:12px;color:#fff;flex:1;min-width:220px;outline:none">
+        <button class="btn btn-primary" type="submit">Inscrever-se</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="index.html"><span class="logo-mark has-img"><img src="assets/img/logo-prolans.png" alt="Prolans" /></span> Prolans</a>
+        <p>Prolans Segurança e Tecnologia · Teresópolis/RJ. Protegendo o presente, garantindo o futuro.</p>
+      </div>
+      <div><h4>Empresa</h4><ul><li><a href="sobre.html">Sobre</a></li><li><a href="planos.html">Signature+</a></li></ul></div>
+      <div><h4>Serviços</h4><ul><li><a href="servicos.html">Todos</a></li></ul></div>
+      <div><h4>Suporte</h4><ul><li><a href="area-cliente.html">Área do Cliente</a></li><li><a href="faq.html">FAQ</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© <span id="year"></span> Prolans Segurança e Tecnologia · CNPJ 38.408.286/0001-11</span><span>Praça Baltazar da Silveira, 90 — Várzea, Teresópolis/RJ · contato@prolans.com.br</span></div>
+  </div>
+</footer>
+<a class="wa-float" href="https://wa.me/prolans" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.7-1-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.6.7.3 1.3.5 1.8.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.4zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg></a>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/tech-fx.js"></script>
+</body>
+</html>

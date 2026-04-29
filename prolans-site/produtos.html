@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; script-src 'self' 'unsafe-inline'; connect-src 'self' https://viacep.com.br; frame-src https://www.google.com https://maps.google.com; base-uri 'self'; form-action 'self' https://wa.me; object-src 'none'; upgrade-insecure-requests" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta http-equiv="X-Content-Type-Options" content="nosniff" />
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()" />
+<title>Produtos - Prolans</title>
+<meta name="description" content="Catálogo de produtos Prolans: câmeras, fechaduras, alarmes, automação e muito mais." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="assets/img/logo-prolans.png" />
+<link rel="stylesheet" href="assets/css/styles.css" />
+<link rel="stylesheet" href="assets/css/tech.css" />
+</head>
+<body>
+<canvas id="fx-particles"></canvas>
+<div id="fx-progress"></div>
+
+<header class="header">
+  <div class="container">
+    <a class="logo" href="index.html"><span class="logo-mark has-img"><img src="assets/img/logo-prolans.png" alt="Prolans" /></span> Prolans</a>
+    <nav class="nav">
+      <a href="index.html">Início</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="servicos.html">Serviços</a>
+      <a href="produtos.html">Produtos</a>
+      <a href="planos.html">Signature+</a>
+      <a href="blog.html">Blog</a>
+      <a href="faq.html">FAQ</a>
+      <a href="contato.html">Contato</a>
+    </nav>
+    <div class="header-cta">
+      <a class="btn btn-ghost btn-sm" href="area-cliente.html">Área do Cliente</a>
+      <a class="btn btn-primary btn-sm magnetic" href="orcamento.html">Solicitar Orçamento</a>
+      <button class="mobile-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<section class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">Início</a> · Produtos</div>
+    <span class="eyebrow">Catálogo</span>
+    <h1 style="margin-top:14px">Produtos <span class="gradient-text">Prolans</span></h1>
+    <p>Catálogo Intelbras - Prolans é <strong style="color:var(--primary)">revenda autorizada</strong>. Equipamentos originais com garantia de fábrica e instalação certificada da nossa equipe.</p>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container">
+    <div class="filters" id="filters">
+      <button class="filter-chip active" data-cat="all">Todos</button>
+      <button class="filter-chip" data-cat="cftv">CFTV</button>
+      <button class="filter-chip" data-cat="dvr">Gravadores</button>
+      <button class="filter-chip" data-cat="fechadura">Fechaduras</button>
+      <button class="filter-chip" data-cat="acesso">Controle de Acesso</button>
+      <button class="filter-chip" data-cat="automacao">Automação Smart</button>
+      <button class="filter-chip" data-cat="rede">Redes Wi-Fi</button>
+      <button class="filter-chip" data-cat="interfone">Interfones</button>
+    </div>
+
+    <div class="grid grid-4" id="productGrid"></div>
+
+    <div id="emptyState" style="display:none;text-align:center;padding:60px 20px;color:var(--text-muted)">Nenhum produto nesta categoria ainda.</div>
+  </div>
+</section>
+
+<!-- Modal Simulação Compra -->
+<div id="simModal" style="display:none;position:fixed;inset:0;background:rgba(6,9,18,.85);backdrop-filter:blur(8px);z-index:300;align-items:center;justify-content:center;padding:24px">
+  <div class="card" style="max-width:460px;width:100%;padding:32px;background:var(--surface-2)">
+    <h3 id="simTitle" style="margin-bottom:8px"></h3>
+    <p class="muted" style="margin-bottom:18px">Simule a compra com instalação inclusa.</p>
+    <div class="sim-row"><span class="muted">Produto</span><span id="simProduto"></span></div>
+    <div class="sim-row"><span class="muted">Instalação</span><span id="simInstal"></span></div>
+    <div class="sim-row"><span class="muted">Subtotal</span><span id="simSub"></span></div>
+    <div class="sim-total">
+      <div>
+        <div class="label">Total</div>
+        <div class="value" id="simTotal"></div>
+      </div>
+      <div style="text-align:right">
+        <div class="label">12x sem juros</div>
+        <div style="color:var(--primary);font-weight:700" id="simParc"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:24px">
+      <button class="btn btn-ghost btn-block" id="simClose">Fechar</button>
+      <a class="btn btn-primary btn-block" id="simWhats" target="_blank" rel="noopener">Pedir pelo WhatsApp</a>
+    </div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="cta-banner reveal">
+      <h2>Precisa de uma <span class="gradient-text">solução completa</span>?</h2>
+      <p>Trabalhamos com pacotes que incluem produto, instalação, configuração e suporte por um valor único.</p>
+      <a class="btn btn-primary" href="orcamento.html">Solicitar Orçamento Personalizado</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="index.html"><span class="logo-mark has-img"><img src="assets/img/logo-prolans.png" alt="Prolans" /></span> Prolans</a>
+        <p>Prolans Segurança e Tecnologia · Teresópolis/RJ. Protegendo o presente, garantindo o futuro.</p>
+      </div>
+      <div><h4>Empresa</h4><ul><li><a href="sobre.html">Sobre nós</a></li><li><a href="planos.html">Signature+</a></li><li><a href="blog.html">Blog</a></li><li><a href="contato.html">Contato</a></li></ul></div>
+      <div><h4>Serviços</h4><ul><li><a href="servicos.html#cftv">CFTV</a></li><li><a href="servicos.html#alarme">Alarmes</a></li><li><a href="servicos.html#automacao">Automação</a></li></ul></div>
+      <div><h4>Suporte</h4><ul><li><a href="area-cliente.html">Área do Cliente</a></li><li><a href="orcamento.html">Orçamento</a></li><li><a href="faq.html">FAQ</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© <span id="year"></span> Prolans Segurança e Tecnologia · CNPJ 38.408.286/0001-11</span><span>Praça Baltazar da Silveira, 90 - Várzea, Teresópolis/RJ · contato@prolans.com.br</span></div>
+  </div>
+</footer>
+<a class="wa-float" href="https://wa.me/prolans" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.7-1-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.6.7.3 1.3.5 1.8.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.4zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg></a>
+
+<script src="assets/js/main.js"></script>
+<script src="assets/js/tech-fx.js"></script>
+<script>
+/* ==========================================================
+   Catálogo de Produtos - render dinâmico + filtros + simulação
+   ========================================================== */
+(function () {
+  // Ícones SVG reutilizáveis
+  const SVG_CAM     = '<svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M22 8l-6 4 6 4V8z"/></svg>';
+  const SVG_DVR     = '<svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="7" width="20" height="10" rx="1.5"/><circle cx="6" cy="12" r="1"/><circle cx="9" cy="12" r="1"/><path d="M14 11h6M14 13h4"/></svg>';
+  const SVG_LOCK    = '<svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="4" y="9" width="16" height="13" rx="2"/><circle cx="12" cy="14" r="2.5"/><path d="M12 16.5V19"/></svg>';
+  const SVG_FACE    = '<svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 4h4M16 4h4M4 20h4M16 20h4M4 4v4M20 4v4M4 16v4M20 16v4"/><circle cx="12" cy="12" r="3"/><path d="M9 14c1 1 2 1 3 1s2 0 3-1"/></svg>';
+  const SVG_INTER   = '<svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="6" y="2" width="12" height="20" rx="2"/><circle cx="12" cy="18" r="0.8"/></svg>';
+  const SVG_BELL    = '<svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>';
+  const SVG_PLUG    = '<svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="5" y="5" width="14" height="14" rx="2"/><circle cx="9" cy="12" r="0.8"/><circle cx="15" cy="12" r="0.8"/></svg>';
+  const SVG_CURTAIN = '<svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 4h18M5 4v16M9 4v16M13 4v16M17 4v16M21 4v16M3 20h18"/></svg>';
+  const SVG_LAMP    = '<svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 1 4 11l-1 2H9l-1-2A6 6 0 0 1 12 3z"/></svg>';
+  const SVG_SOLAR   = '<svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="8" r="3"/><path d="M12 1v2M12 13v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 8h2M21 8h2M4.2 11.8l1.4-1.4M18.4 4.2l1.4-1.4M6 18h12l-2 4H8z"/></svg>';
+  const SVG_ROUTER  = '<svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="13" width="18" height="6" rx="1.5"/><path d="M7 16h.01M11 16h.01"/><path d="M5 10a7 7 0 0 1 14 0"/><path d="M8.5 11a3.5 3.5 0 0 1 7 0"/></svg>';
+  const SVG_BULLET  = '<svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 12h4l4-4h6a3 3 0 0 1 3 3v4l-3 1H3z"/><circle cx="14" cy="13" r="2"/></svg>';
+  const SVG_DOME    = '<svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5 14a7 7 0 0 1 14 0v6H5z"/><circle cx="12" cy="14" r="2.5"/></svg>';
+
+  const PRODUCTS = [
+    // CÂMERAS WI-FI
+    { id: "p1",  cat: "cftv",     nome: "Câmera Wi-Fi IM9 + Full Color",       marca: "Intelbras", preco: 1213.12, instal: 180, badge: "Top",         icon: SVG_CAM },
+    { id: "p2",  cat: "cftv",     nome: "Câmera Wi-Fi IMX C (Branca ou Preta)", marca: "Intelbras", preco: 264.99,  instal: 150,                        icon: SVG_CAM },
+    { id: "p3",  cat: "cftv",     nome: "Câmera Wi-Fi IM7 S Full Color",       marca: "Intelbras", preco: 569.91,  instal: 180,                        icon: SVG_CAM },
+    // CÂMERAS BULLET
+    { id: "p4",  cat: "cftv",     nome: "Câmera de Segurança VHL 1120 D (Dome)",   marca: "Intelbras", preco: 122.90,  instal: 150, badge: "Custo-benef.", icon: SVG_DOME },
+    { id: "p5",  cat: "cftv",     nome: "Câmera de Segurança VHL 1120 B (Bullet)", marca: "Intelbras", preco: 132.90,  instal: 150,                        icon: SVG_BULLET },
+    // GRAVADORES (DVR)
+    { id: "p6",  cat: "dvr",      nome: "Gravador 04 canais MHDX 1304", marca: "Intelbras", preco: 554.90,  instal: 200,                       icon: SVG_DVR },
+    { id: "p7",  cat: "dvr",      nome: "Gravador 08 canais MHDX 1308", marca: "Intelbras", preco: 824.92,  instal: 250,                       icon: SVG_DVR },
+    { id: "p8",  cat: "dvr",      nome: "Gravador 16 canais MHDX 1316", marca: "Intelbras", preco: 1310.90, instal: 300, badge: "Profissional", icon: SVG_DVR },
+    // FECHADURAS DIGITAIS
+    { id: "p9",  cat: "fechadura", nome: "Fechadura Digital FD 1000",                 marca: "Intelbras", preco: 570.90,  instal: 300,                        icon: SVG_LOCK },
+    { id: "p10", cat: "fechadura", nome: "Fechadura Digital IFR 1001 + ICA 1001",     marca: "Intelbras", preco: 1030.24, instal: 400, badge: "Combo",       icon: SVG_LOCK },
+    { id: "p11", cat: "fechadura", nome: "Fechadura Digital IZY IFR 7000+",           marca: "Intelbras", preco: 2786.90, instal: 500, badge: "Premium",     icon: SVG_LOCK },
+    // CONTROLE DE ACESSO
+    { id: "p12", cat: "acesso", nome: "Controle de Acesso Facial SS 3531 MF Lite", marca: "Intelbras", preco: 961.99, instal: 500, badge: "Facial", icon: SVG_FACE },
+    // INTERFONES / VIDEOPORTEIROS / CAMPAINHAS
+    { id: "p13", cat: "interfone", nome: "Videoporteiro Smart IVW 3000+",        marca: "Intelbras", preco: 946.62, instal: 320, badge: "Smart", icon: SVG_INTER },
+    { id: "p14", cat: "interfone", nome: "Interfone Sem Fio TIS 5010",           marca: "Intelbras", preco: 629.90, instal: 250,                  icon: SVG_INTER },
+    { id: "p15", cat: "interfone", nome: "Campainha Sem Fio CIB 101 (Preta ou Branca)", marca: "Intelbras", preco: 106.90, instal: 80,            icon: SVG_BELL },
+    // AUTOMAÇÃO SMART
+    { id: "p16", cat: "automacao", nome: "Tomada Smart IZY ETS 1001 (Branca ou Preta)", marca: "Intelbras", preco: 159.90, instal: 100, icon: SVG_PLUG },
+    { id: "p17", cat: "automacao", nome: "Acionador de Cortinas Smart IZY IAC 110",     marca: "Intelbras", preco: 192.90, instal: 150, badge: "Smart Home", icon: SVG_CURTAIN },
+    { id: "p18", cat: "automacao", nome: "Lâmpada Colorida Smart EWS 410",              marca: "Intelbras", preco: 70.90,  instal: 0,   icon: SVG_LAMP },
+    { id: "p19", cat: "automacao", nome: "Luminária Solar LSI 4800",                    marca: "Intelbras", preco: 1623.90, instal: 200, badge: "Solar", icon: SVG_SOLAR },
+    // ROTEADORES / REDE
+    { id: "p20", cat: "rede", nome: "Roteador Wi-Fi W5-1200GS",                       marca: "Intelbras", preco: 257.90, instal: 150, icon: SVG_ROUTER },
+    { id: "p21", cat: "rede", nome: "Roteador Wi-Fi 6 W6 1500",                        marca: "Intelbras", preco: 303.90, instal: 150, badge: "Wi-Fi 6", icon: SVG_ROUTER },
+    { id: "p22", cat: "rede", nome: "Extensor Mesh Twibi Force Plug GIGA",             marca: "Intelbras", preco: 237.90, instal: 150, icon: SVG_ROUTER }
+  ];
+
+  const grid = document.getElementById("productGrid");
+  const empty = document.getElementById("emptyState");
+  const fmt = v => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+  // Slug: nome do produto "todo junto" - minúsculo, sem acentos, sem espaços nem símbolos
+  function slug(s) {
+    return s
+      .normalize("NFD")
+      .replace(/[`-?]/g, "")    // remove acentos
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "");        // remove tudo que não for letra/número
+  }
+
+  // Card CTA fixo, aparece sempre depois do último produto
+  const CTA_CARD = `
+      <div class="product-card cta-card">
+        <div class="product-img cta-img">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="7"/>
+            <path d="M21 21l-4.3-4.3"/>
+            <path d="M11 8v3M11 14h.01"/>
+          </svg>
+        </div>
+        <div class="product-body" style="text-align:center;align-items:center">
+          <span class="product-cat" style="color:var(--primary)">Atendimento personalizado</span>
+          <div class="product-title" style="font-size:1.05rem">Não achou seu produto?</div>
+          <p class="muted" style="font-size:.88rem;margin:4px 0 6px">Nossa equipe pesquisa o equipamento ideal para o seu projeto. Pedidos especiais, kits sob medida e orçamentos completos.</p>
+          <div class="product-actions" style="margin-top:auto">
+            <a class="btn btn-whatsapp btn-sm btn-block" href="https://wa.me/prolans?text=Ol%C3%A1%2C%20Prolans!%20N%C3%A3o%20encontrei%20um%20produto%20espec%C3%ADfico%20no%20site.%20Pode%20me%20ajudar%3F" target="_blank" rel="noopener">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.7-1-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.6.7.3 1.3.5 1.8.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.4zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
+              Nos chame agora
+            </a>
+          </div>
+        </div>
+      </div>`;
+
+  function render(cat) {
+    const list = cat === "all" ? PRODUCTS : PRODUCTS.filter(p => p.cat === cat);
+    grid.innerHTML = list.map(p => {
+      const base = "assets/img/" + slug(p.nome);
+      return `
+      <div class="product-card">
+        <div class="product-img">
+          ${p.badge ? `<span class="badge">${p.badge}</span>` : ""}
+          <span class="product-icon-fallback">${p.icon}</span>
+          <img class="product-photo" alt="${p.nome}" src="${base}.png" data-base="${base}" />
+        </div>
+        <div class="product-body">
+          <span class="product-cat">${p.marca}</span>
+          <div class="product-title">${p.nome}</div>
+          <div class="product-price">${fmt(p.preco)}</div>
+          <div class="product-actions">
+            <button class="btn btn-ghost btn-sm" data-sim='${JSON.stringify({ id: p.id, n: p.nome, pr: p.preco, ins: p.instal })}'>Simular</button>
+            <a class="btn btn-primary btn-sm" href="orcamento.html?p=${p.id}">Comprar</a>
+          </div>
+        </div>
+      </div>
+    `;
+    }).join("") + CTA_CARD;
+    empty.style.display = list.length ? "none" : "block";
+
+    // Cascata de fallback: png ? jpg ? jpeg ? webp ? ícone SVG
+    grid.querySelectorAll(".product-photo").forEach(img => {
+      const exts = ["jpg", "jpeg", "webp"];
+      let i = 0;
+      img.addEventListener("error", function () {
+        if (i < exts.length) {
+          this.src = this.dataset.base + "." + exts[i++];
+        } else {
+          // Sem imagem disponível - esconde img e mostra ícone SVG
+          this.style.display = "none";
+        }
+      });
+      img.addEventListener("load", function () {
+        // Se carregou, esconde fallback
+        const fb = this.parentNode.querySelector(".product-icon-fallback");
+        if (fb) fb.style.display = "none";
+      });
+    });
+
+    grid.querySelectorAll("[data-sim]").forEach(b => b.addEventListener("click", () => openSim(JSON.parse(b.dataset.sim))));
+  }
+
+  // Filtros
+  document.querySelectorAll("#filters .filter-chip").forEach(c => {
+    c.addEventListener("click", () => {
+      document.querySelectorAll("#filters .filter-chip").forEach(x => x.classList.remove("active"));
+      c.classList.add("active");
+      render(c.dataset.cat);
+    });
+  });
+
+  // Modal de simulação
+  const modal = document.getElementById("simModal");
+  function openSim(p) {
+    document.getElementById("simTitle").textContent = p.n;
+    document.getElementById("simProduto").textContent = fmt(p.pr);
+    document.getElementById("simInstal").textContent = p.ins ? fmt(p.ins) : "Grátis";
+    const sub = p.pr + p.ins;
+    document.getElementById("simSub").textContent = fmt(sub);
+    document.getElementById("simTotal").textContent = fmt(sub);
+    document.getElementById("simParc").textContent = fmt(sub / 12);
+    document.getElementById("simWhats").href = `https://wa.me/prolans?text=${encodeURIComponent(`Olá! Quero comprar: ${p.n} (${fmt(p.pr)} + instalação)`)}`;
+    modal.style.display = "flex";
+  }
+  document.getElementById("simClose").addEventListener("click", () => modal.style.display = "none");
+  modal.addEventListener("click", (e) => { if (e.target === modal) modal.style.display = "none"; });
+
+  render("all");
+})();
+</script>
+</body>
+</html>
