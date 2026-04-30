@@ -214,39 +214,24 @@
   }));
   showPanel(location.hash.replace("#", "") || "overview");
 
-  // ----- DADOS MOCK do cliente
+  // ----- DADOS do cliente — começam vazios. Apenas o admin pode preencher.
   const KEY = `prolans:clientdata:${session}`;
   function ensureClientData() {
     let d = JSON.parse(localStorage.getItem(KEY) || "null");
     if (!d) {
       d = {
-        propostas: [
-          { id: "ORC-001", servico: "CFTV Premium (8 câmeras)", valor: 6800, status: "pending", data: "2026-04-22" },
-          { id: "ORC-002", servico: "Automação Smart Home", valor: 9400, status: "approved", data: "2026-03-14" }
-        ],
-        servicos: [
-          { id: "OS-014", titulo: "Instalação CFTV — Residencial", status: "in-progress", tecnico: "Carlos M.", inicio: "2026-04-20" },
-          { id: "OS-009", titulo: "Manutenção preventiva alarme", status: "done", tecnico: "Bruno R.", inicio: "2026-02-12" },
-          { id: "OS-005", titulo: "Troca fechadura digital", status: "done", tecnico: "Carlos M.", inicio: "2026-01-08" }
-        ],
-        contratos: [
-          { id: "CTR-Signature-Plus", titulo: "Prolans Signature+ Pro", inicio: "2025-11-01", valor: 249.90, status: "approved" }
-        ],
-        boletos: [
-          { id: "B-2604", desc: "Mensalidade abril/2026", valor: 249.90, vencimento: "2026-04-30", status: "pending" },
-          { id: "B-2603", desc: "Mensalidade março/2026", valor: 249.90, vencimento: "2026-03-30", status: "done" }
-        ],
-        notificacoes: [
-          { tipo: "info", txt: "Visita técnica agendada para 30/04 às 14h.", quando: "há 2h" },
-          { tipo: "alerta", txt: "Boleto B-2604 vence em 2 dias.", quando: "há 1d" },
-          { tipo: "info", txt: "Nova proposta ORC-001 disponível para aprovação.", quando: "há 3d" }
-        ],
-        chat: [
-          { from: "them", txt: "Olá! Aqui é o suporte Prolans. Em que podemos ajudar?", t: "09:14" }
-        ]
+        propostas: [],
+        servicos: [],
+        contratos: [],
+        boletos: [],
+        notasFiscais: [],
+        notificacoes: [],
+        chat: []
       };
       localStorage.setItem(KEY, JSON.stringify(d));
     }
+    // Garante chaves novas em contas antigas
+    if (!d.notasFiscais) d.notasFiscais = [];
     return d;
   }
   function saveClientData(d) { localStorage.setItem(KEY, JSON.stringify(d)); }
@@ -259,6 +244,17 @@
   // Escape de strings interpoladas em innerHTML — barreira contra XSS
   const escMap = { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;", "`":"&#96;", "/":"&#47;" };
   const esc = (v) => String(v == null ? "" : v).replace(/[&<>"'`/]/g, c => escMap[c]);
+
+  // Empty state — exibido quando o admin ainda não preencheu dados
+  function emptyState(msg) {
+    return `
+      <div style="text-align:center;padding:48px 24px;color:var(--text-dim);background:rgba(255,255,255,.02);border:1px dashed rgba(255,255,255,.10);border-radius:12px">
+        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" style="margin:0 auto 12px;opacity:.55"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+        <p style="margin:0;font-size:.92rem">${esc(msg)}</p>
+        <p style="margin:6px 0 0;font-size:.78rem;color:var(--text-dim)">As informações ficarão disponíveis aqui assim que a Prolans cadastrar.</p>
+      </div>
+    `;
+  }
 
   // ----- KPI
   const kpiPropostas = document.getElementById("kpiPropostas");
@@ -281,6 +277,7 @@
   }
 
   function renderPropostas() {
+    if (!data.propostas.length) { renderInto("listPropostas", emptyState("Nenhuma proposta disponível ainda.")); return; }
     const html = data.propostas.map(p => `
       <div class="list-row">
         <div>
@@ -301,6 +298,7 @@
     });
   }
   function renderServicos() {
+    if (!data.servicos.length) { renderInto("listServicos", emptyState("Nenhuma ordem de serviço aberta.")); return; }
     const html = data.servicos.map(s => `
       <div class="list-row">
         <div>
@@ -315,6 +313,7 @@
     renderInto("listServicos", html);
   }
   function renderContratos() {
+    if (!data.contratos.length) { renderInto("listContratos", emptyState("Nenhum contrato ativo no momento.")); return; }
     const html = data.contratos.map(c => `
       <div class="list-row">
         <div>
@@ -329,6 +328,7 @@
     renderInto("listContratos", html);
   }
   function renderBoletos() {
+    if (!data.boletos.length) { renderInto("listBoletos", emptyState("Nenhum boleto disponível.")); return; }
     const html = data.boletos.map(b => `
       <div class="list-row">
         <div>
@@ -350,10 +350,7 @@
   }
   function renderNotas() {
     const notas = data.notasFiscais || [];
-    if (!notas.length) {
-      renderInto("listNotas", `<div style="text-align:center;padding:40px 20px;color:var(--text-dim)">Nenhuma nota fiscal emitida ainda.</div>`);
-      return;
-    }
+    if (!notas.length) { renderInto("listNotas", emptyState("Nenhuma nota fiscal emitida ainda.")); return; }
     const html = notas.map(n => `
       <div class="list-row">
         <div>
@@ -368,6 +365,7 @@
     renderInto("listNotas", html);
   }
   function renderNotificacoes() {
+    if (!data.notificacoes.length) { renderInto("listNotif", emptyState("Sem notificações no momento.")); return; }
     const html = data.notificacoes.map(n => `
       <div class="list-row">
         <div>
@@ -384,6 +382,10 @@
   function renderChat() {
     const log = document.getElementById("chatLog");
     if (!log) return;
+    if (!data.chat.length) {
+      log.innerHTML = `<div style="text-align:center;color:var(--text-dim);padding:30px 16px;font-size:.88rem">Inicie uma conversa com a equipe Prolans.</div>`;
+      return;
+    }
     log.innerHTML = data.chat.map(m => `
       <div class="chat-msg ${m.from === "me" ? "me" : "them"}">${esc(m.txt)}<span class="time">${esc(m.t)}</span></div>
     `).join("");
@@ -406,11 +408,11 @@
       if (data.chat.length > 200) data.chat = data.chat.slice(-200);
       input.value = "";
       saveClientData(data); renderChat();
-      // Auto-resposta simulada
+      // Confirmação automática (sem simular atendente)
       setTimeout(() => {
         data.chat.push({
           from: "them",
-          txt: "Recebemos sua mensagem! Um atendente Prolans responderá em instantes.",
+          txt: "Mensagem recebida. Um atendente Prolans entrará em contato em breve.",
           t: new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
         });
         saveClientData(data); renderChat();
