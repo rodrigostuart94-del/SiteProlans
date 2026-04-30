@@ -1,20 +1,19 @@
 /* ============================================================
    PROLANS · Portfólio em PDF
-   Layout premium · fitment validado · grid de alinhamento.
+   Ícones vetoriais · capa balanceada · contato alinhado.
    ============================================================ */
 (function () {
   /* Geometria / grid */
   const A4_W = 210;
   const A4_H = 297;
-  const M = 18;                  // margem externa
-  const CW = A4_W - 2*M;         // largura útil
-  const TOP = 26;                // início do conteúdo (após cabeçalho)
-  const BOTTOM = A4_H - 22;      // limite inferior (antes do rodapé)
-  const PAD = 6;                 // padding interno padrão dos cards
-  const LH = 4.5;                // line-height body
-  const ICON = 10;               // tamanho padrão do ícone
+  const M = 18;
+  const CW = A4_W - 2*M;
+  const TOP = 26;
+  const BOTTOM = A4_H - 22;
+  const PAD = 6;
+  const LH = 4.5;
+  const ICON = 10;
 
-  /* Paleta — fundo único navy sólido */
   const C = {
     bg:           [10, 21, 48],
     surface:      [18, 32, 64],
@@ -38,9 +37,6 @@
     text:   c => doc.setTextColor(c[0], c[1], c[2])
   });
 
-  /* ============================================================
-     UTILITÁRIOS
-     ============================================================ */
   async function loadImage(src) {
     try {
       const r = await fetch(src);
@@ -54,9 +50,271 @@
     } catch (e) { return null; }
   }
 
-  // Mede altura em mm de um bloco de texto (após split)
-  function textHeight(lines, lineHeight) {
-    return lines.length * (lineHeight || LH);
+  /* ============================================================
+     ÍCONES VETORIAIS — desenhados com primitivas (sem Unicode)
+     drawIcon(doc, x, y, size, type, color)
+       (x, y) = canto superior esquerdo do ícone
+       size   = lado (ícone é quadrado)
+     ============================================================ */
+  function drawIcon(doc, x, y, size, type, color) {
+    const cx = x + size/2, cy = y + size/2;
+    const r = size * 0.42;
+    const f = F(doc);
+    f.stroke(color || C.primary);
+    f.fill(color || C.primary);
+    doc.setLineWidth(0.55);
+    try { doc.setLineCap(1); doc.setLineJoin(1); } catch(e){}
+
+    function arc(cxp, cyp, radius, startDeg, endDeg, segments) {
+      segments = segments || 18;
+      const sa = startDeg * Math.PI/180;
+      const ea = endDeg * Math.PI/180;
+      let prev = null;
+      for (let i = 0; i <= segments; i++) {
+        const a = sa + (ea - sa) * (i / segments);
+        const px = cxp + Math.cos(a) * radius;
+        const py = cyp + Math.sin(a) * radius;
+        if (prev) doc.line(prev.x, prev.y, px, py);
+        prev = { x: px, y: py };
+      }
+    }
+
+    switch (type) {
+      case 'shield': {
+        // escudo simples: pentagon arredondado
+        const w = r * 1.6, h = r * 2;
+        doc.line(cx - w/2, cy - h*0.45, cx + w/2, cy - h*0.45);
+        doc.line(cx - w/2, cy - h*0.45, cx - w/2, cy);
+        doc.line(cx + w/2, cy - h*0.45, cx + w/2, cy);
+        doc.line(cx - w/2, cy, cx, cy + h*0.55);
+        doc.line(cx + w/2, cy, cx, cy + h*0.55);
+        // check interno
+        doc.setLineWidth(0.7);
+        doc.line(cx - w*0.25, cy - h*0.05, cx - w*0.05, cy + h*0.15);
+        doc.line(cx - w*0.05, cy + h*0.15, cx + w*0.3, cy - h*0.2);
+        break;
+      }
+      case 'lock': {
+        const w = r * 1.5, h = r * 1.2;
+        // corpo
+        doc.roundedRect(cx - w/2, cy - h*0.15, w, h, 0.6, 0.6, 'S');
+        // shackle (arco)
+        arc(cx, cy - h*0.15, w * 0.36, 180, 360, 14);
+        // miolo
+        doc.circle(cx, cy + h*0.3, 0.7, 'F');
+        break;
+      }
+      case 'wifi': {
+        // 3 arcos + ponto base
+        const baseY = cy + r * 0.7;
+        doc.circle(cx, baseY, 0.9, 'F');
+        arc(cx, baseY, r * 0.55, 200, 340, 18);
+        arc(cx, baseY, r * 0.95, 200, 340, 22);
+        arc(cx, baseY, r * 1.35, 200, 340, 26);
+        break;
+      }
+      case 'home': {
+        // telhado triangular + base quadrada
+        const w = r * 1.6;
+        doc.line(cx - w/2, cy - r*0.1, cx, cy - r*0.95);
+        doc.line(cx, cy - r*0.95, cx + w/2, cy - r*0.1);
+        // base
+        doc.line(cx - w*0.42, cy - r*0.1, cx - w*0.42, cy + r*0.85);
+        doc.line(cx + w*0.42, cy - r*0.1, cx + w*0.42, cy + r*0.85);
+        doc.line(cx - w*0.42, cy + r*0.85, cx + w*0.42, cy + r*0.85);
+        // porta
+        doc.line(cx - w*0.12, cy + r*0.85, cx - w*0.12, cy + r*0.35);
+        doc.line(cx + w*0.12, cy + r*0.85, cx + w*0.12, cy + r*0.35);
+        doc.line(cx - w*0.12, cy + r*0.35, cx + w*0.12, cy + r*0.35);
+        break;
+      }
+      case 'bolt': {
+        // raio (zigzag)
+        const points = [
+          [cx + r*0.15, cy - r*0.95],
+          [cx - r*0.45, cy + r*0.05],
+          [cx - r*0.05, cy + r*0.05],
+          [cx - r*0.25, cy + r*0.95],
+          [cx + r*0.55, cy - r*0.15],
+          [cx + r*0.10, cy - r*0.15],
+          [cx + r*0.15, cy - r*0.95]
+        ];
+        for (let i = 0; i < points.length - 1; i++) {
+          doc.line(points[i][0], points[i][1], points[i+1][0], points[i+1][1]);
+        }
+        break;
+      }
+      case 'gear': {
+        // engrenagem: círculo + 8 ticks externos
+        doc.circle(cx, cy, r * 0.55, 'S');
+        doc.circle(cx, cy, r * 0.18, 'S');
+        for (let i = 0; i < 8; i++) {
+          const a = (i * 45) * Math.PI/180;
+          const x1 = cx + Math.cos(a) * r * 0.6;
+          const y1 = cy + Math.sin(a) * r * 0.6;
+          const x2 = cx + Math.cos(a) * r * 0.95;
+          const y2 = cy + Math.sin(a) * r * 0.95;
+          doc.setLineWidth(1);
+          doc.line(x1, y1, x2, y2);
+        }
+        break;
+      }
+      case 'target': {
+        // mira: 3 círculos concêntricos
+        doc.circle(cx, cy, r * 0.95, 'S');
+        doc.circle(cx, cy, r * 0.6, 'S');
+        doc.circle(cx, cy, r * 0.22, 'F');
+        break;
+      }
+      case 'eye': {
+        // elipse + circulo central
+        doc.ellipse(cx, cy, r * 0.95, r * 0.55, 'S');
+        doc.circle(cx, cy, r * 0.3, 'S');
+        doc.circle(cx, cy, r * 0.12, 'F');
+        break;
+      }
+      case 'heart': {
+        // coração: dois arcos + triângulo
+        const lx = cx - r * 0.35, rx = cx + r * 0.35;
+        const ly = cy - r * 0.15;
+        arc(lx, ly, r * 0.4, 180, 360, 14);
+        arc(rx, ly, r * 0.4, 180, 360, 14);
+        doc.line(cx - r * 0.75, ly, cx, cy + r * 0.7);
+        doc.line(cx + r * 0.75, ly, cx, cy + r * 0.7);
+        break;
+      }
+      case 'check': {
+        // ✓ duas linhas
+        doc.setLineWidth(1);
+        doc.line(cx - r*0.65, cy + r*0.05, cx - r*0.1, cy + r*0.6);
+        doc.line(cx - r*0.1, cy + r*0.6, cx + r*0.7, cy - r*0.5);
+        break;
+      }
+      case 'dollar': {
+        // S vertical + barra
+        f.text(color || C.primary);
+        doc.setFontSize(size * 0.95);
+        doc.setFont('helvetica', 'bold');
+        doc.text('$', cx, cy + size * 0.32, { align: 'center' });
+        break;
+      }
+      case 'card': {
+        // cartão: rect + barra
+        const w = r * 1.7, h = r * 1.1;
+        doc.roundedRect(cx - w/2, cy - h/2, w, h, 0.5, 0.5, 'S');
+        doc.setLineWidth(0.7);
+        doc.line(cx - w/2, cy - h*0.1, cx + w/2, cy - h*0.1);
+        doc.setLineWidth(0.5);
+        doc.line(cx - w*0.35, cy + h*0.18, cx - w*0.05, cy + h*0.18);
+        break;
+      }
+      case 'doc': {
+        // documento: rect com canto cortado
+        const w = r * 1.3, h = r * 1.7;
+        const fold = r * 0.45;
+        // desenha o contorno
+        doc.line(cx - w/2, cy - h/2, cx + w/2 - fold, cy - h/2);
+        doc.line(cx + w/2 - fold, cy - h/2, cx + w/2, cy - h/2 + fold);
+        doc.line(cx + w/2, cy - h/2 + fold, cx + w/2, cy + h/2);
+        doc.line(cx + w/2, cy + h/2, cx - w/2, cy + h/2);
+        doc.line(cx - w/2, cy + h/2, cx - w/2, cy - h/2);
+        // dobra
+        doc.line(cx + w/2 - fold, cy - h/2, cx + w/2 - fold, cy - h/2 + fold);
+        doc.line(cx + w/2 - fold, cy - h/2 + fold, cx + w/2, cy - h/2 + fold);
+        // linhas internas
+        doc.line(cx - w*0.3, cy - h*0.1, cx + w*0.3, cy - h*0.1);
+        doc.line(cx - w*0.3, cy + h*0.05, cx + w*0.3, cy + h*0.05);
+        doc.line(cx - w*0.3, cy + h*0.2, cx + w*0.3, cy + h*0.2);
+        break;
+      }
+      case 'refresh': {
+        // arco circular + cabeça de seta
+        arc(cx, cy, r * 0.85, 30, 320, 22);
+        // ponta da seta
+        const a = 30 * Math.PI/180;
+        const tx = cx + Math.cos(a) * r * 0.85;
+        const ty = cy + Math.sin(a) * r * 0.85;
+        doc.line(tx, ty, tx - r*0.4, ty - r*0.05);
+        doc.line(tx, ty, tx - r*0.1, ty + r*0.4);
+        break;
+      }
+      case 'phone': {
+        // handset estilizado: dois círculos + arco
+        const a = -30 * Math.PI/180;
+        const dx = Math.cos(a), dy = Math.sin(a);
+        // corpo do fone (linha grossa)
+        doc.setLineWidth(1.4);
+        doc.line(cx - r*0.7*dx + r*0.5*dy, cy - r*0.7*dy - r*0.5*dx,
+                 cx + r*0.7*dx + r*0.5*dy, cy + r*0.7*dy - r*0.5*dx);
+        // capsulas
+        doc.setLineWidth(0.5);
+        doc.circle(cx - r*0.7*dx, cy - r*0.7*dy, r * 0.22, 'S');
+        doc.circle(cx + r*0.7*dx, cy + r*0.7*dy, r * 0.22, 'S');
+        break;
+      }
+      case 'envelope': {
+        // envelope: rect + V interno
+        const w = r * 1.6, h = r * 1.05;
+        doc.roundedRect(cx - w/2, cy - h/2, w, h, 0.4, 0.4, 'S');
+        doc.line(cx - w/2, cy - h/2, cx, cy);
+        doc.line(cx + w/2, cy - h/2, cx, cy);
+        break;
+      }
+      case 'at': {
+        // arroba: círculo externo + círculo interno + cauda
+        doc.circle(cx, cy, r * 0.85, 'S');
+        doc.circle(cx, cy, r * 0.35, 'S');
+        // cauda (semicirculo direito)
+        arc(cx, cy, r * 0.55, -45, 90, 12);
+        break;
+      }
+      case 'globe': {
+        // globo: círculo + meridianos
+        doc.circle(cx, cy, r * 0.9, 'S');
+        // equador
+        doc.line(cx - r*0.9, cy, cx + r*0.9, cy);
+        // meridiano vertical
+        doc.line(cx, cy - r*0.9, cx, cy + r*0.9);
+        // meridianos curvos (elipses)
+        doc.ellipse(cx, cy, r * 0.45, r * 0.9, 'S');
+        break;
+      }
+      case 'pin': {
+        // alfinete de mapa: drop + ponto
+        // drop = circulo + triangulo apontando para baixo
+        doc.circle(cx, cy - r*0.15, r * 0.55, 'S');
+        doc.circle(cx, cy - r*0.15, r * 0.18, 'F');
+        doc.line(cx - r*0.42, cy + r*0.15, cx, cy + r*0.95);
+        doc.line(cx + r*0.42, cy + r*0.15, cx, cy + r*0.95);
+        break;
+      }
+      case 'star': {
+        // estrela 5 pontas (10 vértices)
+        const points = [];
+        for (let i = 0; i < 10; i++) {
+          const a = (-90 + i * 36) * Math.PI/180;
+          const rr = (i % 2 === 0) ? r * 0.95 : r * 0.4;
+          points.push([cx + Math.cos(a) * rr, cy + Math.sin(a) * rr]);
+        }
+        for (let i = 0; i < points.length; i++) {
+          const next = (i + 1) % points.length;
+          doc.line(points[i][0], points[i][1], points[next][0], points[next][1]);
+        }
+        break;
+      }
+      case 'instagram': {
+        // ícone IG: rect arredondado + circulo interno + ponto canto
+        doc.roundedRect(cx - r*0.85, cy - r*0.85, r * 1.7, r * 1.7, r * 0.35, r * 0.35, 'S');
+        doc.circle(cx, cy, r * 0.45, 'S');
+        doc.circle(cx + r*0.45, cy - r*0.45, 0.7, 'F');
+        break;
+      }
+      default: {
+        // fallback: círculo
+        doc.circle(cx, cy, r * 0.55, 'S');
+      }
+    }
+    try { doc.setLineCap(0); doc.setLineJoin(0); } catch(e){}
   }
 
   /* ============================================================
@@ -64,10 +322,8 @@
      ============================================================ */
   function background(doc) {
     const f = F(doc);
-    // Cor sólida única
     f.fill(C.bg);
     doc.rect(0, 0, A4_W, A4_H, 'F');
-    // Acento ciano premium no topo (única ornamentação)
     f.fill(C.primary);
     doc.rect(0, 0, A4_W, 1.2, 'F');
   }
@@ -80,11 +336,9 @@
     doc.setCharSpace(1.6);
     doc.text('PROLANS', M, 16);
     doc.setCharSpace(0);
-
     f.text(C.textMuted);
     doc.setFont('helvetica', 'normal');
     doc.text('Portfólio Oficial · 2026', A4_W - M, 16, { align: 'right' });
-
     f.stroke(C.border);
     doc.setLineWidth(0.12);
     doc.line(M, 20, A4_W - M, 20);
@@ -108,7 +362,7 @@
   }
 
   /* ============================================================
-     COMPONENTES (todos seguem o mesmo grid)
+     COMPONENTES
      ============================================================ */
   function eyebrow(doc, x, y, label, color) {
     const f = F(doc);
@@ -122,7 +376,7 @@
 
   function sectionTitle(doc, num, label, title, subtitle, y) {
     const f = F(doc);
-    eyebrow(doc, M, y, num + ' · ' + label);
+    eyebrow(doc, M, y, num + '  ·  ' + label);
     y += 9;
 
     f.text(C.white);
@@ -158,20 +412,14 @@
     doc.roundedRect(x, y, w, h, 2.5, 2.5, 'FD');
   }
 
-  // Ícone quadrado com glyph - centro do quadrado em (x+size/2, y+size/2)
-  function iconBadge(doc, x, y, size, glyph, color) {
+  // Caixa do ícone (badge) com ícone vetorial dentro
+  function iconBadge(doc, x, y, size, type, color) {
     const f = F(doc);
     f.fill(C.surfaceAlt);
     f.stroke(color || C.borderStrong);
     doc.setLineWidth(0.3);
     doc.roundedRect(x, y, size, size, 1.6, 1.6, 'FD');
-    if (glyph) {
-      f.text(color || C.primary);
-      doc.setFontSize(size * 1.15);
-      doc.setFont('helvetica', 'bold');
-      // Centro vertical do glyph: y + size/2 + offset
-      doc.text(glyph, x + size/2, y + size * 0.72, { align: 'center' });
-    }
+    drawIcon(doc, x, y, size, type, color || C.primary);
   }
 
   function bullet(doc, x, y, color) {
@@ -185,28 +433,14 @@
     doc.line(M, y, A4_W - M, y);
   }
 
-  // Cabeçalho de card com ícone à esquerda + título alinhado
-  // Retorna y de continuação (próxima linha após o header)
-  function cardHeader(doc, x, y, icon, title, color) {
-    iconBadge(doc, x + PAD, y + PAD, ICON, icon, color || C.primary);
-    F(doc).text(C.white);
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'bold');
-    // Baseline do título alinhada com o centro vertical do ícone
-    // Centro do ícone: y + PAD + ICON/2 = y + 11
-    // Baseline para texto bold 12pt fica a +1.5mm abaixo do centro visual
-    doc.text(title, x + PAD + ICON + 6, y + PAD + ICON/2 + 1.6);
-    return y + PAD + ICON + 4; // próxima linha
-  }
-
   /* ============================================================
-     PÁGINA 1 · CAPA — vertical perfeitamente balanceada
+     PÁGINA 1 · CAPA — vertical balanceada
      ============================================================ */
   async function pageCover(doc, logo) {
     background(doc);
     const f = F(doc);
 
-    // Marca topo
+    // Marca topo (centralizada)
     f.text(C.primary);
     doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
@@ -214,21 +448,20 @@
     doc.text('PROLANS', A4_W/2, 18, { align: 'center' });
     doc.setCharSpace(0);
 
-    /* Bloco principal centralizado verticalmente
-       Altura total ≈ logo(40) + gap(20) + eyebrow(4) + gap(14) + title(14)
-                    + gap(6) + subtitle(5) + gap(12) + line(0) + gap(10) + slogan(5)
-                    ≈ 130mm
-       Centro do bloco em y = 145 (pouco acima do meio para olhar respirar embaixo) */
+    /* Layout em terços visuais:
+       - Topo livre (0-75) com a marca
+       - Bloco principal centrado (75-200)
+       - Bloco inferior info (200-285) */
+
+    // Logo no terço superior do bloco principal
     const logoSize = 40;
-    const blockTop = 60;
-
-    // Logo
+    const logoY = 80;
     if (logo) {
-      try { doc.addImage(logo, 'PNG', (A4_W - logoSize)/2, blockTop, logoSize, logoSize); } catch(e) {}
+      try { doc.addImage(logo, 'PNG', (A4_W - logoSize)/2, logoY, logoSize, logoSize); } catch(e) {}
     }
-    let y = blockTop + logoSize + 22;
 
-    // Eyebrow tag
+    let y = logoY + logoSize + 22;
+
     f.text(C.primary);
     doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
@@ -237,75 +470,71 @@
     doc.setCharSpace(0);
     y += 16;
 
-    // Título
     f.text(C.white);
     doc.setFontSize(44);
     doc.setFont('helvetica', 'bold');
     doc.text('Prolans', A4_W/2, y, { align: 'center' });
-    y += 12;
+    y += 11;
 
-    // Subtítulo
     f.text(C.text);
     doc.setFontSize(13);
     doc.setFont('helvetica', 'normal');
     doc.text('Soluções em Tecnologia e Serviços', A4_W/2, y, { align: 'center' });
-    y += 14;
+    y += 13;
 
-    // Linha decorativa
     f.stroke(C.primary);
     doc.setLineWidth(0.7);
     doc.line(A4_W/2 - 12, y, A4_W/2 + 12, y);
     y += 10;
 
-    // Slogan
     f.text(C.textMuted);
     doc.setFontSize(11);
     doc.setFont('helvetica', 'italic');
     doc.text('Protegendo o presente, garantindo o futuro.', A4_W/2, y, { align: 'center' });
 
-    /* Bloco inferior — meta info perfeitamente alinhada em 3 colunas */
-    const metaY = A4_H - 70;
+    // Bloco inferior — meta info perfeitamente alinhada
+    let infoY = A4_H - 78;
 
     // Linha sutil acima
     f.stroke(C.border);
     doc.setLineWidth(0.12);
-    doc.line(A4_W/2 - 70, metaY - 8, A4_W/2 + 70, metaY - 8);
+    doc.line(A4_W/2 - 80, infoY - 10, A4_W/2 + 80, infoY - 10);
 
-    // Labels (uppercase, dim)
+    // Tags categoria
+    f.text(C.primary);
+    doc.setFontSize(7.5);
+    doc.setFont('helvetica', 'bold');
+    doc.setCharSpace(2.2);
+    doc.text('SEGURANÇA   ·   AUTOMAÇÃO   ·   REDES   ·   MANUTENÇÃO',
+      A4_W/2, infoY, { align: 'center' });
+    doc.setCharSpace(0);
+
+    // Meta info em 3 colunas
+    infoY += 18;
     f.text(C.textDim);
     doc.setFontSize(7.5);
     doc.setFont('helvetica', 'bold');
     doc.setCharSpace(1.8);
-    const cols = [A4_W/2 - 50, A4_W/2, A4_W/2 + 50];
-    doc.text('FUNDADA', cols[0], metaY, { align: 'center' });
-    doc.text('SEDE',    cols[1], metaY, { align: 'center' });
-    doc.text('CNPJ',    cols[2], metaY, { align: 'center' });
+    const cols = [A4_W/2 - 48, A4_W/2, A4_W/2 + 48];
+    doc.text('FUNDADA', cols[0], infoY, { align: 'center' });
+    doc.text('SEDE',    cols[1], infoY, { align: 'center' });
+    doc.text('CNPJ',    cols[2], infoY, { align: 'center' });
     doc.setCharSpace(0);
 
-    // Values (white, bold)
     f.text(C.white);
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
-    doc.text('Ago/2020',           cols[0], metaY + 7, { align: 'center' });
-    doc.text('Teresópolis · RJ',   cols[1], metaY + 7, { align: 'center' });
-    doc.text('38.408.286/0001-11', cols[2], metaY + 7, { align: 'center' });
+    doc.text('Ago/2020',           cols[0], infoY + 7, { align: 'center' });
+    doc.text('Teresópolis · RJ',   cols[1], infoY + 7, { align: 'center' });
+    doc.text('38.408.286/0001-11', cols[2], infoY + 7, { align: 'center' });
 
-    // Tags rodapé
-    let bottomY = A4_H - 36;
+    // Hairline + data
+    let bottomY = A4_H - 32;
     f.stroke(C.border);
     doc.setLineWidth(0.12);
-    doc.line(A4_W/2 - 70, bottomY, A4_W/2 + 70, bottomY);
+    doc.line(A4_W/2 - 50, bottomY, A4_W/2 + 50, bottomY);
+
     bottomY += 7;
-
-    f.text(C.primary);
-    doc.setFontSize(7.5);
-    doc.setFont('helvetica', 'bold');
-    doc.setCharSpace(2);
-    doc.text('SEGURANÇA   ·   AUTOMAÇÃO   ·   REDES   ·   MANUTENÇÃO',
-      A4_W/2, bottomY, { align: 'center' });
-    doc.setCharSpace(0);
-
-    bottomY += 6;
     f.text(C.textDim);
     doc.setFontSize(7);
     doc.setFont('helvetica', 'normal');
@@ -325,7 +554,6 @@
       'Tecnologia que protege, conecta\ne simplifica a sua rotina.',
       'Atendendo Teresópolis e a Região Serrana desde 2020 com soluções integradas em segurança e tecnologia.', y);
 
-    // Texto histórico
     f.text(C.text);
     doc.setFontSize(9.5);
     doc.setFont('helvetica', 'normal');
@@ -365,27 +593,20 @@
         stroke: isToday ? C.borderStrong : C.border,
         lineWidth: isToday ? 0.5 : 0.25
       });
-
-      // Data (esquerda) - alinhada verticalmente no centro do card
       f.text(isToday ? C.success : C.primary);
       doc.setFontSize(7.5);
       doc.setFont('helvetica', 'bold');
       doc.setCharSpace(1);
       doc.text(ev.d, M + PAD, y + 7);
       doc.setCharSpace(0);
-
-      // Título da data (direita)
       f.text(C.white);
       doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
       doc.text(ev.t, M + 44, y + 7);
-
-      // Subtexto
       f.text(C.textMuted);
       doc.setFontSize(8.5);
       doc.setFont('helvetica', 'normal');
       doc.text(ev.s, M + 44, y + 13);
-
       y += h + 3;
     });
 
@@ -393,7 +614,7 @@
   }
 
   /* ============================================================
-     PÁGINA 3 · IDENTIDADE (MVV + Diferenciais)
+     PÁGINA 3 · IDENTIDADE
      ============================================================ */
   function pageIdentidade(doc) {
     background(doc); header(doc);
@@ -405,32 +626,28 @@
       'Os pilares que sustentam tudo o que fazemos.', y);
 
     const mvv = [
-      { glyph: '◎', t: 'Missão',
+      { icon: 'target', t: 'Missão',
         s: 'Garantir que nossos clientes se sintam seguros, conectados e tranquilos em todos os momentos, com soluções confiáveis e suporte de excelência.' },
-      { glyph: '◉', t: 'Visão',
+      { icon: 'eye', t: 'Visão',
         s: 'Ser referência em segurança e tecnologia na Região Serrana, reconhecida pela confiança, pela entrega e pelo compromisso real com cada cliente.' },
-      { glyph: '♦', t: 'Valores',
+      { icon: 'heart', t: 'Valores',
         s: 'Fé, gratidão, compromisso, transparência, qualidade e inovação. Fazer mais do que o esperado e entregar tranquilidade, sempre.' }
     ];
     mvv.forEach(it => {
-      // Calcula altura precisa
       f.text(C.textMuted);
       doc.setFontSize(9);
       doc.setFont('helvetica', 'normal');
       const sLines = doc.splitTextToSize(it.s, CW - PAD - ICON - 6 - PAD);
-
       const h = PAD + ICON + 4 + sLines.length * LH + PAD - 2;
       card(doc, M, y, CW, h);
 
-      // Header (icon + title alinhados)
-      iconBadge(doc, M + PAD, y + PAD, ICON, it.glyph, C.primary);
+      iconBadge(doc, M + PAD, y + PAD, ICON, it.icon, C.primary);
 
       f.text(C.white);
       doc.setFontSize(13);
       doc.setFont('helvetica', 'bold');
       doc.text(it.t, M + PAD + ICON + 6, y + PAD + ICON/2 + 1.4);
 
-      // Subtítulo abaixo do header
       f.text(C.textMuted);
       doc.setFontSize(9);
       doc.setFont('helvetica', 'normal');
@@ -464,12 +681,10 @@
     diffs.forEach((d, i) => {
       const x = M + i * (dW + 4);
       card(doc, x, y, dW, dH);
-      // Número grande centralizado
       f.text(C.primary);
       doc.setFontSize(20);
       doc.setFont('helvetica', 'bold');
       doc.text(d.num, x + dW/2, y + 12, { align: 'center' });
-      // Label
       f.text(C.textMuted);
       doc.setFontSize(7.5);
       doc.setFont('helvetica', 'normal');
@@ -481,25 +696,25 @@
   }
 
   /* ============================================================
-     PÁGINAS 4 e 5 · SOLUÇÕES (3 cards arejados por página)
+     PÁGINAS 4 e 5 · SOLUÇÕES
      ============================================================ */
   const SOLUTIONS = [
-    { t: 'Segurança Eletrônica', g: '◊',
+    { t: 'Segurança Eletrônica', icon: 'shield',
       lead: 'Olhos atentos 24h em cada canto do seu espaço. Veja tudo de qualquer lugar, em tempo real.',
       items: ['Câmeras CFTV (Full HD, 4K, Wi-Fi)','Sistemas de alarme com sensores e sirenes','Monitoramento remoto pelo celular','Visão noturna e detecção de movimento'] },
-    { t: 'Controle de Acesso', g: '⊙',
+    { t: 'Controle de Acesso', icon: 'lock',
       lead: 'Quem entra, quando entra e por onde passa. Você no comando, sem chaves perdidas.',
       items: ['Fechaduras digitais (senha, biometria, tag)','Interfones e vídeoporteiros inteligentes','Reconhecimento facial corporativo','Gestão de visitantes e horários'] },
-    { t: 'Redes e Conectividade', g: '≋',
+    { t: 'Redes e Conectividade', icon: 'wifi',
       lead: 'Internet rápida, estável e com cobertura em cada cantinho. Pronta para trabalho e lazer.',
       items: ['Wi-Fi profissional (Mesh e Wi-Fi 6)','Cabeamento estruturado','Redes corporativas com segurança','Diagnóstico de pontos cegos'] },
-    { t: 'Automação Inteligente', g: '⌂',
+    { t: 'Automação Inteligente', icon: 'home',
       lead: 'Sua casa respondendo à sua voz, ao seu toque ou sozinha. Do jeito que você quiser.',
       items: ['Integração com Alexa e Google Assistente','Iluminação inteligente e cenas programadas','Tomadas, cortinas e portões via app','Cenários automáticos (chegar, dormir)'] },
-    { t: 'Infraestrutura e Elétrica', g: '⚡',
+    { t: 'Infraestrutura e Elétrica', icon: 'bolt',
       lead: 'A base bem feita evita dor de cabeça lá na frente. Cada cabo no lugar certo.',
       items: ['Instalações elétricas residenciais e comerciais','Quadros e proteção contra surtos','Organização e melhoria de redes','Adequações para automação'] },
-    { t: 'Manutenção', g: '⚙',
+    { t: 'Manutenção', icon: 'gear',
       lead: 'Seu sistema sempre funcionando. Sem surpresas, sem stress, sem falha quando precisar.',
       items: ['Manutenção preventiva periódica','Manutenção corretiva ágil','Planos mensais com prioridade','Limpeza, calibragem e firmware'] }
   ];
@@ -519,7 +734,6 @@
     }
 
     slice.forEach(s => {
-      // Calcula tudo antes de desenhar
       f.text(C.textMuted);
       doc.setFontSize(9);
       doc.setFont('helvetica', 'italic');
@@ -532,7 +746,6 @@
         doc.setFont('helvetica', 'normal');
         return doc.splitTextToSize(it, colW - 4);
       });
-      // Items distribuídos em 2 colunas → metade superior + metade inferior
       const colItemCount = Math.ceil(s.items.length / 2);
       let colHeights = [0, 0];
       itemMeasured.forEach((lines, idx) => {
@@ -540,21 +753,18 @@
         colHeights[col] += lines.length * 4 + 1.5;
       });
       const itemsBlock = Math.max(colHeights[0], colHeights[1]);
-
-      const headerBlock = ICON + 2;                       // icon row
+      const headerBlock = ICON + 2;
       const leadBlock = leadLines.length * 4 + 4;
       const h = PAD + headerBlock + 4 + leadBlock + itemsBlock + PAD;
 
       card(doc, M, y, CW, h);
 
-      // Header
-      iconBadge(doc, M + PAD, y + PAD, ICON, s.g, C.primary);
+      iconBadge(doc, M + PAD, y + PAD, ICON, s.icon, C.primary);
       f.text(C.white);
       doc.setFontSize(13);
       doc.setFont('helvetica', 'bold');
       doc.text(s.t, M + PAD + ICON + 6, y + PAD + ICON/2 + 1.6);
 
-      // Lead
       let cy = y + PAD + ICON + 6;
       f.text(C.textMuted);
       doc.setFontSize(9);
@@ -562,7 +772,6 @@
       leadLines.forEach((l, i) => doc.text(l, M + PAD, cy + i * 4));
       cy += leadLines.length * 4 + 4;
 
-      // Items em 2 colunas
       f.text(C.text);
       doc.setFontSize(8.5);
       doc.setFont('helvetica', 'normal');
@@ -582,7 +791,7 @@
   }
 
   /* ============================================================
-     PÁGINA 6 · BENEFÍCIOS (8 cards em 2 colunas)
+     PÁGINA 6 · BENEFÍCIOS
      ============================================================ */
   function pageBeneficios(doc) {
     background(doc); header(doc);
@@ -610,26 +819,21 @@
       const col = i % 2, row = Math.floor(i / 2);
       const x = M + col * (colW + 6);
       const yy = y + row * (h + 5);
-
       card(doc, x, yy, colW, h);
 
-      // Check verde alinhado verticalmente com o título
-      f.fill([18, 50, 38]);
-      f.stroke(C.success);
+      // Check verde com ícone vetorial
+      const f2 = F(doc);
+      f2.fill([18, 50, 38]);
+      f2.stroke(C.success);
       doc.setLineWidth(0.35);
       doc.roundedRect(x + PAD, yy + PAD, checkSize, checkSize, 1.6, 1.6, 'FD');
-      f.text(C.success);
-      doc.setFontSize(9);
-      doc.setFont('helvetica', 'bold');
-      doc.text('✓', x + PAD + checkSize/2, yy + PAD + checkSize * 0.7, { align: 'center' });
+      drawIcon(doc, x + PAD, yy + PAD, checkSize, 'check', C.success);
 
-      // Título alinhado com o centro do check
       f.text(C.white);
       doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
       doc.text(b.t, x + PAD + checkSize + 4, yy + PAD + checkSize/2 + 1.4);
 
-      // Descrição
       f.text(C.textMuted);
       doc.setFontSize(8);
       doc.setFont('helvetica', 'normal');
@@ -641,7 +845,7 @@
   }
 
   /* ============================================================
-     PÁGINA 7 · PROCESSO (6 passos em 2 colunas)
+     PÁGINA 7 · PROCESSO
      ============================================================ */
   function pageProcesso(doc) {
     background(doc); header(doc);
@@ -666,10 +870,8 @@
       const col = i % 2, row = Math.floor(i / 2);
       const x = M + col * (colW + 6);
       const yy = y + row * (h + 6);
-
       card(doc, x, yy, colW, h);
 
-      // Badge numerador (acima da borda superior do card)
       f.fill(C.primary);
       doc.roundedRect(x + PAD, yy - 4, 14, 9, 1.8, 1.8, 'F');
       f.text([5, 16, 35]);
@@ -677,13 +879,11 @@
       doc.setFont('helvetica', 'bold');
       doc.text(String(i+1).padStart(2,'0'), x + PAD + 7, yy + 2.4, { align: 'center' });
 
-      // Título
       f.text(C.white);
       doc.setFontSize(11);
       doc.setFont('helvetica', 'bold');
       doc.text(s.t, x + PAD, yy + 13);
 
-      // Descrição
       f.text(C.textMuted);
       doc.setFontSize(8.5);
       doc.setFont('helvetica', 'normal');
@@ -695,7 +895,7 @@
   }
 
   /* ============================================================
-     PÁGINA 8 · PLANOS (3 cards lado a lado, altura justa)
+     PÁGINA 8 · PLANOS
      ============================================================ */
   function pagePlanos(doc) {
     background(doc); header(doc);
@@ -713,13 +913,12 @@
       { tag: 'MODELO 02', t: 'Manutenção Mensal',
         d: 'Mensalidade que cuida do seu sistema todo mês.',
         items: ['Visitas preventivas periódicas','Limpeza e checagem','Atendimento prioritário','Atualização de firmware','Reparos pequenos sem custo'] },
-      { tag: '★ PREMIUM', t: 'Signature+',
+      { tag: 'PREMIUM', t: 'Signature+',
         d: 'Plano completo com benefícios exclusivos.',
         items: ['Tudo da Manutenção Mensal','Desconto em mão de obra','Vantagens em novos projetos','SLA prioritário','Atendimento dedicado'],
         featured: true }
     ];
     const colW = (CW - 12) / 3;
-    // Calcula altura uniforme para os 3 cards (alinhamento)
     const cardH = 110;
 
     plans.forEach((p, i) => {
@@ -730,7 +929,6 @@
         lineWidth: p.featured ? 0.6 : 0.25
       });
 
-      // Tag pequena no topo
       f.text(p.featured ? C.accent : C.primary);
       doc.setFontSize(7.5);
       doc.setFont('helvetica', 'bold');
@@ -738,7 +936,6 @@
       doc.text(p.tag, x + PAD, y + PAD + 3);
       doc.setCharSpace(0);
 
-      // Título
       f.text(C.white);
       doc.setFontSize(13);
       doc.setFont('helvetica', 'bold');
@@ -746,7 +943,6 @@
       tLines.forEach((l, idx) => doc.text(l, x + PAD, y + PAD + 12 + idx * 5));
       let cy = y + PAD + 12 + tLines.length * 5;
 
-      // Descrição
       f.text(C.textMuted);
       doc.setFontSize(8.5);
       doc.setFont('helvetica', 'italic');
@@ -754,13 +950,11 @@
       dLines.forEach((l, idx) => doc.text(l, x + PAD, cy + 2 + idx * 4));
       cy += dLines.length * 4 + 6;
 
-      // Hairline divisor
       f.stroke(p.featured ? C.borderStrong : C.border);
       doc.setLineWidth(0.15);
       doc.line(x + PAD, cy, x + colW - PAD, cy);
       cy += 4;
 
-      // Items
       f.text(C.text);
       doc.setFontSize(8.5);
       doc.setFont('helvetica', 'normal');
@@ -772,14 +966,12 @@
       });
     });
 
-    // Faixa "cliente recorrente" abaixo dos cards
     y += cardH + 8;
     const bH = 18;
     f.fill(C.surface);
     f.stroke(C.borderStrong);
     doc.setLineWidth(0.4);
     doc.roundedRect(M, y, CW, bH, 2.5, 2.5, 'FD');
-
     f.text(C.white);
     doc.setFontSize(9.5);
     doc.setFont('helvetica', 'bold');
@@ -805,29 +997,28 @@
       'Escolha a opção que funciona melhor para você.', y);
 
     const pays = [
-      { g: '$', t: 'À vista', d: 'PIX ou dinheiro com desconto.' },
-      { g: '▣', t: 'Cartão',  d: 'Parcelamento facilitado.' },
-      { g: '▤', t: 'Boleto',  d: 'Para empresas, com prazos.' },
-      { g: '↻', t: 'Mensal',  d: 'Para planos de manutenção.' }
+      { icon: 'dollar',  t: 'À vista', d: 'PIX ou dinheiro com desconto.' },
+      { icon: 'card',    t: 'Cartão',  d: 'Parcelamento facilitado.' },
+      { icon: 'doc',     t: 'Boleto',  d: 'Para empresas, com prazos.' },
+      { icon: 'refresh', t: 'Mensal',  d: 'Para planos de manutenção.' }
     ];
     const pW = (CW - 12) / 4;
-    const pH = 36;
+    const pH = 38;
     pays.forEach((p, i) => {
       const x = M + i * (pW + 4);
       card(doc, x, y, pW, pH);
       // Ícone centralizado horizontalmente
-      iconBadge(doc, x + (pW - 11)/2, y + 5, 11, p.g, C.primary);
-      // Título centralizado
+      const iconSize = 11;
+      iconBadge(doc, x + (pW - iconSize)/2, y + 5, iconSize, p.icon, C.primary);
       f.text(C.white);
       doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
-      doc.text(p.t, x + pW/2, y + 23, { align: 'center' });
-      // Descrição
+      doc.text(p.t, x + pW/2, y + 24, { align: 'center' });
       f.text(C.textMuted);
       doc.setFontSize(7.5);
       doc.setFont('helvetica', 'normal');
       const lines = doc.splitTextToSize(p.d, pW - 4);
-      lines.forEach((l, idx) => doc.text(l, x + pW/2, y + 28 + idx * 3.5, { align: 'center' }));
+      lines.forEach((l, idx) => doc.text(l, x + pW/2, y + 30 + idx * 3.5, { align: 'center' }));
     });
 
     y += pH + 14;
@@ -838,10 +1029,10 @@
       'Estamos com você antes, durante e depois.', y);
 
     const seals = [
-      { g: '✓', t: 'Qualidade na execução',     d: 'Cada projeto entregue com cuidado, organização e padrão técnico.' },
-      { g: '◉', t: 'Transparência total',        d: 'Orçamento aberto, escopo claro, prazos realistas, sem cobrança surpresa.' },
-      { g: '☎', t: 'Suporte pós-venda',          d: 'Canal direto pelo WhatsApp. Atendimento de quem entende do produto.' },
-      { g: '★', t: 'Compromisso com resultado',  d: 'Trabalhamos até o sistema funcionar como você espera.' }
+      { icon: 'check', t: 'Qualidade na execução',     d: 'Cada projeto entregue com cuidado, organização e padrão técnico.' },
+      { icon: 'eye',   t: 'Transparência total',       d: 'Orçamento aberto, escopo claro, prazos realistas, sem cobrança surpresa.' },
+      { icon: 'phone', t: 'Suporte pós-venda',         d: 'Canal direto pelo WhatsApp. Atendimento de quem entende do produto.' },
+      { icon: 'star',  t: 'Compromisso com resultado', d: 'Trabalhamos até o sistema funcionar como você espera.' }
     ];
     const sCol = (CW - 6) / 2;
     const sH = 26;
@@ -850,7 +1041,7 @@
       const x = M + col * (sCol + 6);
       const yy = y + row * (sH + 4);
       card(doc, x, yy, sCol, sH);
-      iconBadge(doc, x + PAD, yy + PAD, ICON, s.g, C.warning);
+      iconBadge(doc, x + PAD, yy + PAD, ICON, s.icon, C.warning);
       f.text(C.white);
       doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
@@ -901,7 +1092,7 @@
     doc.setFontSize(7.5);
     doc.setFont('helvetica', 'bold');
     doc.setCharSpace(1.4);
-    doc.text('✓ RESPOSTA RÁPIDA      ✓ VISITA SEM COMPROMISSO      ✓ ATENDIMENTO HUMANO',
+    doc.text('RESPOSTA RÁPIDA      VISITA SEM COMPROMISSO      ATENDIMENTO HUMANO',
       M + PAD, y + bannerH - 6);
     doc.setCharSpace(0);
 
@@ -911,30 +1102,39 @@
       'Fale com a Prolans',
       'Escolha o canal que preferir, respondemos rapidinho.', y);
 
+    /* Cards de contato em padrão UNIFICADO:
+       icon a esquerda (PAD, PAD), title alinhado vertical */
     const contacts = [
-      { g: '☎', l: 'WHATSAPP / TEL', v: '(21) 99711-2008' },
-      { g: '✉', l: 'E-MAIL',         v: 'contato@prolans.com.br' },
-      { g: '@', l: 'INSTAGRAM',      v: '@contato.prolans' },
-      { g: '⊕', l: 'SITE',           v: 'www.prolans.com.br' }
+      { icon: 'phone',     l: 'WHATSAPP / TEL', v: '(21) 99711-2008' },
+      { icon: 'envelope',  l: 'E-MAIL',         v: 'contato@prolans.com.br' },
+      { icon: 'instagram', l: 'INSTAGRAM',      v: '@contato.prolans' },
+      { icon: 'globe',     l: 'SITE',           v: 'www.prolans.com.br' }
     ];
     const cW = (CW - 12) / 4;
-    const cH = 28;
+    const cH = 30;
+    const cIcon = 9;
     contacts.forEach((c, i) => {
       const x = M + i * (cW + 4);
       card(doc, x, y, cW, cH);
-      iconBadge(doc, x + PAD - 2, y + PAD - 1, 9, c.g, C.primary);
 
+      // Ícone (canto esquerdo)
+      iconBadge(doc, x + PAD, y + PAD, cIcon, c.icon, C.primary);
+
+      // Label (uppercase pequeno) + value (bold)
+      const tx = x + PAD + cIcon + 5;
       f.text(C.textMuted);
       doc.setFontSize(6.5);
       doc.setFont('helvetica', 'bold');
       doc.setCharSpace(1.2);
-      doc.text(c.l, x + PAD - 2 + 9 + 4, y + PAD + 2.5);
+      doc.text(c.l, tx, y + PAD + 3.5);
       doc.setCharSpace(0);
 
       f.text(C.white);
-      doc.setFontSize(8.8);
+      doc.setFontSize(8.6);
       doc.setFont('helvetica', 'bold');
-      doc.text(c.v, x + PAD - 2 + 9 + 4, y + PAD + 9);
+      // Quebra automática se o valor for longo
+      const vLines = doc.splitTextToSize(c.v, cW - PAD - cIcon - 5 - PAD);
+      vLines.forEach((l, idx) => doc.text(l, tx, y + PAD + 9 + idx * 4));
     });
 
     y += cH + 6;
@@ -942,7 +1142,7 @@
     // Endereço (linha cheia)
     const addrH = 22;
     card(doc, M, y, CW, addrH);
-    iconBadge(doc, M + PAD, y + PAD, ICON, '◉', C.primary);
+    iconBadge(doc, M + PAD, y + PAD, ICON, 'pin', C.primary);
     f.text(C.textMuted);
     doc.setFontSize(7);
     doc.setFont('helvetica', 'bold');
