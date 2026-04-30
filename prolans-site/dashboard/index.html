@@ -11,9 +11,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="icon" type="image/png" href="assets/img/logo-prolans.png" />
-<link rel="stylesheet" href="assets/css/styles.css" />
-<link rel="stylesheet" href="assets/css/tech.css" />
+<link rel="icon" type="image/png" href="/assets/img/logo-prolans.png" />
+<link rel="stylesheet" href="/assets/css/styles.css" />
+<link rel="stylesheet" href="/assets/css/tech.css" />
 </head>
 <body>
 <canvas id="fx-particles"></canvas>
@@ -27,7 +27,7 @@
 
   <!-- SIDEBAR -->
   <aside class="dash-sidebar">
-    <a class="logo" href="index.html"><span class="logo-mark has-img"><img src="assets/img/logo-prolans.png" alt="Prolans" /></span> Prolans</a>
+    <a class="logo" href="/"><span class="logo-mark has-img"><img src="/assets/img/logo-prolans.png" alt="Prolans" /></span> Prolans</a>
 
     <nav class="dash-nav">
       <span class="group-label">Painel</span>
@@ -151,7 +151,7 @@
       <div class="panel">
         <div class="panel-head">
           <h3>Suas propostas</h3>
-          <a class="btn btn-primary btn-sm magnetic" href="orcamento.html" target="_blank">+ Solicitar nova</a>
+          <a class="btn btn-primary btn-sm magnetic" href="/orcamento/" target="_blank">+ Solicitar nova</a>
         </div>
         <div id="listPropostas"></div>
       </div>
@@ -172,7 +172,7 @@
       <div class="panel">
         <div class="panel-head">
           <h3>Contratos ativos</h3>
-          <a class="btn btn-ghost btn-sm" href="planos.html">+ Adicionar plano</a>
+          <a class="btn btn-ghost btn-sm" href="/planos/">+ Adicionar plano</a>
         </div>
         <div id="listContratos"></div>
       </div>
@@ -280,10 +280,10 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="assets/js/supabase-client.js"></script>
-<script src="assets/js/main.js"></script>
-<script src="assets/js/tech-fx.js"></script>
-<script src="assets/js/area-cliente.js"></script>
+<script src="/assets/js/supabase-client.js"></script>
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/tech-fx.js"></script>
+<script src="/assets/js/area-cliente.js"></script>
 <script>
   // Preenche perfil com dados de sessão
   const session = localStorage.getItem("prolans:session");

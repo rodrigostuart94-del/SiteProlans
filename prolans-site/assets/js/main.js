@@ -21,11 +21,12 @@
     nav.querySelectorAll("a").forEach(a => a.addEventListener("click", () => nav.classList.remove("open")));
   }
 
-  // ----- Highlight active nav link
-  const path = location.pathname.split("/").pop() || "index.html";
+  // ----- Highlight active nav link (URLs limpas: /sobre/, /servicos/, etc.)
+  const pathname = location.pathname.replace(/\/+$/, "") || "/";
   document.querySelectorAll(".nav a").forEach(a => {
-    const href = a.getAttribute("href");
-    if (href === path) a.classList.add("active");
+    const href = (a.getAttribute("href") || "").replace(/\/+$/, "") || "/";
+    if (href === "/" && pathname === "/") a.classList.add("active");
+    else if (href !== "/" && (pathname === href || pathname.startsWith(href + "/"))) a.classList.add("active");
   });
 
   // ----- Reveal on scroll

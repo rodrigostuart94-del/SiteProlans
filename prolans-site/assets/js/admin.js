@@ -15,9 +15,9 @@
 
   // Guard
   const session = await DB.getSession();
-  if (!session) { location.href = "area-cliente.html"; return; }
+  if (!session) { location.href = "/area-cliente/"; return; }
   const me = await DB.getProfile(session.user.id);
-  if (!me || me.role !== "admin") { location.href = "area-cliente.html"; return; }
+  if (!me || me.role !== "admin") { location.href = "/area-cliente/"; return; }
 
   document.getElementById("adminShell").hidden = false;
   document.getElementById("adminEmail").textContent = session.user.email;
@@ -25,7 +25,7 @@
   // Logout
   document.querySelectorAll("[data-logout]").forEach(b => b.addEventListener("click", async () => {
     await DB.signOut();
-    location.href = "area-cliente.html";
+    location.href = "/area-cliente/";
   }));
 
   // Panels
@@ -227,7 +227,7 @@
     document.querySelectorAll("[data-view-data]").forEach(b => b.addEventListener("click", () => viewClientData(b.dataset.viewData)));
   }
   document.getElementById("searchClients").addEventListener("input", renderClients);
-  document.getElementById("btnNewClient").addEventListener("click", () => alert("Para criar cliente: o cliente deve cadastrar conta em area-cliente.html. Você pode então editar nome/papel aqui."));
+  document.getElementById("btnNewClient").addEventListener("click", () => alert("Para criar cliente: o cliente deve cadastrar conta em /area-cliente/. Você pode então editar nome/papel aqui."));
 
   function editClient(userId) {
     const u = allProfiles.find(x => x.id === userId);

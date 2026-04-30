@@ -75,7 +75,7 @@
     const session = await DB.getSession();
     if (session) {
       const profile = await DB.getProfile(session.user.id);
-      location.href = (profile && profile.role === "admin") ? "admin.html" : "dashboard.html";
+      location.href = (profile && profile.role === "admin") ? "/admin/" : "/dashboard/";
       return;
     }
 
@@ -124,7 +124,7 @@
           // Tenta logar automaticamente (se confirmação por e-mail estiver desligada)
           const login = await DB.signIn(data.email, data.senha);
           if (!login.error) {
-            setTimeout(() => location.href = "dashboard.html", 600);
+            setTimeout(() => location.href = "/dashboard/", 600);
           } else {
             window.toast("Confirme seu e-mail antes de entrar.", "info");
           }
@@ -138,7 +138,7 @@
           clearLock();
           window.toast("Login efetuado.", "success");
           const profile = await DB.getProfile();
-          const dest = (profile && profile.role === "admin") ? "admin.html" : "dashboard.html";
+          const dest = (profile && profile.role === "admin") ? "/admin/" : "/dashboard/";
           setTimeout(() => location.href = dest, 500);
         }
       } finally {
@@ -157,11 +157,11 @@
 
   // Guard
   const session = await DB.getSession();
-  if (!session) { location.href = "area-cliente.html"; return; }
+  if (!session) { location.href = "/area-cliente/"; return; }
 
   const user = session.user;
   const profile = await DB.getProfile(user.id);
-  if (profile && profile.role === "admin") { location.href = "admin.html"; return; }
+  if (profile && profile.role === "admin") { location.href = "/admin/"; return; }
 
   const userName = (profile && profile.nome) || user.email;
 
@@ -179,7 +179,7 @@
   document.querySelectorAll("[data-logout]").forEach(b => b.addEventListener("click", async (e) => {
     e.preventDefault();
     await DB.signOut();
-    location.href = "area-cliente.html";
+    location.href = "/area-cliente/";
   }));
 
   // Switching panels
