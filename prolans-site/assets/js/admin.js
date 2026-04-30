@@ -112,9 +112,10 @@
   }
 
   function pillFor(s) {
-    const map = { pending:"pill-pending", approved:"pill-approved", "in-progress":"pill-progress",
+    const map = { pending:"pill-pending", pending_confirm:"pill-progress", approved:"pill-approved", "in-progress":"pill-progress",
                   done:"pill-done", emitida:"pill-approved", cancelada:"pill-pending" };
-    return `<span class="pill ${map[s]||"pill-progress"}">${esc(s||"—")}</span>`;
+    const lbl = { pending_confirm: "Aguardando confirmação" };
+    return `<span class="pill ${map[s]||"pill-progress"}">${esc(lbl[s] || s || "—")}</span>`;
   }
 
   // ===== CLIENTES
@@ -247,7 +248,7 @@
   };
 
   // ===== Genérico — gerador de tabela CRUD vinculada a cliente
-  function makeTable({ panel, listVar, tableName, columns, idField, filterId, btnId, formFields, makePayload }) {
+  function makeTable({ panel, listVar, tableName, columns, idField, filterId, btnId, formFields, makePayload, extraActions }) {
     const cntId = ({servicos:"cntOS", boletos:"cntBol", notas_fiscais:"cntNF", propostas:"cntProp", contratos:"cntCtr"})[tableName];
     const tblId = ({servicos:"tblOS", boletos:"tblBol", notas_fiscais:"tblNF", propostas:"tblProp", contratos:"tblCtr"})[tableName];
     const filter = document.getElementById(filterId);
@@ -261,6 +262,7 @@
           ${columns(it).map(c => `<td>${c}</td>`).join("")}
           <td>
             <div class="row-actions">
+              ${extraActions ? extraActions(it) : ""}
               ${it.arquivo_path ? `<button class="btn btn-ghost btn-xs" data-view-file="${esc(it.arquivo_path)}">Ver arquivo</button>` : ""}
               <button class="btn btn-ghost btn-xs" data-edit-row="${esc(it[idField])}">Editar</button>
               <button class="btn btn-ghost btn-xs" data-del-row="${esc(it[idField])}" style="color:#ff7a7a;border-color:#ff7a7a">Excluir</button>
@@ -398,6 +400,9 @@
   const tblBol = safeMakeTable({
     listVar: () => allBol, tableName: "boletos", idField: "id",
     filterId: "filterBolClient", btnId: "btnNewBol",
+    extraActions: (b) => b.status === "pending_confirm"
+      ? `<button class="btn btn-primary btn-xs" data-confirm-pay="${esc(b.id)}">Confirmar pagamento</button>`
+      : "",
     columns: (b) => Object.keys(b).length ? [
       `<strong>${esc(b.id.slice(0,8))}</strong>`,
       `${esc(clientNameById(b.user_id))}`,
@@ -412,6 +417,7 @@
       <div><label>Vencimento</label><input type="date" id="f_venc" value="${esc(it.vencimento || new Date().toISOString().slice(0,10))}" /></div>
       <div><label>Status</label><select id="f_status">
         <option value="pending" ${it.status==="pending"?"selected":""}>A pagar</option>
+        <option value="pending_confirm" ${it.status==="pending_confirm"?"selected":""}>Aguardando confirmação</option>
         <option value="done" ${it.status==="done"?"selected":""}>Pago</option>
       </select></div>
     `,
@@ -422,6 +428,18 @@
       vencimento: document.getElementById("f_venc").value,
       status: document.getElementById("f_status").value
     })
+  });
+
+  // Botão "Confirmar pagamento" para boletos em pending_confirm — via event delegation
+  document.body.addEventListener("click", async (e) => {
+    const btn = e.target.closest("[data-confirm-pay]");
+    if (!btn) return;
+    e.preventDefault();
+    if (!confirm("Confirmar que o cliente realizou este pagamento e dar baixa?")) return;
+    const r = await DB.table("boletos").update(btn.dataset.confirmPay, { status: "done" });
+    if (r.error) { window.toast(r.error.message, "error"); return; }
+    await loadAll(); tblBol.render(); renderKPI();
+    window.toast("Pagamento confirmado.", "success");
   });
 
   // ===== NOTAS FISCAIS

@@ -34,6 +34,14 @@ where id = (select id from auth.users where email = 'adm@prolans.com.br');
 
 Você deve ver "1 row updated".
 
+### 4-pré) Status "pending_confirm" para boletos — obrigatório
+
+Para o fluxo de pagamento (cliente marca pago → admin confirma):
+
+1. SQL Editor → New query
+2. Cole o conteúdo de [`prolans-site/supabase-pending-confirm.sql`](prolans-site/supabase-pending-confirm.sql)
+3. **Run**
+
 ### 4) Habilitar upload de arquivos (PDF/XML) — obrigatório
 
 Para que o admin consiga anexar boletos, NFs, contratos, propostas e OS em PDF/XML, e o cliente consiga baixar:

@@ -30,7 +30,7 @@
   const esc = (v) => String(v == null ? "" : v).replace(/[&<>"'`/]/g, c => escMap[c]);
   const fmtBRL = v => Number(v||0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   const fmtDate = s => s ? new Date(s).toLocaleDateString("pt-BR") : "—";
-  const TAG = { pending:"Aguardando", approved:"Aprovado", "in-progress":"Em andamento", done:"Concluído", emitida:"Emitida", cancelada:"Cancelada" };
+  const TAG = { pending:"Aguardando", pending_confirm:"Aguardando confirmação", approved:"Aprovado", "in-progress":"Em andamento", done:"Concluído", emitida:"Emitida", cancelada:"Cancelada" };
 
   function emptyState(msg) {
     return `
@@ -286,6 +286,9 @@
 
   function renderBoletos() {
     if (!store.boletos.length) { renderInto("listBoletos", emptyState("Nenhum boleto disponível.")); return; }
+    const statusLabel = (s) => s === "pending" ? "A pagar"
+                              : s === "pending_confirm" ? "Aguardando confirmação"
+                              : "Pago";
     renderInto("listBoletos", store.boletos.map(b => `
       <div class="list-row">
         <div>
@@ -293,17 +296,25 @@
           <div class="meta">Vence ${esc(fmtDate(b.vencimento))}</div>
         </div>
         <div style="color:#fff;font-weight:700">${esc(fmtBRL(b.valor))}</div>
-        <span class="tag ${esc(b.status)}">${b.status === "pending" ? "A pagar" : "Pago"}</span>
+        <span class="tag ${esc(b.status)}">${esc(statusLabel(b.status))}</span>
         ${fileBtn(b.arquivo_path, "Boleto PDF")}
         ${b.status === "pending"
           ? `<button class="btn btn-primary btn-sm" data-pay="${esc(b.id)}">Marcar pago</button>`
-          : ``}
+          : b.status === "pending_confirm"
+            ? `<span class="muted" style="font-size:.82rem;color:#9ee9ff">Aguardando Prolans confirmar</span>`
+            : ``}
       </div>
     `).join(""));
     bindFileButtons();
-    document.querySelectorAll('[data-pay]').forEach(b => b.addEventListener("click", async () => {
-      const r = await DB.table("boletos").update(b.dataset.pay, { status: "done" });
-      if (!r.error) { await loadAll(); renderBoletos(); renderKPIs(); window.toast("Pagamento marcado.", "success"); }
+    document.querySelectorAll('[data-pay]').forEach(btn => btn.addEventListener("click", async () => {
+      if (!confirm("Confirmar que você pagou este boleto? A Prolans irá conferir e dar baixa.")) return;
+      const r = await DB.table("boletos").update(btn.dataset.pay, { status: "pending_confirm" });
+      if (!r.error) {
+        await loadAll(); renderBoletos(); renderKPIs();
+        window.toast("Marcado como pago. Aguarde a confirmação da Prolans.", "success", 4500);
+      } else {
+        window.toast("Falha ao atualizar.", "error");
+      }
     }));
   }
 
