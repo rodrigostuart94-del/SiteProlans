@@ -308,13 +308,22 @@
     bindFileButtons();
     document.querySelectorAll('[data-pay]').forEach(btn => btn.addEventListener("click", async () => {
       if (!confirm("Confirmar que você pagou este boleto? A Prolans irá conferir e dar baixa.")) return;
-      const r = await DB.table("boletos").update(btn.dataset.pay, { status: "pending_confirm" });
-      if (!r.error) {
-        await loadAll(); renderBoletos(); renderKPIs();
-        window.toast("Marcado como pago. Aguarde a confirmação da Prolans.", "success", 4500);
-      } else {
-        window.toast("Falha ao atualizar.", "error");
+      const id = btn.dataset.pay;
+      // Atualização otimista: muda UI antes do round-trip
+      const target = store.boletos.find(x => x.id === id);
+      const prevStatus = target ? target.status : null;
+      if (target) target.status = "pending_confirm";
+      renderBoletos(); renderKPIs();
+
+      const r = await DB.table("boletos").update(id, { status: "pending_confirm" });
+      if (r.error) {
+        // Reverte se falhar
+        if (target) target.status = prevStatus;
+        renderBoletos(); renderKPIs();
+        window.toast(r.error.message || "Falha ao atualizar.", "error");
+        return;
       }
+      window.toast("Marcado como pago. Aguarde a confirmação da Prolans.", "success", 4500);
     }));
   }
 
