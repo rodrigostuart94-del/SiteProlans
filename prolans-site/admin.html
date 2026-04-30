@@ -77,8 +77,9 @@
   .admin-form-grid .full { grid-column: 1/-1; }
   .admin-form-grid label { display: block; font-size: .76rem; color: var(--text-dim); margin-bottom: 4px; font-weight: 600; }
 
-  .modal-back { position: fixed; inset: 0; background: rgba(0,0,0,.65); display: none; place-items: center; z-index: 200; padding: 20px; backdrop-filter: blur(6px); }
-  .modal-back.open { display: grid; }
+  /* IMPORTANT necessário porque tech.css força position:relative em filhos do body via :not() */
+  .modal-back { position: fixed !important; inset: 0 !important; background: rgba(0,0,0,.65); display: none; place-items: center; z-index: 9999 !important; padding: 20px; backdrop-filter: blur(6px); }
+  .modal-back.open { display: grid !important; }
   .modal { background: #0f1525; border: 1px solid var(--border); border-radius: 16px; padding: 26px; width: 100%; max-width: 720px; max-height: 90vh; overflow-y: auto; }
   .modal h3 { margin: 0 0 16px; }
   .modal .close { float: right; cursor: pointer; color: var(--text-dim); }
