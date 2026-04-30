@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; script-src 'self' 'unsafe-inline'; connect-src 'self'; frame-src https://www.google.com https://maps.google.com; base-uri 'self'; form-action 'self' https://wa.me; object-src 'none'; upgrade-insecure-requests" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src 'self'; frame-src https://www.google.com https://maps.google.com; base-uri 'self'; form-action 'self' https://wa.me; object-src 'none'; upgrade-insecure-requests" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>Portfólio Comercial — Prolans Soluções em Tecnologia e Serviços</title>
 <meta name="description" content="Portfólio oficial da Prolans Soluções em Tecnologia e Serviços. Segurança eletrônica, automação, redes, controle de acesso e manutenção em Teresópolis/RJ." />
@@ -507,6 +507,49 @@
 
 .pf-print-footer { display: none; }
 
+/* ============================================================
+   GERAÇÃO DE PDF (html2pdf.js) — preserva o design escuro
+   ============================================================ */
+body.pdf-generating .pf-screen-only,
+body.pdf-generating .pf-toolbar,
+body.pdf-generating #fx-particles,
+body.pdf-generating #fx-progress,
+body.pdf-generating .fx-pattern,
+body.pdf-generating .fx-cursor,
+body.pdf-generating .fx-cursor-trail,
+body.pdf-generating .wa-float,
+body.pdf-generating .toast,
+body.pdf-generating .header,
+body.pdf-generating .footer { display: none !important; }
+
+body.pdf-generating::before { display: none !important; }
+body.pdf-generating { background: #060912 !important; }
+
+/* Cada página do portfólio ocupa pelo menos uma página do PDF */
+body.pdf-generating #pf-pdf-root { background: #060912; }
+body.pdf-generating .pf-page { padding: 50px 0; page-break-inside: avoid; }
+body.pdf-generating .pf-cover { min-height: auto; padding: 60px 24px; page-break-after: always; }
+body.pdf-generating .pf-page-break { page-break-before: always; }
+
+/* Indicador de carregamento */
+.pf-pdf-loading {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(6,9,18,.85); backdrop-filter: blur(10px);
+  display: none; place-items: center; flex-direction: column; gap: 16px;
+}
+.pf-pdf-loading.active { display: grid; }
+.pf-pdf-loading .pf-spinner {
+  width: 56px; height: 56px; border-radius: 50%;
+  border: 3px solid rgba(0,212,255,.2);
+  border-top-color: var(--primary);
+  animation: pf-spin 0.8s linear infinite;
+}
+.pf-pdf-loading p {
+  font-family: "JetBrains Mono", monospace; font-size: .9rem;
+  color: var(--primary); letter-spacing: .12em; text-transform: uppercase;
+}
+@keyframes pf-spin { to { transform: rotate(360deg); } }
+
 @media (max-width: 860px) {
   .pf-cover-meta { grid-auto-flow: row; gap: 8px; padding: 14px 18px; }
   .pf-toolbar { position: relative; top: 0; }
@@ -549,17 +592,19 @@
       <span>v1.0 · Atualizado em <strong style="color:#fff" id="pfDate">--</strong></span>
     </div>
     <div class="pf-toolbar-actions">
-      <button class="btn btn-ghost btn-sm" onclick="window.print()" type="button">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      <button class="btn btn-ghost btn-sm" id="pfDownloadBtn" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Baixar PDF
       </button>
-      <a class="btn btn-whatsapp btn-sm magnetic" href="https://wa.me/5521997112008?text=Ol%C3%A1%2C%20gostaria%20de%20conhecer%20mais%20sobre%20a%20Prolans" target="_blank" rel="noopener">
+      <a class="btn btn-whatsapp btn-sm magnetic" href="https://wa.me/prolans?text=Ol%C3%A1%2C%20gostaria%20de%20conhecer%20mais%20sobre%20a%20Prolans" target="_blank" rel="noopener">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.7-1-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.6.7.3 1.3.5 1.8.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.4z"/></svg>
         Falar no WhatsApp
       </a>
     </div>
   </div>
 </div>
+
+<div id="pf-pdf-root">
 
 <!-- ============================================================ -->
 <!-- 01 · CAPA                                                    -->
@@ -1152,7 +1197,7 @@
           Solicitar Orçamento Gratuito
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
         </a>
-        <a class="btn btn-whatsapp magnetic" href="https://wa.me/5521997112008?text=Ol%C3%A1%2C%20vi%20o%20portf%C3%B3lio%20da%20Prolans%20e%20quero%20conversar" target="_blank" rel="noopener">
+        <a class="btn btn-whatsapp magnetic" href="https://wa.me/prolans?text=Ol%C3%A1%2C%20vi%20o%20portf%C3%B3lio%20da%20Prolans%20e%20quero%20conversar" target="_blank" rel="noopener">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.7-1-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.6.7.3 1.3.5 1.8.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.4z"/></svg>
           Falar agora no WhatsApp
         </a>
@@ -1180,7 +1225,7 @@
     </div>
 
     <div class="pf-contact" style="margin-top:36px">
-      <a class="pf-contact-card reveal" href="https://wa.me/5521997112008" target="_blank" rel="noopener">
+      <a class="pf-contact-card reveal" href="https://wa.me/prolans" target="_blank" rel="noopener">
         <div class="pf-contact-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.7-1-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.6.7.3 1.3.5 1.8.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.4z"/></svg>
         </div>
@@ -1242,6 +1287,8 @@
   </div>
 </section>
 
+</div><!-- /#pf-pdf-root -->
+
 <div class="pf-print-footer">
   Prolans Soluções em Tecnologia e Serviços · (21) 99711-2008 · contato@prolans.com.br · www.prolans.com.br
 </div>
@@ -1256,7 +1303,7 @@
         <div class="social">
           <a href="https://www.instagram.com.br/contato.prolans" target="_blank" rel="noopener" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
           <a href="https://www.facebook.com/contato.prolans" target="_blank" rel="noopener" aria-label="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
-          <a href="https://wa.me/5521997112008" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.7-1-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.6.7.3 1.3.5 1.8.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.4z"/></svg></a>
+          <a href="https://wa.me/prolans" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.7-1-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.6.7.3 1.3.5 1.8.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.4z"/></svg></a>
         </div>
       </div>
       <div>
@@ -1283,7 +1330,7 @@
           <li><a href="area-cliente.html">Área do Cliente</a></li>
           <li><a href="orcamento.html">Solicitar Orçamento</a></li>
           <li><a href="faq.html">Perguntas Frequentes</a></li>
-          <li><a href="https://wa.me/5521997112008" target="_blank" rel="noopener">WhatsApp</a></li>
+          <li><a href="https://wa.me/prolans" target="_blank" rel="noopener">WhatsApp</a></li>
         </ul>
       </div>
     </div>
@@ -1294,12 +1341,19 @@
   </div>
 </footer>
 
-<a class="wa-float pf-screen-only" href="https://wa.me/5521997112008" target="_blank" rel="noopener" aria-label="WhatsApp">
+<a class="wa-float pf-screen-only" href="https://wa.me/prolans" target="_blank" rel="noopener" aria-label="WhatsApp">
   <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.7-1-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.6.7.3 1.3.5 1.8.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.4zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
 </a>
 
+<!-- Overlay de carregamento do PDF -->
+<div class="pf-pdf-loading" id="pfPdfLoading">
+  <div class="pf-spinner"></div>
+  <p>Gerando PDF...</p>
+</div>
+
 <script src="assets/js/main.js"></script>
 <script src="assets/js/tech-fx.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
 <script>
   // Data atual
   (function () {
@@ -1312,6 +1366,61 @@
     if (yEl) yEl.textContent = y;
     const yfEl = document.getElementById("yearFoot");
     if (yfEl) yfEl.textContent = y;
+  })();
+
+  // Download do PDF preservando o design escuro do site
+  (function () {
+    const btn = document.getElementById("pfDownloadBtn");
+    const overlay = document.getElementById("pfPdfLoading");
+    if (!btn) return;
+
+    btn.addEventListener("click", async function () {
+      if (typeof html2pdf === "undefined") {
+        alert("A biblioteca de PDF não carregou. Verifique sua conexão e tente novamente.");
+        return;
+      }
+      const element = document.getElementById("pf-pdf-root");
+      if (!element) return;
+
+      btn.disabled = true;
+      overlay.classList.add("active");
+      document.body.classList.add("pdf-generating");
+      // Pequeno delay para o reflow aplicar antes da captura
+      await new Promise(r => setTimeout(r, 200));
+
+      const opt = {
+        margin: [6, 6, 6, 6],
+        filename: "Portfolio-Prolans-2026.pdf",
+        image: { type: "jpeg", quality: 0.95 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          allowTaint: false,
+          backgroundColor: "#060912",
+          logging: false,
+          windowWidth: 1240,
+          letterRendering: true
+        },
+        jsPDF: {
+          unit: "mm",
+          format: "a4",
+          orientation: "portrait",
+          compress: true
+        },
+        pagebreak: { mode: ["css", "legacy"], before: ".pf-page-break", avoid: [".pf-no-break", ".pf-solution", ".pf-step", ".pf-plan", ".pf-mvv-card", ".pf-benefit", ".pf-pay-card", ".pf-seal-item"] }
+      };
+
+      try {
+        await html2pdf().set(opt).from(element).save();
+      } catch (err) {
+        console.error("Erro ao gerar PDF:", err);
+        alert("Não foi possível gerar o PDF. Tente novamente.");
+      } finally {
+        document.body.classList.remove("pdf-generating");
+        overlay.classList.remove("active");
+        btn.disabled = false;
+      }
+    });
   })();
 </script>
 </body>
