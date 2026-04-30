@@ -311,15 +311,16 @@
 
 /* Contato */
 .pf-contact {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 18px;
 }
 .pf-contact-card {
   padding: 24px; border: 1px solid var(--border);
   border-radius: var(--radius); background: rgba(15,21,37,.5);
   display: flex; gap: 14px; align-items: flex-start;
-  transition: var(--t);
+  transition: var(--t); min-width: 0;
 }
+.pf-contact-card > div { min-width: 0; flex: 1; }
 .pf-contact-card:hover { border-color: var(--border-strong); transform: translateY(-3px); }
 .pf-contact-icon {
   width: 42px; height: 42px; border-radius: 11px; flex: none;
@@ -332,7 +333,8 @@
   letter-spacing: .15em; color: var(--text-muted);
   text-transform: uppercase; margin-bottom: 4px;
 }
-.pf-contact-card .pf-contact-value { color: #fff; font-weight: 600; font-size: .98rem; word-break: break-word; }
+.pf-contact-card .pf-contact-value { color: #fff; font-weight: 600; font-size: .98rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pf-contact-card .pf-contact-value.pf-wrap { white-space: normal; overflow: visible; text-overflow: clip; }
 
 /* Diferenciais inline */
 .pf-diffs {
@@ -1219,7 +1221,7 @@
         </div>
         <div>
           <div class="pf-contact-label">Endereço</div>
-          <div class="pf-contact-value">Praça Baltazar da Silveira, 90, Várzea, Teresópolis/RJ</div>
+          <div class="pf-contact-value pf-wrap">Praça Baltazar da Silveira, 90, Várzea, Teresópolis/RJ</div>
         </div>
       </div>
     </div>
