@@ -50,6 +50,75 @@
   .stat-card .lbl { font-size: .72rem; letter-spacing: .15em; text-transform: uppercase; color: var(--text-dim); }
   .stat-card .val { font-size: 1.6rem; font-weight: 800; margin-top: 6px; }
 
+  /* === Visão Geral: KPI tiles === */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .kpi-tile {
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px 20px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    transition: transform .15s ease, border-color .15s ease, box-shadow .25s ease;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-tile::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--primary);
+    opacity: .9;
+  }
+  .kpi-tile:hover { transform: translateY(-2px); border-color: rgba(0,212,255,.35); box-shadow: 0 6px 20px rgba(0,0,0,.35); }
+  .kpi-tile .kpi-icon {
+    flex-shrink: 0;
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: grid; place-items: center;
+    background: rgba(0,212,255,.1);
+    color: var(--primary);
+  }
+  .kpi-tile .kpi-icon svg { width: 22px; height: 22px; }
+  .kpi-tile .kpi-body { min-width: 0; flex: 1; }
+  .kpi-tile .kpi-num { font-size: 1.85rem; font-weight: 800; color: #fff; line-height: 1; letter-spacing: -.02em; }
+  .kpi-tile .kpi-lbl { font-size: .82rem; color: var(--text-dim); margin-top: 6px; line-height: 1.3; }
+
+  /* Variantes por tipo */
+  .kpi-tile.kpi-warn::before { background: #ffc25c; }
+  .kpi-tile.kpi-warn .kpi-icon { background: rgba(255,194,92,.12); color: #ffc25c; }
+  .kpi-tile.kpi-warn:hover { border-color: rgba(255,194,92,.45); }
+
+  .kpi-tile.kpi-info::before { background: #00d4ff; }
+  .kpi-tile.kpi-info .kpi-icon { background: rgba(0,212,255,.12); color: #9ee9ff; }
+  .kpi-tile.kpi-info:hover { border-color: rgba(0,212,255,.45); }
+
+  .kpi-tile.kpi-danger::before { background: #ff7a7a; }
+  .kpi-tile.kpi-danger .kpi-icon { background: rgba(255,89,89,.14); color: #ff7a7a; }
+  .kpi-tile.kpi-danger:hover { border-color: rgba(255,89,89,.45); }
+
+  .kpi-tile.kpi-success::before { background: #6ee7b7; }
+  .kpi-tile.kpi-success .kpi-icon { background: rgba(110,231,183,.12); color: #6ee7b7; }
+  .kpi-tile.kpi-success:hover { border-color: rgba(110,231,183,.45); }
+
+  .kpi-tile.kpi-primary::before { background: #00d4ff; }
+  .kpi-tile.kpi-primary .kpi-icon { background: rgba(0,212,255,.12); color: var(--primary); }
+
+  .kpi-tile.kpi-accent::before { background: #b6a5ff; }
+  .kpi-tile.kpi-accent .kpi-icon { background: rgba(124,92,255,.14); color: #b6a5ff; }
+  .kpi-tile.kpi-accent:hover { border-color: rgba(124,92,255,.45); }
+
+  /* Atenção quando há valores críticos */
+  .kpi-tile.attention { animation: kpiPulse 2s ease-in-out infinite; }
+  @keyframes kpiPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,89,89,.35); }
+    50% { box-shadow: 0 0 0 8px rgba(255,89,89,0); }
+  }
+
   .panel { background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px; padding: 22px; margin-top: 18px; }
   .panel h2 { font-size: 1.05rem; margin: 0 0 14px; display: flex; align-items: center; gap: 10px; }
   .panel h2 .count { color: var(--text-dim); font-size: .8rem; font-weight: 500; }
@@ -136,9 +205,13 @@
     .admin-side { position: static; height: auto; }
     .admin-main { padding: 20px; }
     .admin-grid-3 { grid-template-columns: 1fr; }
+    .overview-grid { grid-template-columns: 1fr; }
     .admin-form-grid { grid-template-columns: 1fr; }
     .panel table { font-size: .82rem; }
     .panel th, .panel td { padding: 8px 6px; }
+  }
+  @media (min-width: 981px) and (max-width: 1280px) {
+    .overview-grid { grid-template-columns: repeat(2, 1fr); }
   }
 </style>
 </head>
@@ -208,22 +281,80 @@
     <!-- OVERVIEW -->
     <section data-panel="overview">
       <div id="alertContainer"></div>
-      <div class="admin-grid-3">
-        <div class="stat-card"><div class="lbl">Clientes ativos</div><div class="val gradient-text" id="kpiClients">0</div></div>
-        <div class="stat-card"><div class="lbl">Leads novos</div><div class="val gradient-text" id="kpiLeads">0</div></div>
-        <div class="stat-card"><div class="lbl">OS em andamento</div><div class="val gradient-text" id="kpiOS">0</div></div>
-        <div class="stat-card"><div class="lbl">Boletos a pagar</div><div class="val gradient-text" id="kpiBoletos">0</div></div>
-        <div class="stat-card"><div class="lbl">Receita prevista (mês)</div><div class="val gradient-text" id="kpiRevenue">R$ 0</div></div>
-        <div class="stat-card"><div class="lbl">Notas emitidas</div><div class="val gradient-text" id="kpiNFs">0</div></div>
+      <div class="overview-grid">
+        <a class="kpi-tile kpi-warn" data-go="boletos" id="kpiTilePendingConfirm">
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <div class="kpi-body">
+            <div class="kpi-num" id="kpiPendingConfirm">0</div>
+            <div class="kpi-lbl">Boletos aguardando confirmação</div>
+          </div>
+        </a>
+
+        <a class="kpi-tile kpi-info" data-go="boletos">
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="kpi-body">
+            <div class="kpi-num" id="kpiOpenBoletos">0</div>
+            <div class="kpi-lbl">Boletos abertos</div>
+          </div>
+        </a>
+
+        <a class="kpi-tile kpi-danger" data-go="boletos" id="kpiTileOverdue">
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+          </div>
+          <div class="kpi-body">
+            <div class="kpi-num" id="kpiOverdueBoletos">0</div>
+            <div class="kpi-lbl">Boletos vencidos</div>
+          </div>
+        </a>
+
+        <a class="kpi-tile kpi-success" data-go="notas">
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+          </div>
+          <div class="kpi-body">
+            <div class="kpi-num" id="kpiNFs">0</div>
+            <div class="kpi-lbl">Notas enviadas</div>
+          </div>
+        </a>
+
+        <a class="kpi-tile kpi-primary" data-go="servicos">
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a4 4 0 0 0 5 5L17 14l3 3a2 2 0 0 1-3 3l-3-3-2.7 2.7a4 4 0 0 0-5-5L9 12 6 9a2 2 0 0 1 3-3l3 3 2.7-2.7z"/></svg>
+          </div>
+          <div class="kpi-body">
+            <div class="kpi-num" id="kpiOS">0</div>
+            <div class="kpi-lbl">O.S. enviadas</div>
+          </div>
+        </a>
+
+        <a class="kpi-tile kpi-accent" data-go="clientes">
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="kpi-body">
+            <div class="kpi-num" id="kpiClients">0</div>
+            <div class="kpi-lbl">Clientes cadastrados</div>
+          </div>
+        </a>
       </div>
+
       <div class="panel">
-        <h2>Atalhos</h2>
+        <h2>Atalhos rápidos</h2>
         <div class="tools">
           <button class="btn btn-primary btn-sm" data-go="clientes">Gerenciar Clientes</button>
-          <button class="btn btn-ghost btn-sm" data-go="leads">Ver Orçamentos</button>
+          <button class="btn btn-ghost btn-sm" data-go="leads">Ver Orçamentos <span id="kpiLeadsBadge" hidden style="margin-left:6px;background:#ff5959;color:#fff;font-size:.7rem;padding:1px 6px;border-radius:99px"></span></button>
           <button class="btn btn-ghost btn-sm" data-go="servicos">Nova OS</button>
           <button class="btn btn-ghost btn-sm" data-go="boletos">Novo Boleto</button>
           <button class="btn btn-ghost btn-sm" data-go="notas">Nova Nota Fiscal</button>
+        </div>
+        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span style="color:var(--text-dim);font-size:.85rem">Receita mensal estimada (contratos ativos):</span>
+          <strong style="color:#fff;font-size:1.1rem" id="kpiRevenue">R$ 0</strong>
         </div>
       </div>
     </section>

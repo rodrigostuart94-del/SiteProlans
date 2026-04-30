@@ -101,14 +101,39 @@
   // ===== KPI
   function renderKPI() {
     const g = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
-    g("kpiClients",  clientsList().length);
-    g("kpiLeads",    allLeads.filter(l => l.status === "novo").length);
-    g("kpiOS",       allOS.filter(s => s.status === "in-progress").length);
-    g("kpiBoletos",  allBol.filter(b => b.status === "pending").length);
-    g("kpiNFs",      allNF.length);
+    const today = new Date(); today.setHours(0,0,0,0);
+
+    // Boletos
+    const pendingConfirm = allBol.filter(b => b.status === "pending_confirm").length;
+    const open      = allBol.filter(b => b.status === "pending" && new Date(b.vencimento) >= today).length;
+    const overdue   = allBol.filter(b => b.status === "pending" && new Date(b.vencimento) <  today).length;
+
+    g("kpiPendingConfirm", pendingConfirm);
+    g("kpiOpenBoletos",    open);
+    g("kpiOverdueBoletos", overdue);
+    g("kpiNFs",            allNF.length);
+    g("kpiOS",             allOS.length);
+    g("kpiClients",        clientsList().length);
+
+    // Leads (mantido como badge no atalho)
+    const novosLeads = allLeads.filter(l => l.status === "novo").length;
+    const leadsBadge = document.getElementById("kpiLeadsBadge");
+    if (leadsBadge) {
+      if (novosLeads > 0) { leadsBadge.textContent = novosLeads; leadsBadge.hidden = false; }
+      else { leadsBadge.hidden = true; }
+    }
+
+    // Receita mensal (contratos ativos)
     let receita = 0;
     allCtr.forEach(c => { if (c.status === "approved") receita += Number(c.valor||0); });
-    g("kpiRevenue",  fmtBRL(receita));
+    g("kpiRevenue", fmtBRL(receita));
+
+    // Atenção visual: tiles com pulse vermelho quando há urgência
+    const tilePC = document.getElementById("kpiTilePendingConfirm");
+    if (tilePC) tilePC.classList.toggle("attention", pendingConfirm > 0);
+    const tileOver = document.getElementById("kpiTileOverdue");
+    if (tileOver) tileOver.classList.toggle("attention", overdue > 0);
+
     renderPaymentAlerts();
   }
 
