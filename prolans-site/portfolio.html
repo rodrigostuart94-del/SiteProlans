@@ -311,30 +311,35 @@
 
 /* Contato */
 .pf-contact {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 18px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
 }
 .pf-contact-card {
-  padding: 24px; border: 1px solid var(--border);
+  padding: 22px; border: 1px solid var(--border);
   border-radius: var(--radius); background: rgba(15,21,37,.5);
   display: flex; gap: 14px; align-items: flex-start;
   transition: var(--t); min-width: 0;
 }
-.pf-contact-card > div { min-width: 0; flex: 1; }
+.pf-contact-card > div:not(.pf-contact-icon) { min-width: 0; flex: 1 1 auto; }
 .pf-contact-card:hover { border-color: var(--border-strong); transform: translateY(-3px); }
 .pf-contact-icon {
-  width: 42px; height: 42px; border-radius: 11px; flex: none;
+  width: 40px; height: 40px; border-radius: 11px;
+  flex: 0 0 40px;
   background: linear-gradient(135deg, rgba(0,212,255,.18), rgba(0,102,255,.12));
   border: 1px solid var(--border-strong); color: var(--primary);
   display: grid; place-items: center;
 }
 .pf-contact-card .pf-contact-label {
-  font-family: "JetBrains Mono", monospace; font-size: .72rem;
-  letter-spacing: .15em; color: var(--text-muted);
+  font-family: "JetBrains Mono", monospace; font-size: .68rem;
+  letter-spacing: .12em; color: var(--text-muted);
   text-transform: uppercase; margin-bottom: 4px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.pf-contact-card .pf-contact-value { color: #fff; font-weight: 600; font-size: .98rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.pf-contact-card .pf-contact-value.pf-wrap { white-space: normal; overflow: visible; text-overflow: clip; }
+.pf-contact-card .pf-contact-value {
+  color: #fff; font-weight: 600; font-size: .9rem;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.pf-contact-card .pf-contact-value.pf-wrap { white-space: normal; overflow: visible; text-overflow: clip; font-size: .95rem; }
 
 /* Diferenciais inline */
 .pf-diffs {
@@ -1180,7 +1185,7 @@
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.7-1-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.6.7.3 1.3.5 1.8.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.4z"/></svg>
         </div>
         <div>
-          <div class="pf-contact-label">WhatsApp / Telefone</div>
+          <div class="pf-contact-label">WhatsApp</div>
           <div class="pf-contact-value">(21) 99711-2008</div>
         </div>
       </a>
