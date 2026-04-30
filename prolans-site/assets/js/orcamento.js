@@ -91,7 +91,7 @@
     manutencao: {
       label: "Manutenção",
       simples: [
-        { qty: "Manutenção corretiva", value: 150, from: true },
+        { qty: "Manutenção corretiva", value: 180, from: true },
         { qty: "Plano Signature+ (mensal)", value: 300, from: true }
       ]
     }
