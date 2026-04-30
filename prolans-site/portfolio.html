@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; script-src 'self' 'unsafe-inline'; connect-src 'self'; frame-src https://www.google.com https://maps.google.com; base-uri 'self'; form-action 'self' https://wa.me; object-src 'none'; upgrade-insecure-requests" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<title>Portfólio Comercial — Prolans Soluções em Tecnologia e Serviços</title>
+<meta name="description" content="Portfólio oficial da Prolans Soluções em Tecnologia e Serviços. Segurança eletrônica, automação, redes, controle de acesso e manutenção em Teresópolis/RJ." />
+<link rel="icon" type="image/png" href="assets/img/logo-prolans.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css" />
+<link rel="stylesheet" href="assets/css/tech.css" />
+
+<style>
+/* ============================================================
+   PORTFÓLIO — Estilos exclusivos (web + impressão PDF)
+   ============================================================ */
+
+/* Layout geral */
+.pf-page { padding: 80px 0; position: relative; }
+.pf-page + .pf-page { border-top: 1px solid var(--border); }
+.pf-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: "JetBrains Mono", monospace; font-size: .78rem;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--primary); padding: 6px 12px;
+  border: 1px solid var(--border-strong); border-radius: 999px;
+  background: rgba(0,212,255,.06);
+}
+.pf-eyebrow::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--primary); box-shadow: 0 0 10px var(--primary-glow);
+}
+.pf-hr {
+  height: 1px; background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+  margin: 64px 0; border: 0;
+}
+.pf-num {
+  font-family: "JetBrains Mono", monospace;
+  color: var(--text-dim); font-size: .85rem; letter-spacing: .2em;
+}
+
+/* Capa */
+.pf-cover {
+  min-height: calc(100vh - var(--header-h));
+  display: grid; place-items: center; text-align: center;
+  position: relative; overflow: hidden;
+  padding: 80px 24px;
+}
+.pf-cover::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(700px 500px at 50% 30%, rgba(0,212,255,.18), transparent 60%),
+    radial-gradient(500px 400px at 50% 80%, rgba(124,92,255,.12), transparent 60%);
+}
+.pf-cover-inner { position: relative; max-width: 880px; }
+.pf-cover-logo {
+  width: 110px; height: 110px; border-radius: 28px;
+  display: grid; place-items: center; margin: 0 auto 28px;
+  background: linear-gradient(135deg, rgba(0,212,255,.12), rgba(124,92,255,.10));
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 0 60px rgba(0,212,255,.25);
+}
+.pf-cover-logo img { width: 70%; height: 70%; object-fit: contain; }
+.pf-cover h1 {
+  font-size: clamp(2.4rem, 5.5vw, 4.2rem); line-height: 1.05;
+  font-weight: 900; letter-spacing: -0.02em; margin: 12px 0 18px;
+}
+.pf-cover .pf-slogan {
+  font-size: clamp(1.1rem, 1.8vw, 1.4rem); color: var(--text-muted);
+  font-style: italic; max-width: 640px; margin: 0 auto 36px;
+}
+.pf-cover-meta {
+  display: inline-grid; grid-auto-flow: column; gap: 24px;
+  padding: 14px 24px; border: 1px solid var(--border);
+  border-radius: 999px; background: rgba(15,21,37,.5);
+  backdrop-filter: blur(8px); margin-top: 24px;
+  font-family: "JetBrains Mono", monospace; font-size: .82rem;
+  color: var(--text-muted);
+}
+.pf-cover-meta strong { color: #fff; }
+
+/* Toolbar (não imprime) */
+.pf-toolbar {
+  position: sticky; top: var(--header-h); z-index: 50;
+  background: rgba(6,9,18,.85); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+}
+.pf-toolbar .container {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+}
+.pf-toolbar-info {
+  font-family: "JetBrains Mono", monospace; font-size: .8rem;
+  color: var(--text-muted); display: flex; align-items: center; gap: 12px;
+}
+.pf-toolbar-info .live-chip {
+  font-family: "JetBrains Mono", monospace; font-size: .7rem;
+  letter-spacing: .15em; color: var(--success);
+  padding: 4px 10px; border: 1px solid rgba(0,230,168,.3);
+  border-radius: 999px; background: rgba(0,230,168,.08);
+}
+.pf-toolbar-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* Quote / frase de impacto */
+.pf-quote {
+  text-align: center; padding: 60px 30px;
+  border: 1px solid var(--border-strong); border-radius: var(--radius-lg);
+  background:
+    radial-gradient(400px 200px at 50% 0%, rgba(0,212,255,.08), transparent 60%),
+    rgba(15,21,37,.5);
+  margin: 40px 0;
+}
+.pf-quote blockquote {
+  font-size: clamp(1.4rem, 2.4vw, 2rem); font-weight: 700;
+  line-height: 1.3; color: #fff; max-width: 760px; margin: 0 auto;
+}
+.pf-quote .pf-quote-mark {
+  display: inline-block; font-size: 3rem; color: var(--primary);
+  line-height: .5; margin-bottom: 14px; font-family: serif;
+}
+
+/* Cards de solução */
+.pf-solution {
+  border: 1px solid var(--border); border-radius: var(--radius-lg);
+  background: rgba(15,21,37,.5); padding: 32px;
+  position: relative; overflow: hidden;
+  transition: transform var(--t), border-color var(--t), box-shadow var(--t);
+}
+.pf-solution::before {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent 60%, rgba(0,212,255,.06));
+  opacity: 0; transition: opacity var(--t); pointer-events: none;
+}
+.pf-solution:hover { border-color: var(--border-strong); transform: translateY(-4px); box-shadow: var(--shadow-glow); }
+.pf-solution:hover::before { opacity: 1; }
+.pf-solution-head {
+  display: flex; align-items: center; gap: 18px; margin-bottom: 22px;
+}
+.pf-solution-icon {
+  width: 56px; height: 56px; border-radius: 14px; flex: none;
+  display: grid; place-items: center;
+  background: linear-gradient(135deg, rgba(0,212,255,.18), rgba(0,102,255,.12));
+  border: 1px solid var(--border-strong); color: var(--primary);
+  box-shadow: inset 0 0 20px rgba(0,212,255,.1);
+}
+.pf-solution-icon svg { width: 28px; height: 28px; }
+.pf-solution h3 {
+  font-size: 1.35rem; font-weight: 800; color: #fff;
+  letter-spacing: -0.01em;
+}
+.pf-solution-tag {
+  font-family: "JetBrains Mono", monospace; font-size: .72rem;
+  letter-spacing: .15em; color: var(--text-muted);
+  text-transform: uppercase; margin-top: 4px;
+}
+.pf-solution p.pf-lead {
+  color: var(--text-muted); font-size: .98rem; margin-bottom: 18px;
+}
+.pf-solution ul {
+  list-style: none; display: grid; gap: 10px;
+}
+.pf-solution ul li {
+  display: flex; gap: 10px; align-items: flex-start;
+  font-size: .95rem; color: var(--text);
+}
+.pf-solution ul li::before {
+  content: ""; flex: none; width: 18px; height: 18px; border-radius: 50%;
+  background: rgba(0,212,255,.12); border: 1px solid var(--border-strong);
+  margin-top: 2px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2300d4ff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+  background-repeat: no-repeat; background-position: center;
+}
+
+/* Benefícios — formato com check forte */
+.pf-benefits {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+.pf-benefit {
+  display: flex; gap: 16px; padding: 20px 22px;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: rgba(15,21,37,.5); transition: var(--t);
+}
+.pf-benefit:hover { border-color: var(--border-strong); transform: translateY(-3px); }
+.pf-benefit-check {
+  width: 38px; height: 38px; border-radius: 10px; flex: none;
+  background: linear-gradient(135deg, rgba(0,230,168,.2), rgba(0,212,255,.12));
+  border: 1px solid rgba(0,230,168,.3); color: var(--success);
+  display: grid; place-items: center;
+}
+.pf-benefit h4 { font-size: 1rem; color: #fff; margin-bottom: 4px; }
+.pf-benefit p { font-size: .9rem; color: var(--text-muted); line-height: 1.5; }
+
+/* Processo — timeline */
+.pf-process {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px; margin-top: 40px;
+}
+.pf-step {
+  position: relative; padding: 28px 24px;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: rgba(15,21,37,.5); transition: var(--t);
+}
+.pf-step:hover { border-color: var(--border-strong); }
+.pf-step-num {
+  position: absolute; top: -14px; left: 22px;
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--gradient-primary); color: #001220;
+  display: grid; place-items: center;
+  font-family: "JetBrains Mono", monospace; font-weight: 800;
+  font-size: .95rem; box-shadow: 0 8px 20px rgba(0,212,255,.35);
+}
+.pf-step h4 {
+  margin: 8px 0 6px; font-size: 1.05rem; color: #fff;
+  letter-spacing: -0.01em;
+}
+.pf-step p { font-size: .9rem; color: var(--text-muted); line-height: 1.55; }
+
+/* Planos */
+.pf-plan {
+  border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 32px; background: rgba(15,21,37,.5);
+  display: flex; flex-direction: column; gap: 14px;
+  position: relative; overflow: hidden;
+  transition: var(--t);
+}
+.pf-plan:hover { border-color: var(--border-strong); transform: translateY(-4px); }
+.pf-plan.featured {
+  border-color: var(--border-strong);
+  background:
+    radial-gradient(400px 200px at 0% 0%, rgba(0,212,255,.10), transparent 60%),
+    rgba(15,21,37,.7);
+  box-shadow: var(--shadow-glow);
+}
+.pf-plan-tag {
+  font-family: "JetBrains Mono", monospace; font-size: .72rem;
+  letter-spacing: .15em; color: var(--primary);
+  text-transform: uppercase;
+}
+.pf-plan h3 { font-size: 1.4rem; color: #fff; }
+.pf-plan p.pf-plan-desc { color: var(--text-muted); font-size: .95rem; }
+.pf-plan-list { list-style: none; display: grid; gap: 8px; margin-top: 10px; }
+.pf-plan-list li {
+  display: flex; gap: 8px; align-items: flex-start;
+  font-size: .9rem; color: var(--text);
+}
+.pf-plan-list li::before {
+  content: "+"; color: var(--primary); font-weight: 800;
+  font-family: "JetBrains Mono", monospace; flex: none;
+}
+
+/* Pagamento */
+.pf-pay {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+.pf-pay-card {
+  padding: 24px; border: 1px solid var(--border);
+  border-radius: var(--radius); background: rgba(15,21,37,.5);
+  text-align: center; transition: var(--t);
+}
+.pf-pay-card:hover { border-color: var(--border-strong); transform: translateY(-3px); }
+.pf-pay-icon {
+  width: 48px; height: 48px; border-radius: 12px; margin: 0 auto 14px;
+  background: linear-gradient(135deg, rgba(0,212,255,.18), rgba(124,92,255,.12));
+  border: 1px solid var(--border-strong); color: var(--primary);
+  display: grid; place-items: center;
+}
+.pf-pay-card h4 { font-size: 1rem; color: #fff; margin-bottom: 6px; }
+.pf-pay-card p { font-size: .85rem; color: var(--text-muted); }
+
+/* Garantia / selo */
+.pf-seal {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+.pf-seal-item {
+  padding: 24px; border: 1px solid var(--border);
+  border-radius: var(--radius); background: rgba(15,21,37,.5);
+  display: flex; gap: 16px; align-items: flex-start;
+}
+.pf-seal-icon {
+  width: 44px; height: 44px; border-radius: 12px; flex: none;
+  background: linear-gradient(135deg, rgba(255,181,71,.18), rgba(0,212,255,.12));
+  border: 1px solid rgba(255,181,71,.3); color: var(--warning);
+  display: grid; place-items: center;
+}
+.pf-seal-item h4 { font-size: 1rem; color: #fff; margin-bottom: 4px; }
+.pf-seal-item p { font-size: .9rem; color: var(--text-muted); line-height: 1.5; }
+
+/* Fechamento — banner */
+.pf-final {
+  border-radius: var(--radius-xl); padding: 70px 40px;
+  text-align: center; position: relative; overflow: hidden;
+  background:
+    radial-gradient(700px 400px at 50% 0%, rgba(0,212,255,.18), transparent 60%),
+    radial-gradient(500px 300px at 50% 100%, rgba(124,92,255,.14), transparent 60%),
+    rgba(10,15,28,.85);
+  border: 1px solid var(--border-strong);
+}
+.pf-final h2 {
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  margin-bottom: 18px; line-height: 1.15;
+}
+.pf-final p { color: var(--text-muted); max-width: 680px; margin: 0 auto 32px; font-size: 1.05rem; }
+.pf-final-actions {
+  display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+}
+
+/* Contato */
+.pf-contact {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+.pf-contact-card {
+  padding: 24px; border: 1px solid var(--border);
+  border-radius: var(--radius); background: rgba(15,21,37,.5);
+  display: flex; gap: 14px; align-items: flex-start;
+  transition: var(--t);
+}
+.pf-contact-card:hover { border-color: var(--border-strong); transform: translateY(-3px); }
+.pf-contact-icon {
+  width: 42px; height: 42px; border-radius: 11px; flex: none;
+  background: linear-gradient(135deg, rgba(0,212,255,.18), rgba(0,102,255,.12));
+  border: 1px solid var(--border-strong); color: var(--primary);
+  display: grid; place-items: center;
+}
+.pf-contact-card .pf-contact-label {
+  font-family: "JetBrains Mono", monospace; font-size: .72rem;
+  letter-spacing: .15em; color: var(--text-muted);
+  text-transform: uppercase; margin-bottom: 4px;
+}
+.pf-contact-card .pf-contact-value { color: #fff; font-weight: 600; font-size: .98rem; word-break: break-word; }
+
+/* Diferenciais inline */
+.pf-diffs {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px; margin-top: 24px;
+}
+.pf-diffs > div {
+  padding: 18px 20px; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); background: rgba(15,21,37,.4);
+  display: flex; gap: 12px; align-items: center;
+}
+.pf-diffs > div strong {
+  color: var(--primary); font-family: "JetBrains Mono", monospace;
+  font-size: 1.4rem; flex: none;
+}
+.pf-diffs > div span { color: var(--text); font-size: .92rem; line-height: 1.3; }
+
+/* Identidade — MVV */
+.pf-mvv {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+.pf-mvv-card {
+  padding: 28px; border: 1px solid var(--border);
+  border-radius: var(--radius-lg); background: rgba(15,21,37,.5);
+  transition: var(--t);
+}
+.pf-mvv-card:hover { border-color: var(--border-strong); transform: translateY(-3px); }
+.pf-mvv-icon {
+  width: 50px; height: 50px; border-radius: 13px; margin-bottom: 16px;
+  background: linear-gradient(135deg, rgba(0,212,255,.18), rgba(124,92,255,.12));
+  border: 1px solid var(--border-strong); color: var(--primary);
+  display: grid; place-items: center;
+}
+.pf-mvv-card h3 { font-size: 1.2rem; color: #fff; margin-bottom: 10px; }
+.pf-mvv-card p { color: var(--text-muted); font-size: .95rem; line-height: 1.65; }
+
+/* Histórico em 2 colunas */
+.pf-story {
+  display: grid; grid-template-columns: 1.2fr 1fr;
+  gap: 50px; align-items: center;
+}
+.pf-story-text p { color: var(--text-muted); font-size: 1.02rem; line-height: 1.75; margin-bottom: 14px; }
+.pf-story-text strong { color: #fff; }
+.pf-story-timeline {
+  display: grid; gap: 14px;
+}
+.pf-story-row {
+  padding: 18px 22px; border: 1px solid var(--border);
+  border-radius: var(--radius); background: rgba(15,21,37,.5);
+}
+.pf-story-row .pf-story-date {
+  font-family: "JetBrains Mono", monospace; font-size: .8rem;
+  color: var(--primary); letter-spacing: .12em; margin-bottom: 4px;
+}
+.pf-story-row strong { color: #fff; display: block; margin-bottom: 4px; }
+.pf-story-row p { color: var(--text-muted); font-size: .9rem; line-height: 1.5; }
+
+@media (max-width: 860px) {
+  .pf-story { grid-template-columns: 1fr; gap: 30px; }
+}
+
+/* ============================================================
+   IMPRESSÃO — formatação para PDF/A4
+   ============================================================ */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm 12mm;
+  }
+
+  html, body {
+    background: #fff !important;
+    color: #0a0f1c !important;
+    font-size: 10.5pt;
+  }
+  body::before, body::after { display: none !important; }
+  #fx-particles, .fx-pattern, .fx-scanline, .fx-cursor, .fx-cursor-trail,
+  #fx-progress, .wa-float, .toast { display: none !important; }
+
+  .header, .footer, .pf-toolbar { display: none !important; }
+
+  .container { max-width: 100% !important; padding: 0 !important; }
+
+  /* Reescrita de cores para print */
+  .pf-page { padding: 18px 0; border-color: #d6dcec !important; page-break-inside: avoid; }
+  .pf-page + .pf-page { border-top: 1px solid #d6dcec; }
+
+  .pf-cover { min-height: auto; padding: 30px 0; page-break-after: always; }
+  .pf-cover h1 { font-size: 32pt; color: #0a0f1c !important; }
+  .pf-cover .pf-slogan { color: #4a5570 !important; }
+  .pf-cover-logo {
+    background: #f1f6ff !important; box-shadow: none !important;
+    border-color: #cbd6ec !important;
+  }
+  .pf-cover-meta { background: #f1f6ff !important; color: #4a5570 !important; border-color: #cbd6ec !important; }
+
+  .pf-eyebrow {
+    color: #0066ff !important; background: #eaf4ff !important;
+    border-color: #bcd9ff !important;
+  }
+
+  .gradient-text {
+    background: none !important;
+    -webkit-text-fill-color: #0066ff !important;
+    color: #0066ff !important;
+  }
+
+  h1, h2, h3, h4 { color: #0a0f1c !important; }
+  p, li, span, .muted, .pf-lead { color: #38445e !important; }
+  strong { color: #0a0f1c !important; }
+
+  .pf-solution, .pf-benefit, .pf-step, .pf-plan, .pf-pay-card,
+  .pf-seal-item, .pf-contact-card, .pf-mvv-card, .pf-story-row,
+  .card, .pf-diffs > div, .pf-quote {
+    background: #ffffff !important;
+    border-color: #d6dcec !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+  }
+
+  .pf-solution-icon, .pf-mvv-icon, .pf-pay-icon,
+  .pf-contact-icon, .pf-step-num, .pf-benefit-check, .pf-seal-icon {
+    background: #eaf4ff !important; border-color: #bcd9ff !important;
+    color: #0066ff !important; box-shadow: none !important;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .pf-step-num { background: #0066ff !important; color: #fff !important; }
+  .pf-seal-icon { background: #fff4dc !important; border-color: #ffd58a !important; color: #b27600 !important; }
+  .pf-benefit-check { background: #e2fbef !important; border-color: #93e6c0 !important; color: #008c5b !important; }
+
+  .pf-final {
+    background: #f1f6ff !important; border-color: #cbd6ec !important;
+    page-break-inside: avoid;
+  }
+
+  .pf-quote { background: #f8fbff !important; }
+  .pf-quote blockquote { color: #0a0f1c !important; }
+  .pf-quote .pf-quote-mark { color: #0066ff !important; }
+
+  .pf-diffs > div strong { color: #0066ff !important; }
+
+  /* Quebras estratégicas */
+  .pf-page-break { page-break-before: always; }
+  .pf-no-break { page-break-inside: avoid; }
+
+  a { color: #0066ff !important; text-decoration: none !important; }
+
+  /* Mostra rodapé impresso */
+  .pf-print-footer {
+    display: block !important;
+    position: fixed; bottom: 0; left: 0; right: 0;
+    text-align: center; font-size: 8pt; color: #6a7390;
+    border-top: 1px solid #d6dcec; padding-top: 6px;
+  }
+
+  /* Esconder elementos só-tela */
+  .pf-screen-only { display: none !important; }
+
+  /* Garantir cores de fundo nas impressões */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+.pf-print-footer { display: none; }
+
+@media (max-width: 860px) {
+  .pf-cover-meta { grid-auto-flow: row; gap: 8px; padding: 14px 18px; }
+  .pf-toolbar { position: relative; top: 0; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="fx-particles"></canvas>
+<div id="fx-progress"></div>
+
+<header class="header pf-screen-only">
+  <div class="container">
+    <a class="logo" href="index.html">
+      <span class="logo-mark has-img"><img src="assets/img/logo-prolans.png" alt="Prolans" /></span>
+      Prolans
+    </a>
+    <nav class="nav">
+      <a href="index.html">Início</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="servicos.html">Serviços</a>
+      <a href="produtos.html">Produtos</a>
+      <a href="planos.html">Signature+</a>
+      <a href="portfolio.html" class="active">Portfólio</a>
+      <a href="contato.html">Contato</a>
+    </nav>
+    <div class="header-cta">
+      <a class="btn btn-ghost btn-sm" href="area-cliente.html">Área do Cliente</a>
+      <a class="btn btn-primary btn-sm magnetic" href="orcamento.html">Solicitar Orçamento</a>
+      <button class="mobile-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<!-- TOOLBAR (não imprime) -->
+<div class="pf-toolbar pf-screen-only">
+  <div class="container">
+    <div class="pf-toolbar-info">
+      <span class="live-chip">PORTFÓLIO COMERCIAL · 2026</span>
+      <span>v1.0 · Atualizado em <strong style="color:#fff" id="pfDate">--</strong></span>
+    </div>
+    <div class="pf-toolbar-actions">
+      <button class="btn btn-ghost btn-sm" onclick="window.print()" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Baixar PDF
+      </button>
+      <a class="btn btn-whatsapp btn-sm magnetic" href="https://wa.me/5521997112008?text=Ol%C3%A1%2C%20gostaria%20de%20conhecer%20mais%20sobre%20a%20Prolans" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.7-1-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.6.7.3 1.3.5 1.8.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.4z"/></svg>
+        Falar no WhatsApp
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 01 · CAPA                                                    -->
+<!-- ============================================================ -->
+<section class="pf-page pf-cover">
+  <div class="pf-cover-inner">
+    <div class="pf-cover-logo">
+      <img src="assets/img/logo-prolans.png" alt="Prolans" />
+    </div>
+    <span class="pf-eyebrow">Portfólio Oficial · 2026</span>
+    <h1>
+      Prolans <span class="gradient-text">Soluções em Tecnologia<br />e Serviços</span>
+    </h1>
+    <p class="pf-slogan">"Protegendo o presente, garantindo o futuro."</p>
+
+    <div class="pf-cover-meta">
+      <span>Fundada em <strong>Ago/2020</strong></span>
+      <span>Teresópolis · <strong>RJ</strong></span>
+      <span>CNPJ <strong>38.408.286/0001-11</strong></span>
+    </div>
+
+    <div style="margin-top:46px;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-dim);letter-spacing:.2em;text-transform:uppercase">
+      Segurança · Automação · Redes · Manutenção
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 02 · APRESENTAÇÃO                                            -->
+<!-- ============================================================ -->
+<section class="pf-page">
+  <div class="container">
+    <div class="section-head reveal" style="text-align:left">
+      <span class="pf-num">// 02</span>
+      <span class="pf-eyebrow" style="margin-left:14px">Quem somos</span>
+      <h2 style="margin-top:14px;font-size:clamp(1.8rem,3vw,2.5rem)">Tecnologia que <span class="gradient-text">protege, conecta e simplifica</span> a sua rotina</h2>
+    </div>
+
+    <div class="pf-story" style="margin-top:50px">
+      <div class="pf-story-text reveal">
+        <p>A Prolans nasceu de um sonho simples e poderoso: o sonho da <strong>liberdade financeira</strong> e de construir algo verdadeiro, com propósito. Em <strong>01 de março de 2020</strong>, ainda com outro nome e uma visão em formação, demos o primeiro passo dessa jornada.</p>
+        <p>Em <strong>agosto de 2020</strong>, a empresa nasceu oficialmente como <strong>Prolans</strong> — agora com identidade, metas claras e uma missão definida: levar segurança e tecnologia de qualidade para pessoas e empresas, com atendimento humano e suporte de verdade.</p>
+        <p>Por trás de tudo está <strong>Rodrigo Machado</strong>, fundador, técnico e o sonhador que acreditou no projeto desde o primeiro dia. Hoje, somos uma solução completa em <strong>segurança eletrônica, automação, redes e manutenção</strong> — sempre com gratidão pela caminhada e olhos voltados para o que ainda vem pela frente.</p>
+      </div>
+
+      <div class="pf-story-timeline reveal">
+        <div class="pf-story-row">
+          <div class="pf-story-date">01·MAR·2020</div>
+          <strong>O sonho começou</strong>
+          <p>Primeira semente, ainda em formação, movida pelo desejo de liberdade e de fazer algo de verdade.</p>
+        </div>
+        <div class="pf-story-row">
+          <div class="pf-story-date">AGO·2020</div>
+          <strong>Nasce a Prolans</strong>
+          <p>Identidade, propósito e direção — uma empresa pronta para entregar valor e construir relações duradouras.</p>
+        </div>
+        <div class="pf-story-row">
+          <div class="pf-story-date">2021 → 2025</div>
+          <strong>Crescimento sólido</strong>
+          <p>Parcerias com clientes referência da região e expansão para um portfólio completo de soluções em tecnologia.</p>
+        </div>
+        <div class="pf-story-row" style="border-color:var(--border-strong);box-shadow:0 0 30px rgba(0,212,255,.1)">
+          <div class="pf-story-date" style="color:var(--success)">HOJE</div>
+          <strong>Solução completa em tecnologia</strong>
+          <p>Da câmera ao plano de manutenção: tudo em um só lugar, com atendimento direto e humano.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="pf-hr" />
+
+    <!-- Missão / Visão / Valores -->
+    <div class="section-head reveal" style="text-align:left">
+      <span class="pf-eyebrow">Identidade</span>
+      <h2 style="margin-top:14px;font-size:clamp(1.6rem,2.6vw,2.2rem)">Missão, visão e <span class="gradient-text">valores</span></h2>
+    </div>
+
+    <div class="pf-mvv" style="margin-top:30px">
+      <div class="pf-mvv-card reveal">
+        <div class="pf-mvv-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>
+        </div>
+        <h3>Missão</h3>
+        <p>Garantir que nossos clientes se sintam seguros, conectados e tranquilos em todos os momentos — com soluções confiáveis, sob medida e suporte de excelência.</p>
+      </div>
+      <div class="pf-mvv-card reveal">
+        <div class="pf-mvv-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <h3>Visão</h3>
+        <p>Ser referência em segurança e tecnologia na Região Serrana, reconhecida pela confiança, pela entrega e pelo compromisso real com cada cliente.</p>
+      </div>
+      <div class="pf-mvv-card reveal">
+        <div class="pf-mvv-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-5-7-12a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 7-7 12-7 12z"/></svg>
+        </div>
+        <h3>Valores</h3>
+        <p>Fé, gratidão, compromisso, transparência, qualidade e inovação contínua. Fazer mais do que o esperado e entregar tranquilidade — sempre.</p>
+      </div>
+    </div>
+
+    <!-- Diferenciais -->
+    <div class="section-head reveal" style="text-align:left;margin-top:60px">
+      <span class="pf-eyebrow">Por que a Prolans</span>
+      <h2 style="margin-top:14px;font-size:clamp(1.6rem,2.6vw,2.2rem)">O que nos torna <span class="gradient-text">diferentes</span></h2>
+    </div>
+
+    <div class="pf-diffs reveal">
+      <div><strong>5+</strong><span>anos de mercado e clientes referência</span></div>
+      <div><strong>13+</strong><span>anos de experiência técnica do fundador</span></div>
+      <div><strong>40+</strong><span>cursos e capacitações na área</span></div>
+      <div><strong>100%</strong><span>atendimento humano via WhatsApp</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Quote 1 -->
+<div class="container pf-screen-only">
+  <div class="pf-quote">
+    <span class="pf-quote-mark">"</span>
+    <blockquote>Segurança não é custo. É <span class="gradient-text">investimento</span>.</blockquote>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 03 · NOSSAS SOLUÇÕES                                         -->
+<!-- ============================================================ -->
+<section class="pf-page pf-page-break">
+  <div class="container">
+    <div class="section-head reveal" style="text-align:left">
+      <span class="pf-num">// 03</span>
+      <span class="pf-eyebrow" style="margin-left:14px">Nossas soluções</span>
+      <h2 style="margin-top:14px;font-size:clamp(1.8rem,3vw,2.5rem)">Tudo que você precisa em <span class="gradient-text">um só lugar</span></h2>
+      <p style="color:var(--text-muted);max-width:720px;margin-top:14px">Seis frentes integradas para proteger, automatizar e conectar a sua casa, comércio ou empresa — com projeto sob medida e instalação certificada.</p>
+    </div>
+
+    <div class="grid grid-2" style="gap:22px;margin-top:40px">
+      <!-- Segurança Eletrônica -->
+      <div class="pf-solution reveal">
+        <div class="pf-solution-head">
+          <div class="pf-solution-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V6l-8-4z"/></svg>
+          </div>
+          <div>
+            <div class="pf-solution-tag">Categoria 01</div>
+            <h3>Segurança Eletrônica</h3>
+          </div>
+        </div>
+        <p class="pf-lead">Olhos atentos 24h em cada canto do seu espaço. Veja tudo, de qualquer lugar, em tempo real.</p>
+        <ul>
+          <li>Câmeras de segurança CFTV (Full HD, 4K e Wi-Fi)</li>
+          <li>Sistemas de alarme com sensores e sirenes</li>
+          <li>Monitoramento remoto pelo celular</li>
+          <li>Gravadores DVR/NVR com armazenamento seguro</li>
+          <li>Visão noturna, detecção de movimento e alertas</li>
+        </ul>
+      </div>
+
+      <!-- Controle de Acesso -->
+      <div class="pf-solution reveal">
+        <div class="pf-solution-head">
+          <div class="pf-solution-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div>
+            <div class="pf-solution-tag">Categoria 02</div>
+            <h3>Controle de Acesso</h3>
+          </div>
+        </div>
+        <p class="pf-lead">Quem entra, quando entra e por onde passa — você no comando, sem chaves perdidas.</p>
+        <ul>
+          <li>Fechaduras digitais (senha, biometria e tag)</li>
+          <li>Interfones e vídeoporteiros inteligentes</li>
+          <li>Reconhecimento facial para empresas e prédios</li>
+          <li>Controle por aplicativo no celular</li>
+          <li>Gestão de visitantes e horários por usuário</li>
+        </ul>
+      </div>
+
+      <!-- Redes e Conectividade -->
+      <div class="pf-solution reveal">
+        <div class="pf-solution-head">
+          <div class="pf-solution-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14 0"/><path d="M2 8.5a16 16 0 0 1 20 0"/><path d="M8.5 16.5a6 6 0 0 1 7 0"/><line x1="12" y1="20" x2="12" y2="20"/></svg>
+          </div>
+          <div>
+            <div class="pf-solution-tag">Categoria 03</div>
+            <h3>Redes e Conectividade</h3>
+          </div>
+        </div>
+        <p class="pf-lead">Internet rápida, estável e com cobertura em cada cantinho — pronta para o seu trabalho e lazer.</p>
+        <ul>
+          <li>Wi-Fi profissional (Mesh e roteadores Wi-Fi 6)</li>
+          <li>Cabeamento estruturado (residencial e corporativo)</li>
+          <li>Redes corporativas com segurança e segmentação</li>
+          <li>Diagnóstico de pontos cegos e travamentos</li>
+          <li>Integração com câmeras, automação e impressoras</li>
+        </ul>
+      </div>
+
+      <!-- Automação Inteligente -->
+      <div class="pf-solution reveal">
+        <div class="pf-solution-head">
+          <div class="pf-solution-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12 12 4l9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
+          </div>
+          <div>
+            <div class="pf-solution-tag">Categoria 04</div>
+            <h3>Automação Inteligente</h3>
+          </div>
+        </div>
+        <p class="pf-lead">Sua casa respondendo à sua voz, ao seu toque ou sozinha — do jeito que você quiser.</p>
+        <ul>
+          <li>Integração com Alexa e Google Assistente</li>
+          <li>Iluminação inteligente e cenas programadas</li>
+          <li>Tomadas, cortinas e portões via aplicativo</li>
+          <li>Sensores de presença, fumaça e abertura</li>
+          <li>Cenários automáticos (chegar, dormir, sair)</li>
+        </ul>
+      </div>
+
+      <!-- Infraestrutura e Elétrica -->
+      <div class="pf-solution reveal">
+        <div class="pf-solution-head">
+          <div class="pf-solution-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <div>
+            <div class="pf-solution-tag">Categoria 05</div>
+            <h3>Infraestrutura e Elétrica</h3>
+          </div>
+        </div>
+        <p class="pf-lead">A base bem feita evita dor de cabeça lá na frente. Cada cabo no lugar certo.</p>
+        <ul>
+          <li>Instalações elétricas residenciais e comerciais</li>
+          <li>Quadros, disjuntores e proteção contra surtos</li>
+          <li>Organização e melhoria de redes existentes</li>
+          <li>Adequações para automação e novos pontos</li>
+          <li>Avaliação técnica e laudo de segurança</li>
+        </ul>
+      </div>
+
+      <!-- Manutenção -->
+      <div class="pf-solution reveal">
+        <div class="pf-solution-head">
+          <div class="pf-solution-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <div>
+            <div class="pf-solution-tag">Categoria 06</div>
+            <h3>Manutenção</h3>
+          </div>
+        </div>
+        <p class="pf-lead">Seu sistema sempre funcionando — sem surpresas, sem stress, sem falha quando mais precisar.</p>
+        <ul>
+          <li>Manutenção preventiva periódica</li>
+          <li>Manutenção corretiva com atendimento ágil</li>
+          <li>Planos mensais com prioridade no atendimento</li>
+          <li>Limpeza e calibragem de equipamentos</li>
+          <li>Substituição de peças e atualização de firmware</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Quote 2 -->
+<div class="container pf-screen-only">
+  <div class="pf-quote">
+    <span class="pf-quote-mark">"</span>
+    <blockquote>Tecnologia que <span class="gradient-text">trabalha por você</span>.</blockquote>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 04 · BENEFÍCIOS                                              -->
+<!-- ============================================================ -->
+<section class="pf-page pf-page-break">
+  <div class="container">
+    <div class="section-head reveal" style="text-align:left">
+      <span class="pf-num">// 04</span>
+      <span class="pf-eyebrow" style="margin-left:14px">Benefícios</span>
+      <h2 style="margin-top:14px;font-size:clamp(1.8rem,3vw,2.5rem)">Por que <span class="gradient-text">contratar a Prolans</span></h2>
+      <p style="color:var(--text-muted);max-width:720px;margin-top:14px">Mais que instalar equipamentos, entregamos tranquilidade — e o que você ganha vai muito além da tecnologia em si.</p>
+    </div>
+
+    <div class="pf-benefits" style="margin-top:40px">
+      <div class="pf-benefit reveal">
+        <div class="pf-benefit-check">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div>
+          <h4>Segurança real para sua família ou empresa</h4>
+          <p>Equipamentos de qualidade, projeto bem dimensionado e cobertura sem pontos cegos.</p>
+        </div>
+      </div>
+      <div class="pf-benefit reveal">
+        <div class="pf-benefit-check">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div>
+          <h4>Atendimento rápido e humanizado</h4>
+          <p>Você fala direto com quem entende. Sem robôs, sem fila, sem rodeio.</p>
+        </div>
+      </div>
+      <div class="pf-benefit reveal">
+        <div class="pf-benefit-check">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div>
+          <h4>Soluções 100% personalizadas</h4>
+          <p>Cada projeto é feito sob medida — nada de pacote pronto que não cabe na sua realidade.</p>
+        </div>
+      </div>
+      <div class="pf-benefit reveal">
+        <div class="pf-benefit-check">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div>
+          <h4>Equipamentos de marcas confiáveis</h4>
+          <p>Trabalhamos com fabricantes reconhecidos e com garantia. Nada de produto duvidoso.</p>
+        </div>
+      </div>
+      <div class="pf-benefit reveal">
+        <div class="pf-benefit-check">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div>
+          <h4>Suporte técnico especializado</h4>
+          <p>Mais de uma década de experiência prática, com mais de 40 cursos e capacitações na área.</p>
+        </div>
+      </div>
+      <div class="pf-benefit reveal">
+        <div class="pf-benefit-check">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div>
+          <h4>Economia a longo prazo</h4>
+          <p>Instalação correta na primeira vez evita retrabalho, prejuízo e dor de cabeça mais à frente.</p>
+        </div>
+      </div>
+      <div class="pf-benefit reveal">
+        <div class="pf-benefit-check">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div>
+          <h4>Empresa em crescimento e referência</h4>
+          <p>Confiada por clientes como Rio Sul, Zimbrão, Burrata, Unifeso, Empada Mix e muitos outros.</p>
+        </div>
+      </div>
+      <div class="pf-benefit reveal">
+        <div class="pf-benefit-check">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div>
+          <h4>Transparência total</h4>
+          <p>Orçamento detalhado, prazos claros e nenhuma surpresa na fatura final.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 05 · COMO FUNCIONA O PROCESSO                                -->
+<!-- ============================================================ -->
+<section class="pf-page">
+  <div class="container">
+    <div class="section-head reveal" style="text-align:left">
+      <span class="pf-num">// 05</span>
+      <span class="pf-eyebrow" style="margin-left:14px">Processo</span>
+      <h2 style="margin-top:14px;font-size:clamp(1.8rem,3vw,2.5rem)">Como funciona, do <span class="gradient-text">primeiro contato à entrega</span></h2>
+      <p style="color:var(--text-muted);max-width:720px;margin-top:14px">Um caminho simples, transparente e sem mistério. Você sabe sempre o próximo passo.</p>
+    </div>
+
+    <div class="pf-process">
+      <div class="pf-step reveal">
+        <div class="pf-step-num">01</div>
+        <h4>Atendimento inicial</h4>
+        <p>Você fala com a gente pelo WhatsApp, e-mail ou pelo formulário. Resposta rápida e humana.</p>
+      </div>
+      <div class="pf-step reveal">
+        <div class="pf-step-num">02</div>
+        <h4>Levantamento da necessidade</h4>
+        <p>Entendemos seu cenário, suas dores e o que você quer resolver. Sem empurrar produto.</p>
+      </div>
+      <div class="pf-step reveal">
+        <div class="pf-step-num">03</div>
+        <h4>Visita técnica</h4>
+        <p>Vamos no local avaliar a estrutura, ângulos, distâncias e pontos críticos do projeto.</p>
+      </div>
+      <div class="pf-step reveal">
+        <div class="pf-step-num">04</div>
+        <h4>Proposta personalizada</h4>
+        <p>Você recebe um orçamento detalhado, com escopo, prazo e cada item bem explicado.</p>
+      </div>
+      <div class="pf-step reveal">
+        <div class="pf-step-num">05</div>
+        <h4>Instalação profissional</h4>
+        <p>Equipe qualificada faz a instalação com cuidado, organização e respeito ao seu espaço.</p>
+      </div>
+      <div class="pf-step reveal">
+        <div class="pf-step-num">06</div>
+        <h4>Suporte contínuo</h4>
+        <p>Treinamento de uso, acompanhamento e canal direto de suporte sempre que precisar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Quote 3 -->
+<div class="container pf-screen-only">
+  <div class="pf-quote">
+    <span class="pf-quote-mark">"</span>
+    <blockquote>Mais controle, <span class="gradient-text">mais tranquilidade</span>.</blockquote>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 06 · PLANOS E MODELOS DE CONTRATAÇÃO                         -->
+<!-- ============================================================ -->
+<section class="pf-page pf-page-break">
+  <div class="container">
+    <div class="section-head reveal" style="text-align:left">
+      <span class="pf-num">// 06</span>
+      <span class="pf-eyebrow" style="margin-left:14px">Modelos de contratação</span>
+      <h2 style="margin-top:14px;font-size:clamp(1.8rem,3vw,2.5rem)">Planos que <span class="gradient-text">cabem no seu jeito</span> de contratar</h2>
+      <p style="color:var(--text-muted);max-width:720px;margin-top:14px">Escolha entre projeto pontual, manutenção mensal ou nosso plano premium de assinatura.</p>
+    </div>
+
+    <div class="grid grid-3" style="gap:22px;margin-top:40px">
+      <!-- Projeto -->
+      <div class="pf-plan reveal">
+        <span class="pf-plan-tag">Modelo 01</span>
+        <h3>Projeto Personalizado</h3>
+        <p class="pf-plan-desc">Instalação sob medida para sua casa, comércio ou empresa, com escopo definido e entrega completa.</p>
+        <ul class="pf-plan-list">
+          <li>Visita técnica e orçamento detalhado</li>
+          <li>Equipamentos de qualidade incluídos</li>
+          <li>Mão de obra certificada</li>
+          <li>Garantia na execução</li>
+          <li>Treinamento de uso pós-instalação</li>
+        </ul>
+      </div>
+
+      <!-- Manutenção -->
+      <div class="pf-plan reveal">
+        <span class="pf-plan-tag">Modelo 02</span>
+        <h3>Plano de Manutenção Mensal</h3>
+        <p class="pf-plan-desc">Uma mensalidade que cuida do seu sistema todo mês — sem se preocupar com falhas inesperadas.</p>
+        <ul class="pf-plan-list">
+          <li>Visitas preventivas periódicas</li>
+          <li>Limpeza e checagem de equipamentos</li>
+          <li>Atendimento prioritário em chamados</li>
+          <li>Atualização de firmware e ajustes</li>
+          <li>Pequenos reparos sem custo adicional</li>
+        </ul>
+      </div>
+
+      <!-- Signature+ -->
+      <div class="pf-plan featured reveal">
+        <span class="pf-plan-tag" style="color:var(--accent)">★ Modelo Premium</span>
+        <h3>Prolans Signature+</h3>
+        <p class="pf-plan-desc">Nosso plano de assinatura completo: a tranquilidade total do cliente recorrente, com benefícios exclusivos.</p>
+        <ul class="pf-plan-list">
+          <li>Tudo da Manutenção Mensal incluído</li>
+          <li>Desconto especial em mão de obra</li>
+          <li>Vantagens em novos projetos e upgrades</li>
+          <li>SLA de atendimento prioritário</li>
+          <li>Relatório periódico do seu sistema</li>
+          <li>Atendimento dedicado pelo WhatsApp</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="reveal" style="margin-top:30px;padding:22px 28px;border:1px dashed var(--border-strong);border-radius:var(--radius);background:rgba(0,212,255,.04);font-size:.95rem;color:var(--text-muted)">
+      <strong style="color:#fff">Cliente recorrente sai ganhando:</strong>
+      desconto em mão de obra, prioridade no atendimento e vantagens em novos projetos.
+      Quanto mais tempo com a gente, mais benefícios destravados.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 07 · FORMAS DE PAGAMENTO                                     -->
+<!-- ============================================================ -->
+<section class="pf-page">
+  <div class="container">
+    <div class="section-head reveal" style="text-align:left">
+      <span class="pf-num">// 07</span>
+      <span class="pf-eyebrow" style="margin-left:14px">Pagamento</span>
+      <h2 style="margin-top:14px;font-size:clamp(1.8rem,3vw,2.5rem)">Formas de <span class="gradient-text">pagamento flexíveis</span></h2>
+      <p style="color:var(--text-muted);max-width:720px;margin-top:14px">Escolha a forma que funciona melhor para você ou para o seu fluxo de caixa.</p>
+    </div>
+
+    <div class="pf-pay" style="margin-top:36px">
+      <div class="pf-pay-card reveal">
+        <div class="pf-pay-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <h4>À vista</h4>
+        <p>PIX ou dinheiro com vantagens e desconto especial.</p>
+      </div>
+      <div class="pf-pay-card reveal">
+        <div class="pf-pay-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        </div>
+        <h4>Cartão de crédito</h4>
+        <p>Parcelamento facilitado em todas as bandeiras.</p>
+      </div>
+      <div class="pf-pay-card reveal">
+        <div class="pf-pay-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <h4>Boleto bancário</h4>
+        <p>Para empresas, com prazos compatíveis com seu fluxo.</p>
+      </div>
+      <div class="pf-pay-card reveal">
+        <div class="pf-pay-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9 12 3l9 6"/><path d="M5 9v12h14V9"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+        </div>
+        <h4>Mensalidade</h4>
+        <p>Para planos de manutenção e Signature+.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 08 · GARANTIAS E COMPROMISSOS                                -->
+<!-- ============================================================ -->
+<section class="pf-page">
+  <div class="container">
+    <div class="section-head reveal" style="text-align:left">
+      <span class="pf-num">// 08</span>
+      <span class="pf-eyebrow" style="margin-left:14px">Garantias</span>
+      <h2 style="margin-top:14px;font-size:clamp(1.8rem,3vw,2.5rem)">Nossos compromissos com <span class="gradient-text">você</span></h2>
+      <p style="color:var(--text-muted);max-width:720px;margin-top:14px">Não basta entregar a obra. Estamos com você antes, durante e depois.</p>
+    </div>
+
+    <div class="pf-seal" style="margin-top:40px">
+      <div class="pf-seal-item reveal">
+        <div class="pf-seal-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V6l-8-4z"/><polyline points="9 12 11 14 15 10"/></svg>
+        </div>
+        <div>
+          <h4>Qualidade na execução</h4>
+          <p>Cada projeto entregue com cuidado, organização e padrão técnico — do cabeamento à finalização.</p>
+        </div>
+      </div>
+      <div class="pf-seal-item reveal">
+        <div class="pf-seal-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="6" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg>
+        </div>
+        <div>
+          <h4>Transparência total</h4>
+          <p>Orçamento aberto, escopo claro, prazos realistas e nenhuma cobrança surpresa.</p>
+        </div>
+      </div>
+      <div class="pf-seal-item reveal">
+        <div class="pf-seal-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        </div>
+        <div>
+          <h4>Suporte pós-venda</h4>
+          <p>Canal direto pelo WhatsApp. Dúvida tirada na hora e atendimento de quem entende do produto.</p>
+        </div>
+      </div>
+      <div class="pf-seal-item reveal">
+        <div class="pf-seal-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div>
+          <h4>Compromisso com resultado</h4>
+          <p>Não fazemos por fazer. Trabalhamos até o sistema funcionar exatamente como você espera.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 09 · CHAMADA FINAL                                           -->
+<!-- ============================================================ -->
+<section class="pf-page pf-page-break">
+  <div class="container">
+    <div class="pf-final reveal">
+      <span class="pf-eyebrow">Vamos começar</span>
+      <h2 style="margin-top:18px">Pronto para <span class="gradient-text">elevar a segurança</span> e a tecnologia do seu espaço?</h2>
+      <p>O melhor momento para proteger e modernizar é antes de precisar. Cada dia sem o sistema certo é um dia de risco que dá pra evitar — e a gente faz isso por você, do jeito que precisa ser feito.</p>
+      <div class="pf-final-actions">
+        <a class="btn btn-primary magnetic" href="orcamento.html">
+          Solicitar Orçamento Gratuito
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+        <a class="btn btn-whatsapp magnetic" href="https://wa.me/5521997112008?text=Ol%C3%A1%2C%20vi%20o%20portf%C3%B3lio%20da%20Prolans%20e%20quero%20conversar" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.7-1-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.6.7.3 1.3.5 1.8.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.4z"/></svg>
+          Falar agora no WhatsApp
+        </a>
+      </div>
+
+      <div style="margin-top:34px;display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-muted);letter-spacing:.12em;text-transform:uppercase">
+        <span>✓ Resposta rápida</span>
+        <span>✓ Visita sem compromisso</span>
+        <span>✓ Atendimento humano</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 10 · CONTATO                                                 -->
+<!-- ============================================================ -->
+<section class="pf-page">
+  <div class="container">
+    <div class="section-head reveal" style="text-align:left">
+      <span class="pf-num">// 10</span>
+      <span class="pf-eyebrow" style="margin-left:14px">Contato</span>
+      <h2 style="margin-top:14px;font-size:clamp(1.8rem,3vw,2.5rem)">Fale com a <span class="gradient-text">Prolans</span></h2>
+      <p style="color:var(--text-muted);max-width:720px;margin-top:14px">Estamos prontos pra te atender. Escolha o canal que preferir — respondemos rapidinho.</p>
+    </div>
+
+    <div class="pf-contact" style="margin-top:36px">
+      <a class="pf-contact-card reveal" href="https://wa.me/5521997112008" target="_blank" rel="noopener">
+        <div class="pf-contact-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.7-1-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.6.7.3 1.3.5 1.8.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.4z"/></svg>
+        </div>
+        <div>
+          <div class="pf-contact-label">WhatsApp / Telefone</div>
+          <div class="pf-contact-value">(21) 99711-2008</div>
+        </div>
+      </a>
+
+      <a class="pf-contact-card reveal" href="mailto:contato@prolans.com.br">
+        <div class="pf-contact-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div>
+          <div class="pf-contact-label">E-mail</div>
+          <div class="pf-contact-value">contato@prolans.com.br</div>
+        </div>
+      </a>
+
+      <a class="pf-contact-card reveal" href="https://www.instagram.com/contato.prolans" target="_blank" rel="noopener">
+        <div class="pf-contact-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+        </div>
+        <div>
+          <div class="pf-contact-label">Instagram</div>
+          <div class="pf-contact-value">@contato.prolans</div>
+        </div>
+      </a>
+
+      <a class="pf-contact-card reveal" href="https://www.prolans.com.br" target="_blank" rel="noopener">
+        <div class="pf-contact-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <div>
+          <div class="pf-contact-label">Site</div>
+          <div class="pf-contact-value">www.prolans.com.br</div>
+        </div>
+      </a>
+
+      <div class="pf-contact-card reveal" style="grid-column: 1 / -1">
+        <div class="pf-contact-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div>
+          <div class="pf-contact-label">Endereço</div>
+          <div class="pf-contact-value">Praça Baltazar da Silveira, 90 — Várzea, Teresópolis/RJ</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal" style="margin-top:50px;text-align:center;padding-top:30px;border-top:1px solid var(--border)">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-dim);letter-spacing:.18em;text-transform:uppercase">
+        Prolans Soluções em Tecnologia e Serviços · CNPJ 38.408.286/0001-11
+      </div>
+      <div style="margin-top:10px;color:var(--text-muted);font-size:.95rem">
+        © <span id="year">2026</span> Prolans · Protegendo o presente, garantindo o futuro.
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="pf-print-footer">
+  Prolans Soluções em Tecnologia e Serviços · (21) 99711-2008 · contato@prolans.com.br · www.prolans.com.br
+</div>
+
+<!-- FOOTER (não imprime) -->
+<footer class="footer pf-screen-only">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="index.html"><span class="logo-mark has-img"><img src="assets/img/logo-prolans.png" alt="Prolans" /></span> Prolans</a>
+        <p>Prolans Segurança e Tecnologia · Teresópolis/RJ. Protegendo o presente, garantindo o futuro.</p>
+        <div class="social">
+          <a href="https://www.instagram.com.br/contato.prolans" target="_blank" rel="noopener" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+          <a href="https://www.facebook.com/contato.prolans" target="_blank" rel="noopener" aria-label="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+          <a href="https://wa.me/5521997112008" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.7-1-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.6.7.3 1.3.5 1.8.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.4z"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <h4>Empresa</h4>
+        <ul>
+          <li><a href="sobre.html">Sobre nós</a></li>
+          <li><a href="planos.html">Plano Signature+</a></li>
+          <li><a href="portfolio.html">Portfólio</a></li>
+          <li><a href="contato.html">Contato</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Serviços</h4>
+        <ul>
+          <li><a href="servicos.html#cftv">Câmeras CFTV</a></li>
+          <li><a href="servicos.html#alarme">Alarmes</a></li>
+          <li><a href="servicos.html#automacao">Automação</a></li>
+          <li><a href="servicos.html#rede">Rede e Internet</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Suporte</h4>
+        <ul>
+          <li><a href="area-cliente.html">Área do Cliente</a></li>
+          <li><a href="orcamento.html">Solicitar Orçamento</a></li>
+          <li><a href="faq.html">Perguntas Frequentes</a></li>
+          <li><a href="https://wa.me/5521997112008" target="_blank" rel="noopener">WhatsApp</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="yearFoot"></span> Prolans Segurança e Tecnologia · CNPJ 38.408.286/0001-11 · Todos os direitos reservados.</span>
+      <span>Praça Baltazar da Silveira, 90 - Várzea, Teresópolis/RJ · contato@prolans.com.br · (21) 99711-2008</span>
+    </div>
+  </div>
+</footer>
+
+<a class="wa-float pf-screen-only" href="https://wa.me/5521997112008" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.7-1-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.6.7.3 1.3.5 1.8.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.4zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
+</a>
+
+<script src="assets/js/main.js"></script>
+<script src="assets/js/tech-fx.js"></script>
+<script>
+  // Data atual
+  (function () {
+    const months = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+    const d = new Date();
+    const dateEl = document.getElementById("pfDate");
+    if (dateEl) dateEl.textContent = months[d.getMonth()] + " de " + d.getFullYear();
+    const y = d.getFullYear();
+    const yEl = document.getElementById("year");
+    if (yEl) yEl.textContent = y;
+    const yfEl = document.getElementById("yearFoot");
+    if (yfEl) yfEl.textContent = y;
+  })();
+</script>
+</body>
+</html>
