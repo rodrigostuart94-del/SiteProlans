@@ -183,7 +183,7 @@
   function slug(s) {
     return s
       .normalize("NFD")
-      .replace(/[`-?]/g, "")    // remove acentos
+      .replace(/[̀-ͯ]/g, "")    // remove acentos (combining diacriticals)
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "");        // remove tudo que não for letra/número
   }
