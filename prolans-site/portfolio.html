@@ -538,19 +538,38 @@ body.pdf-generating .pf-page-break { page-break-before: always; }
 .pf-pdf-loading {
   position: fixed; inset: 0; z-index: 9999;
   background: rgba(6,9,18,.85); backdrop-filter: blur(10px);
-  display: none; place-items: center; flex-direction: column; gap: 16px;
+  display: none; place-items: center;
 }
 .pf-pdf-loading.active { display: grid; }
+.pf-pdf-loading-inner {
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
+  padding: 36px 44px; border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg); background: rgba(15,21,37,.9);
+  box-shadow: var(--shadow-glow); max-width: 90%;
+}
 .pf-pdf-loading .pf-spinner {
   width: 56px; height: 56px; border-radius: 50%;
   border: 3px solid rgba(0,212,255,.2);
   border-top-color: var(--primary);
   animation: pf-spin 0.8s linear infinite;
 }
-.pf-pdf-loading p {
+.pf-pdf-loading p.pf-pdf-status {
   font-family: "JetBrains Mono", monospace; font-size: .9rem;
   color: var(--primary); letter-spacing: .12em; text-transform: uppercase;
+  margin: 0;
 }
+.pf-pdf-loading p.pf-pdf-hint {
+  font-size: .82rem; color: var(--text-muted); text-align: center;
+  margin: 0; max-width: 320px;
+}
+.pf-pdf-loading button {
+  margin-top: 4px; padding: 10px 20px; border-radius: 999px;
+  background: rgba(255,93,108,.12); color: var(--danger);
+  border: 1px solid rgba(255,93,108,.4);
+  font-weight: 600; font-size: .85rem; cursor: pointer;
+  transition: var(--t-fast);
+}
+.pf-pdf-loading button:hover { background: rgba(255,93,108,.2); border-color: var(--danger); }
 @keyframes pf-spin { to { transform: rotate(360deg); } }
 
 @media (max-width: 860px) {
@@ -1349,9 +1368,13 @@ body.pdf-generating .pf-page-break { page-break-before: always; }
 </a>
 
 <!-- Overlay de carregamento do PDF -->
-<div class="pf-pdf-loading" id="pfPdfLoading">
-  <div class="pf-spinner"></div>
-  <p>Gerando PDF...</p>
+<div class="pf-pdf-loading" id="pfPdfLoading" role="dialog" aria-label="Gerando PDF">
+  <div class="pf-pdf-loading-inner">
+    <div class="pf-spinner"></div>
+    <p class="pf-pdf-status" id="pfPdfStatus">Gerando PDF...</p>
+    <p class="pf-pdf-hint">Isso pode levar de 10 a 30 segundos. O arquivo será baixado automaticamente.</p>
+    <button type="button" id="pfPdfCancel">Cancelar</button>
+  </div>
 </div>
 
 <script src="assets/js/main.js"></script>
@@ -1377,21 +1400,51 @@ body.pdf-generating .pf-page-break { page-break-before: always; }
   (function () {
     const btn = document.getElementById("pfDownloadBtn");
     const overlay = document.getElementById("pfPdfLoading");
+    const cancelBtn = document.getElementById("pfPdfCancel");
+    const statusEl = document.getElementById("pfPdfStatus");
     if (!btn) return;
 
+    let isGenerating = false;
+    let timeoutId = null;
+    let escHandler = null;
+
+    function setStatus(text) { if (statusEl) statusEl.textContent = text; }
+
+    function cleanup() {
+      isGenerating = false;
+      document.body.classList.remove("pdf-generating");
+      overlay.classList.remove("active");
+      btn.disabled = false;
+      btn.style.opacity = "";
+      if (timeoutId) { clearTimeout(timeoutId); timeoutId = null; }
+      if (escHandler) { document.removeEventListener("keydown", escHandler); escHandler = null; }
+    }
+
     function nativePrintFallback() {
-      // Mensagem clara antes de abrir o diálogo nativo
       console.warn("html2pdf indisponível — usando impressão nativa do navegador");
+      cleanup();
       window.print();
     }
 
+    function cancel(reason) {
+      console.warn("Geração de PDF cancelada:", reason || "ação do usuário");
+      cleanup();
+    }
+
+    if (cancelBtn) cancelBtn.addEventListener("click", function () { cancel("botão cancelar"); });
+    if (overlay) overlay.addEventListener("click", function (e) {
+      if (e.target === overlay) cancel("clique fora");
+    });
+
     btn.addEventListener("click", async function (e) {
       e.preventDefault();
+      if (isGenerating) return;
 
       const element = document.getElementById("pf-pdf-root");
       if (!element) { nativePrintFallback(); return; }
 
       // Aguarda script carregar (até 4s) caso ainda esteja em rede lenta
+      setStatus("Carregando biblioteca...");
       let waited = 0;
       while (typeof html2pdf === "undefined" && !window.__html2pdfFailed && waited < 4000) {
         await new Promise(r => setTimeout(r, 200));
@@ -1399,30 +1452,42 @@ body.pdf-generating .pf-page-break { page-break-before: always; }
       }
 
       if (typeof html2pdf === "undefined" || window.__html2pdfFailed) {
-        // Fallback: impressão nativa (usuário salva como PDF)
         nativePrintFallback();
         return;
       }
 
+      isGenerating = true;
       btn.disabled = true;
       btn.style.opacity = ".6";
       overlay.classList.add("active");
       document.body.classList.add("pdf-generating");
+      setStatus("Preparando página...");
+
+      // ESC cancela
+      escHandler = function (ev) { if (ev.key === "Escape") cancel("ESC pressionado"); };
+      document.addEventListener("keydown", escHandler);
+
+      // Timeout máximo de 60s — garante que o overlay nunca trave a tela
+      timeoutId = setTimeout(function () { cancel("timeout 60s"); }, 60000);
+
       // Pequeno delay para o reflow aplicar antes da captura
-      await new Promise(r => setTimeout(r, 250));
+      await new Promise(r => setTimeout(r, 300));
+      if (!isGenerating) return; // Pode ter sido cancelado durante o delay
+      setStatus("Gerando PDF...");
 
       const opt = {
         margin: [6, 6, 6, 6],
         filename: "Portfolio-Prolans-2026.pdf",
-        image: { type: "jpeg", quality: 0.95 },
+        image: { type: "jpeg", quality: 0.92 },
         html2canvas: {
-          scale: 2,
+          scale: 1.5,
           useCORS: true,
-          allowTaint: false,
+          allowTaint: true,
           backgroundColor: "#060912",
           logging: false,
           windowWidth: 1240,
-          letterRendering: true
+          letterRendering: true,
+          imageTimeout: 15000
         },
         jsPDF: {
           unit: "mm",
@@ -1435,20 +1500,17 @@ body.pdf-generating .pf-page-break { page-break-before: always; }
 
       try {
         await html2pdf().set(opt).from(element).save();
+        if (isGenerating) {
+          setStatus("Concluído!");
+          await new Promise(r => setTimeout(r, 400));
+        }
       } catch (err) {
         console.error("Erro ao gerar PDF:", err);
-        // Última cartada: usar impressão nativa
-        document.body.classList.remove("pdf-generating");
-        overlay.classList.remove("active");
-        btn.disabled = false;
-        btn.style.opacity = "";
+        cleanup();
         nativePrintFallback();
         return;
       } finally {
-        document.body.classList.remove("pdf-generating");
-        overlay.classList.remove("active");
-        btn.disabled = false;
-        btn.style.opacity = "";
+        cleanup();
       }
     });
   })();
