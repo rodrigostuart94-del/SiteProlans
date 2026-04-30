@@ -197,30 +197,35 @@
   form.addEventListener("change", render);
 
   /* SUBMIT — gera LEAD */
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(form).entries());
     const c = getSelected();
     if (!c) { window.toast("Selecione a categoria do serviço.", "error"); return; }
 
-    const lead = {
-      id: "LEAD-" + Date.now().toString(36).toUpperCase(),
-      criado: new Date().toISOString(),
-      cliente: { nome: data.nome, telefone: data.telefone, email: data.email || "" },
-      endereco: { cep: data.cep || "", rua: data.rua || "", numero: data.numero || "", bairro: data.bairro || "", cidade: data.cidade || "", uf: data.uf || "" },
-      imovel: c.imovel,
-      servico: c.servico,
-      detalhes: c.descricao,
-      observacoes: data.observacoes || "",
-      agendamento: data.agendamento || "",
-      valorEstimado: c.isCustom ? null : c.valor,
-      status: "novo"
-    };
+    const protocolo = "LEAD-" + Date.now().toString(36).toUpperCase();
+    const valorEst = c.isCustom ? null : c.valor;
 
-    // Persistência local (admin futura) + dispara conversão
-    const list = JSON.parse(localStorage.getItem("prolans:leads") || "[]");
-    list.unshift(lead);
-    localStorage.setItem("prolans:leads", JSON.stringify(list));
+    // Grava no Supabase (RLS permite insert público em leads)
+    if (window.prolansDB) {
+      const payload = {
+        protocolo,
+        nome: data.nome || "",
+        telefone: data.telefone || "",
+        email: data.email || "",
+        servico: c.servico,
+        detalhes: c.descricao,
+        valor_estimado: valorEst,
+        observacoes: data.observacoes || "",
+        imovel: c.imovel,
+        status: "novo"
+      };
+      try {
+        await window.prolansDB.leads.create(payload);
+      } catch (err) {
+        console.error("Falha ao gravar lead:", err);
+      }
+    }
 
     if (window.prolansTrack) {
       window.prolansTrack("generate_lead", {
@@ -234,7 +239,7 @@
     const msg = encodeURIComponent(
       `Olá, Prolans!\n` +
       `Acabei de solicitar um orçamento online.\n\n` +
-      `Protocolo: ${lead.id}\n` +
+      `Protocolo: ${protocolo}\n` +
       `Nome: ${data.nome}\n` +
       `Tipo de imóvel: ${c.imovel}\n` +
       `Serviço: ${c.descricao}\n` +
@@ -242,7 +247,7 @@
       (data.observacoes ? `\nObservações: ${data.observacoes}\n` : "")
     );
 
-    window.toast(`Solicitação ${lead.id} enviada!`, "success", 4500);
+    window.toast(`Solicitação ${protocolo} enviada!`, "success", 4500);
     form.reset();
     renderSub();
     render();
