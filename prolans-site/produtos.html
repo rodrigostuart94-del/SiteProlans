@@ -236,7 +236,7 @@
     }).join("") + CTA_CARD;
     empty.style.display = list.length ? "none" : "block";
 
-    // Cascata de fallback: png ? jpg ? jpeg ? webp ? ícone SVG
+    // Cascata de fallback: png → jpg → jpeg → webp → ícone SVG
     grid.querySelectorAll(".product-photo").forEach(img => {
       const exts = ["jpg", "jpeg", "webp"];
       let i = 0;
