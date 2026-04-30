@@ -1379,9 +1379,10 @@ body.pdf-generating .pf-page-break { page-break-before: always; }
 
 <script src="assets/js/main.js"></script>
 <script src="assets/js/tech-fx.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"
-        onload="window.__html2pdfReady = true;"
-        onerror="window.__html2pdfFailed = true; console.error('Falha ao carregar html2pdf.js');"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"
+        onload="window.__jspdfReady = true;"
+        onerror="window.__jspdfFailed = true; console.error('Falha ao carregar jsPDF');"></script>
+<script src="assets/js/portfolio-pdf.js"></script>
 <script>
   // Data atual
   (function () {
@@ -1396,7 +1397,7 @@ body.pdf-generating .pf-page-break { page-break-before: always; }
     if (yfEl) yfEl.textContent = y;
   })();
 
-  // Download do PDF preservando o design escuro do site
+  // Geração programática do PDF (jsPDF) — design escuro azul/ciano nativo
   (function () {
     const btn = document.getElementById("pfDownloadBtn");
     const overlay = document.getElementById("pfPdfLoading");
@@ -1412,7 +1413,6 @@ body.pdf-generating .pf-page-break { page-break-before: always; }
 
     function cleanup() {
       isGenerating = false;
-      document.body.classList.remove("pdf-generating");
       overlay.classList.remove("active");
       btn.disabled = false;
       btn.style.opacity = "";
@@ -1421,13 +1421,13 @@ body.pdf-generating .pf-page-break { page-break-before: always; }
     }
 
     function nativePrintFallback() {
-      console.warn("html2pdf indisponível — usando impressão nativa do navegador");
+      console.warn("jsPDF indisponível — usando impressão nativa");
       cleanup();
       window.print();
     }
 
     function cancel(reason) {
-      console.warn("Geração de PDF cancelada:", reason || "ação do usuário");
+      console.warn("PDF cancelado:", reason || "ação do usuário");
       cleanup();
     }
 
@@ -1440,18 +1440,15 @@ body.pdf-generating .pf-page-break { page-break-before: always; }
       e.preventDefault();
       if (isGenerating) return;
 
-      const element = document.getElementById("pf-pdf-root");
-      if (!element) { nativePrintFallback(); return; }
-
-      // Aguarda script carregar (até 4s) caso ainda esteja em rede lenta
+      // Aguarda jsPDF (até 4s)
       setStatus("Carregando biblioteca...");
       let waited = 0;
-      while (typeof html2pdf === "undefined" && !window.__html2pdfFailed && waited < 4000) {
+      while ((!window.jspdf || !window.jspdf.jsPDF) && !window.__jspdfFailed && waited < 4000) {
         await new Promise(r => setTimeout(r, 200));
         waited += 200;
       }
 
-      if (typeof html2pdf === "undefined" || window.__html2pdfFailed) {
+      if (!window.jspdf || !window.jspdf.jsPDF || !window.ProlansPDF) {
         nativePrintFallback();
         return;
       }
@@ -1460,50 +1457,18 @@ body.pdf-generating .pf-page-break { page-break-before: always; }
       btn.disabled = true;
       btn.style.opacity = ".6";
       overlay.classList.add("active");
-      document.body.classList.add("pdf-generating");
-      setStatus("Preparando página...");
-
-      // ESC cancela
-      escHandler = function (ev) { if (ev.key === "Escape") cancel("ESC pressionado"); };
-      document.addEventListener("keydown", escHandler);
-
-      // Timeout máximo de 60s — garante que o overlay nunca trave a tela
-      timeoutId = setTimeout(function () { cancel("timeout 60s"); }, 60000);
-
-      // Pequeno delay para o reflow aplicar antes da captura
-      await new Promise(r => setTimeout(r, 300));
-      if (!isGenerating) return; // Pode ter sido cancelado durante o delay
       setStatus("Gerando PDF...");
 
-      const opt = {
-        margin: [6, 6, 6, 6],
-        filename: "Portfolio-Prolans-2026.pdf",
-        image: { type: "jpeg", quality: 0.92 },
-        html2canvas: {
-          scale: 1.5,
-          useCORS: true,
-          allowTaint: true,
-          backgroundColor: "#060912",
-          logging: false,
-          windowWidth: 1240,
-          letterRendering: true,
-          imageTimeout: 15000
-        },
-        jsPDF: {
-          unit: "mm",
-          format: "a4",
-          orientation: "portrait",
-          compress: true
-        },
-        pagebreak: { mode: ["css", "legacy"], before: ".pf-page-break", avoid: [".pf-no-break", ".pf-solution", ".pf-step", ".pf-plan", ".pf-mvv-card", ".pf-benefit", ".pf-pay-card", ".pf-seal-item"] }
-      };
+      escHandler = function (ev) { if (ev.key === "Escape") cancel("ESC"); };
+      document.addEventListener("keydown", escHandler);
+
+      // Timeout máximo de 30s
+      timeoutId = setTimeout(function () { cancel("timeout 30s"); }, 30000);
 
       try {
-        await html2pdf().set(opt).from(element).save();
-        if (isGenerating) {
-          setStatus("Concluído!");
-          await new Promise(r => setTimeout(r, 400));
-        }
+        await window.ProlansPDF.generate();
+        setStatus("Concluído!");
+        await new Promise(r => setTimeout(r, 500));
       } catch (err) {
         console.error("Erro ao gerar PDF:", err);
         cleanup();
