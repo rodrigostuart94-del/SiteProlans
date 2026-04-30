@@ -113,8 +113,17 @@
 
   function pillFor(s) {
     const map = { pending:"pill-pending", pending_confirm:"pill-progress", approved:"pill-approved", "in-progress":"pill-progress",
-                  done:"pill-done", emitida:"pill-approved", cancelada:"pill-pending" };
-    const lbl = { pending_confirm: "Aguardando confirmação" };
+                  done:"pill-done", emitida:"pill-approved", cancelada:"pill-pending", active:"pill-active" };
+    const lbl = {
+      pending: "Aguardando",
+      pending_confirm: "Aguardando confirmação",
+      approved: "Aprovado",
+      "in-progress": "Em andamento",
+      done: "Concluído",
+      emitida: "Emitida",
+      cancelada: "Cancelada",
+      active: "Ativo"
+    };
     return `<span class="pill ${map[s]||"pill-progress"}">${esc(lbl[s] || s || "—")}</span>`;
   }
 
@@ -401,7 +410,7 @@
     listVar: () => allBol, tableName: "boletos", idField: "id",
     filterId: "filterBolClient", btnId: "btnNewBol",
     extraActions: (b) => b.status === "pending_confirm"
-      ? `<button class="btn btn-primary btn-xs" data-confirm-pay="${esc(b.id)}">Confirmar pagamento</button>`
+      ? `<button class="btn btn-primary btn-xs pulse-cta" data-confirm-pay="${esc(b.id)}" style="background:linear-gradient(135deg,#00d4ff,#7c5cff);box-shadow:0 0 0 0 rgba(0,212,255,.6);animation:pulseGlow 1.6s ease-in-out infinite;font-weight:700">Confirmar pagamento?</button>`
       : "",
     columns: (b) => Object.keys(b).length ? [
       `<strong>${esc(b.id.slice(0,8))}</strong>`,
