@@ -283,10 +283,17 @@
         window.open(data.signedUrl, "_blank", "noopener,noreferrer");
       }));
     }
-    function edit(id) {
+    function edit(id, prefillUserId) {
       const item = id ? (listVar()).find(x => x[idField] === id) : null;
       const isNew = !item;
-      const opts = clientsList().map(c => `<option value="${esc(c.id)}" ${item && c.id===item.user_id?"selected":""}>${esc(c.nome)}</option>`).join("");
+      // Quando criando, usa cliente do filtro se houver
+      const preselId = isNew ? (prefillUserId || filter.value || "") : (item && item.user_id);
+      if (clientsList().length === 0) {
+        window.toast("Nenhum cliente cadastrado. Peça para o cliente criar conta primeiro.", "error", 5000);
+        return;
+      }
+      const opts = `<option value="">— selecionar cliente —</option>` +
+        clientsList().map(c => `<option value="${esc(c.id)}" ${c.id===preselId?"selected":""}>${esc(c.nome)} (${esc(c.email||"sem email")})</option>`).join("");
       const fileInfo = item && item.arquivo_path
         ? `<div class="full" style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(0,212,255,.06);border-radius:10px;font-size:.85rem">
              <span style="color:#9ee9ff">📎 Arquivo atual anexado</span>
@@ -347,13 +354,19 @@
         await loadAll(); render(); renderKPI(); closeModal(); window.toast("Salvo.", "success");
       });
     }
-    filter.addEventListener("change", render);
-    document.getElementById(btnId).addEventListener("click", () => edit(null));
+    if (filter) filter.addEventListener("change", render);
+    const btn = document.getElementById(btnId);
+    if (btn) btn.addEventListener("click", () => edit(null, filter ? filter.value : ""));
     return { render, edit };
+  }
+  // Wrapper seguro: garante que falha em uma tabela não derrube as demais
+  function safeMakeTable(cfg) {
+    try { return makeTable(cfg); }
+    catch (e) { console.error("makeTable falhou para", cfg.tableName, e); return { render: ()=>{}, edit: ()=>{} }; }
   }
 
   // ===== ORDENS DE SERVIÇO
-  const tblOS = makeTable({
+  const tblOS = safeMakeTable({
     listVar: () => allOS, tableName: "servicos", idField: "id",
     filterId: "filterOSClient", btnId: "btnNewOS",
     columns: (s) => Object.keys(s).length ? [
@@ -382,7 +395,7 @@
   });
 
   // ===== BOLETOS
-  const tblBol = makeTable({
+  const tblBol = safeMakeTable({
     listVar: () => allBol, tableName: "boletos", idField: "id",
     filterId: "filterBolClient", btnId: "btnNewBol",
     columns: (b) => Object.keys(b).length ? [
@@ -412,7 +425,7 @@
   });
 
   // ===== NOTAS FISCAIS
-  const tblNF = makeTable({
+  const tblNF = safeMakeTable({
     listVar: () => allNF, tableName: "notas_fiscais", idField: "id",
     filterId: "filterNFClient", btnId: "btnNewNF",
     columns: (n) => Object.keys(n).length ? [
@@ -446,7 +459,7 @@
   });
 
   // ===== PROPOSTAS
-  const tblProp = makeTable({
+  const tblProp = safeMakeTable({
     listVar: () => allProp, tableName: "propostas", idField: "id",
     filterId: "filterPropClient", btnId: "btnNewProp",
     columns: (p) => Object.keys(p).length ? [
@@ -476,7 +489,7 @@
   });
 
   // ===== CONTRATOS
-  const tblCtr = makeTable({
+  const tblCtr = safeMakeTable({
     listVar: () => allCtr, tableName: "contratos", idField: "id",
     filterId: "filterCtrClient", btnId: "btnNewCtr",
     columns: (c) => Object.keys(c).length ? [
@@ -538,16 +551,44 @@
   });
   document.getElementById("btnResetAll").addEventListener("click", () => alert("Reset destrutivo deve ser feito via SQL Editor do Supabase para evitar acidentes."));
 
+  // ===== Event delegation: garante que os botões "+ Novo" funcionem mesmo
+  //   se algum makeTable tiver falhado. Pré-seleciona cliente do filtro.
+  const NEW_BTN_MAP = {
+    btnNewOS:   { tbl: () => tblOS,   filter: "filterOSClient" },
+    btnNewBol:  { tbl: () => tblBol,  filter: "filterBolClient" },
+    btnNewNF:   { tbl: () => tblNF,   filter: "filterNFClient" },
+    btnNewProp: { tbl: () => tblProp, filter: "filterPropClient" },
+    btnNewCtr:  { tbl: () => tblCtr,  filter: "filterCtrClient" }
+  };
+  document.body.addEventListener("click", (e) => {
+    const btn = e.target.closest("#btnNewOS, #btnNewBol, #btnNewNF, #btnNewProp, #btnNewCtr");
+    if (!btn) return;
+    e.preventDefault();
+    const cfg = NEW_BTN_MAP[btn.id];
+    if (!cfg) return;
+    const t = cfg.tbl();
+    if (!t || !t.edit) {
+      window.toast("Erro ao abrir formulário. Recarregue a página (Ctrl+Shift+R).", "error");
+      return;
+    }
+    const prefill = document.getElementById(cfg.filter)?.value || "";
+    try { t.edit(null, prefill); }
+    catch (err) {
+      console.error(err);
+      window.toast("Erro: " + (err.message || "desconhecido"), "error");
+    }
+  });
+
   // ===== Refresh
   function refreshPanel(name) {
     if (name === "overview") { renderKPI(); renderClients(); renderLeads(); }
     if (name === "clientes") renderClients();
     if (name === "leads") renderLeads();
-    if (name === "servicos") tblOS.render();
-    if (name === "boletos") tblBol.render();
-    if (name === "notas") tblNF.render();
-    if (name === "propostas") tblProp.render();
-    if (name === "contratos") tblCtr.render();
+    if (name === "servicos") tblOS && tblOS.render();
+    if (name === "boletos") tblBol && tblBol.render();
+    if (name === "notas") tblNF && tblNF.render();
+    if (name === "propostas") tblProp && tblProp.render();
+    if (name === "contratos") tblCtr && tblCtr.render();
   }
   function renderAll() {
     renderKPI(); renderClients(); renderLeads();
