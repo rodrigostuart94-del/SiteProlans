@@ -34,7 +34,22 @@ where id = (select id from auth.users where email = 'adm@prolans.com.br');
 
 Você deve ver "1 row updated".
 
-### 4) Desativar confirmação de email para clientes (opcional, recomendado)
+### 4) Habilitar upload de arquivos (PDF/XML) — obrigatório
+
+Para que o admin consiga anexar boletos, NFs, contratos, propostas e OS em PDF/XML, e o cliente consiga baixar:
+
+1. No SQL Editor → **New query**
+2. Abra [`prolans-site/supabase-storage.sql`](prolans-site/supabase-storage.sql) → copie tudo → cole → **Run**
+3. **Resultado esperado:** "Success. No rows returned"
+
+Isso cria:
+- Coluna `arquivo_path` em todas as tabelas (propostas, OS, contratos, boletos, NFs, leads)
+- Bucket `documentos` no Storage (privado)
+- RLS: admin sobe/lê/apaga; cliente lê só os arquivos com seu user_id no path
+
+> **Verificação rápida**: vá em **Storage** no menu lateral. Deve aparecer o bucket `documentos`. Se não aparecer, recarregue a página.
+
+### 5) Desativar confirmação de email para clientes (opcional, recomendado)
 
 Em **Authentication → Providers → Email**:
 - Desligue a opção **"Confirm email"**

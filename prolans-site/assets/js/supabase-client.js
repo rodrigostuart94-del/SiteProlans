@@ -100,10 +100,53 @@
     return { ok: true, info: "registered_needs_promotion" };
   }
 
+  // ===== STORAGE — upload e download de arquivos
+  const BUCKET = "documentos";
+  const ALLOWED_TYPES = ["application/pdf", "application/xml", "text/xml", "image/png", "image/jpeg"];
+  const MAX_SIZE_MB = 10;
+
+  function sanitizeFilename(name) {
+    const norm = String(name).normalize("NFD").replace(/[̀-ͯ]/g, "");
+    return norm.replace(/[^a-zA-Z0-9.\-_]/g, "_").slice(0, 100);
+  }
+
+  // Upload — retorna { path, error }
+  async function uploadDoc(tipo, userId, file) {
+    if (!file) return { error: { message: "Arquivo não fornecido" } };
+    if (!ALLOWED_TYPES.includes(file.type) && !/\.(pdf|xml)$/i.test(file.name)) {
+      return { error: { message: "Tipo de arquivo não permitido (use PDF ou XML)" } };
+    }
+    if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+      return { error: { message: `Arquivo maior que ${MAX_SIZE_MB}MB` } };
+    }
+    const ts = Date.now();
+    const safe = sanitizeFilename(file.name);
+    const path = `${tipo}/${userId}/${ts}-${safe}`;
+    const { error } = await sb.storage.from(BUCKET).upload(path, file, {
+      cacheControl: "3600",
+      upsert: false,
+      contentType: file.type || "application/octet-stream"
+    });
+    if (error) return { error };
+    return { path };
+  }
+
+  // Gera URL temporária (signed) válida por 1h — funciona mesmo sendo bucket privado
+  async function getDocUrl(path, expiresInSec = 3600) {
+    if (!path) return { error: { message: "Path vazio" } };
+    return sb.storage.from(BUCKET).createSignedUrl(path, expiresInSec);
+  }
+
+  async function deleteDoc(path) {
+    if (!path) return { error: { message: "Path vazio" } };
+    return sb.storage.from(BUCKET).remove([path]);
+  }
+
   // Expor
   window.prolansDB = {
     sb, signUp, signIn, signOut, getSession, getUser, getProfile, updateProfile,
     listAllProfiles, table, leads, myData, ensureAdmin,
+    uploadDoc, getDocUrl, deleteDoc, BUCKET,
     URL: SUPABASE_URL
   };
 })();

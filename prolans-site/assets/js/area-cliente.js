@@ -41,6 +41,31 @@
       </div>`;
   }
 
+  // Botão de download/visualização — gera signed URL on-demand
+  function fileBtn(path, label) {
+    if (!path) return `<span class="muted" style="font-size:.85rem">—</span>`;
+    return `<button class="btn btn-ghost btn-sm" data-file="${esc(path)}">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      ${esc(label || "Baixar")}
+    </button>`;
+  }
+  function bindFileButtons() {
+    document.querySelectorAll('[data-file]').forEach(b => {
+      if (b.dataset.bound) return;
+      b.dataset.bound = "1";
+      b.addEventListener("click", async () => {
+        b.disabled = true;
+        const old = b.innerHTML;
+        b.textContent = "Abrindo...";
+        const { data, error } = await DB.getDocUrl(b.dataset.file);
+        b.disabled = false;
+        b.innerHTML = old;
+        if (error) { window.toast("Falha ao gerar link de download.", "error"); return; }
+        window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+      });
+    });
+  }
+
   // ============================================================
   //  AUTH PAGE (login/cadastro)
   // ============================================================
@@ -213,12 +238,14 @@
         </div>
         <div style="color:#fff;font-weight:700">${esc(fmtBRL(p.valor))}</div>
         <span class="tag ${esc(p.status)}">${esc(TAG[p.status] || p.status)}</span>
+        ${fileBtn(p.arquivo_path, "Ver proposta")}
         ${p.status === "pending"
           ? `<button class="btn btn-primary btn-sm" data-approve="${esc(p.id)}">Aprovar</button>`
-          : `<span class="muted" style="font-size:.85rem">—</span>`}
+          : ``}
       </div>
     `).join("");
     renderInto("listPropostas", html);
+    bindFileButtons();
     document.querySelectorAll('[data-approve]').forEach(b => b.addEventListener("click", async () => {
       const r = await DB.table("propostas").update(b.dataset.approve, { status: "approved" });
       if (!r.error) { await loadAll(); renderPropostas(); renderKPIs(); window.toast("Proposta aprovada!", "success"); }
@@ -235,9 +262,10 @@
         </div>
         <span></span>
         <span class="tag ${esc(s.status)}">${esc(TAG[s.status] || s.status)}</span>
-        <button class="btn btn-ghost btn-sm">Detalhes</button>
+        ${fileBtn(s.arquivo_path, "Ver OS")}
       </div>
     `).join(""));
+    bindFileButtons();
   }
 
   function renderContratos() {
@@ -250,9 +278,10 @@
         </div>
         <div style="color:#fff;font-weight:700">${esc(fmtBRL(c.valor))}<span class="muted" style="font-size:.8rem">/mês</span></div>
         <span class="tag approved">${esc(TAG[c.status] || c.status)}</span>
-        <button class="btn btn-ghost btn-sm">Contrato</button>
+        ${fileBtn(c.arquivo_path, "Ver contrato")}
       </div>
     `).join(""));
+    bindFileButtons();
   }
 
   function renderBoletos() {
@@ -265,11 +294,13 @@
         </div>
         <div style="color:#fff;font-weight:700">${esc(fmtBRL(b.valor))}</div>
         <span class="tag ${esc(b.status)}">${b.status === "pending" ? "A pagar" : "Pago"}</span>
+        ${fileBtn(b.arquivo_path, "Boleto PDF")}
         ${b.status === "pending"
-          ? `<button class="btn btn-primary btn-sm" data-pay="${esc(b.id)}">Pagar</button>`
-          : `<button class="btn btn-ghost btn-sm">Comprovante</button>`}
+          ? `<button class="btn btn-primary btn-sm" data-pay="${esc(b.id)}">Marcar pago</button>`
+          : ``}
       </div>
     `).join(""));
+    bindFileButtons();
     document.querySelectorAll('[data-pay]').forEach(b => b.addEventListener("click", async () => {
       const r = await DB.table("boletos").update(b.dataset.pay, { status: "done" });
       if (!r.error) { await loadAll(); renderBoletos(); renderKPIs(); window.toast("Pagamento marcado.", "success"); }
@@ -286,9 +317,11 @@
         </div>
         <div style="color:#fff;font-weight:700">${esc(fmtBRL(n.valor))}</div>
         <span class="tag ${n.status === "emitida" ? "approved" : "pending"}">${esc(TAG[n.status] || n.status)}</span>
-        ${n.link_pdf ? `<a class="btn btn-ghost btn-sm" href="${esc(n.link_pdf)}" target="_blank" rel="noopener noreferrer">Baixar PDF</a>` : `<span class="muted" style="font-size:.85rem">—</span>`}
+        ${fileBtn(n.arquivo_path, "Baixar NF")}
+        ${n.link_pdf ? `<a class="btn btn-ghost btn-sm" href="${esc(n.link_pdf)}" target="_blank" rel="noopener noreferrer">Link externo</a>` : ``}
       </div>
     `).join(""));
+    bindFileButtons();
   }
 
   function renderNotif() {

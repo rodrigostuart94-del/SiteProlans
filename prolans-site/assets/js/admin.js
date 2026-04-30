@@ -237,11 +237,21 @@
   document.getElementById("searchLeads").addEventListener("input", renderLeads);
   document.getElementById("btnExportLeads").addEventListener("click", () => exportFile("prolans-leads.json", allLeads));
 
+  // Mapeia tableName -> tipo (path no storage)
+  const STORAGE_TIPOS = {
+    servicos: "ordens-servico",
+    boletos: "boletos",
+    notas_fiscais: "notas-fiscais",
+    propostas: "propostas",
+    contratos: "contratos"
+  };
+
   // ===== Genérico — gerador de tabela CRUD vinculada a cliente
   function makeTable({ panel, listVar, tableName, columns, idField, filterId, btnId, formFields, makePayload }) {
     const cntId = ({servicos:"cntOS", boletos:"cntBol", notas_fiscais:"cntNF", propostas:"cntProp", contratos:"cntCtr"})[tableName];
     const tblId = ({servicos:"tblOS", boletos:"tblBol", notas_fiscais:"tblNF", propostas:"tblProp", contratos:"tblCtr"})[tableName];
     const filter = document.getElementById(filterId);
+    const tipo = STORAGE_TIPOS[tableName];
 
     function render() {
       const items = (listVar()).filter(x => !filter.value || x.user_id === filter.value);
@@ -251,6 +261,7 @@
           ${columns(it).map(c => `<td>${c}</td>`).join("")}
           <td>
             <div class="row-actions">
+              ${it.arquivo_path ? `<button class="btn btn-ghost btn-xs" data-view-file="${esc(it.arquivo_path)}">Ver arquivo</button>` : ""}
               <button class="btn btn-ghost btn-xs" data-edit-row="${esc(it[idField])}">Editar</button>
               <button class="btn btn-ghost btn-xs" data-del-row="${esc(it[idField])}" style="color:#ff7a7a;border-color:#ff7a7a">Excluir</button>
             </div>
@@ -261,31 +272,78 @@
       document.querySelectorAll(`#${tblId} [data-edit-row]`).forEach(b => b.addEventListener("click", () => edit(b.dataset.editRow)));
       document.querySelectorAll(`#${tblId} [data-del-row]`).forEach(b => b.addEventListener("click", async () => {
         if (!confirm("Excluir este registro?")) return;
+        const it = (listVar()).find(x => x[idField] === b.dataset.delRow);
+        if (it && it.arquivo_path) await DB.deleteDoc(it.arquivo_path);
         await DB.table(tableName).remove(b.dataset.delRow);
         await loadAll(); render(); renderKPI(); window.toast("Excluído.", "success");
+      }));
+      document.querySelectorAll(`#${tblId} [data-view-file]`).forEach(b => b.addEventListener("click", async () => {
+        const { data, error } = await DB.getDocUrl(b.dataset.viewFile);
+        if (error) { window.toast("Falha ao gerar link.", "error"); return; }
+        window.open(data.signedUrl, "_blank", "noopener,noreferrer");
       }));
     }
     function edit(id) {
       const item = id ? (listVar()).find(x => x[idField] === id) : null;
       const isNew = !item;
       const opts = clientsList().map(c => `<option value="${esc(c.id)}" ${item && c.id===item.user_id?"selected":""}>${esc(c.nome)}</option>`).join("");
+      const fileInfo = item && item.arquivo_path
+        ? `<div class="full" style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(0,212,255,.06);border-radius:10px;font-size:.85rem">
+             <span style="color:#9ee9ff">📎 Arquivo atual anexado</span>
+             <button class="btn btn-ghost btn-xs" type="button" id="btn_remove_file">Remover</button>
+           </div>`
+        : "";
       openModal(isNew ? `Novo registro` : `Editar ${id.slice(0,8)}`, `
         <div class="admin-form-grid">
           <div class="full"><label>Cliente</label><select id="f_user_id" ${isNew?"":"disabled"}>${opts}</select></div>
           ${formFields(item || {})}
+          ${fileInfo}
+          <div class="full"><label>Anexar arquivo (PDF ou XML, máx. 10MB)</label>
+            <input type="file" id="f_arquivo" accept=".pdf,.xml,application/pdf,application/xml,text/xml" />
+            <small style="color:var(--text-dim);font-size:.74rem">Opcional — substituirá o arquivo atual se houver.</small>
+          </div>
           <div class="full" style="display:flex;gap:8px;justify-content:flex-end">
             <button class="btn btn-ghost btn-sm" id="modalCancel">Cancelar</button>
             <button class="btn btn-primary btn-sm" id="modalSave">${isNew?"Criar":"Salvar"}</button>
           </div>
         </div>
       `);
+      let removeFileFlag = false;
+      const rmBtn = document.getElementById("btn_remove_file");
+      if (rmBtn) rmBtn.addEventListener("click", () => {
+        if (confirm("Remover o arquivo anexado?")) {
+          removeFileFlag = true;
+          rmBtn.parentElement.innerHTML = '<span style="color:#ff7a7a">Arquivo será removido ao salvar.</span>';
+        }
+      });
       document.getElementById("modalCancel").addEventListener("click", closeModal);
       document.getElementById("modalSave").addEventListener("click", async () => {
         const userId = isNew ? document.getElementById("f_user_id").value : item.user_id;
         if (!userId) { window.toast("Selecione cliente.", "error"); return; }
         const payload = makePayload(userId);
+
+        // Upload de arquivo (se anexado)
+        const fileInput = document.getElementById("f_arquivo");
+        const file = fileInput && fileInput.files[0];
+        let newPath = null;
+        if (file) {
+          window.toast("Enviando arquivo...", "info");
+          const up = await DB.uploadDoc(tipo, userId, file);
+          if (up.error) { window.toast(up.error.message || "Falha no upload.", "error"); return; }
+          newPath = up.path;
+          payload.arquivo_path = newPath;
+          // Remove arquivo antigo
+          if (item && item.arquivo_path) await DB.deleteDoc(item.arquivo_path);
+        } else if (removeFileFlag && item && item.arquivo_path) {
+          await DB.deleteDoc(item.arquivo_path);
+          payload.arquivo_path = null;
+        }
+
         const r = isNew ? await DB.table(tableName).insert(payload) : await DB.table(tableName).update(item[idField], payload);
-        if (r.error) { window.toast(r.error.message, "error"); return; }
+        if (r.error) {
+          if (newPath) await DB.deleteDoc(newPath); // rollback
+          window.toast(r.error.message, "error"); return;
+        }
         await loadAll(); render(); renderKPI(); closeModal(); window.toast("Salvo.", "success");
       });
     }
