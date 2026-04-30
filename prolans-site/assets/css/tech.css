@@ -13,7 +13,9 @@
 }
 body { position: relative; }
 /* Tudo (exceto background fixos e elementos fixed/floating) fica acima do z-index 1 */
-body > *:not(#fx-particles):not(.fx-pattern):not(.fx-scanline):not(.wa-float):not(.fx-cursor):not(.fx-cursor-trail):not(#fx-progress):not(.toast):not(.dash-mobile-toggle) { position: relative; z-index: 2; }
+body > *:not(#fx-particles):not(.fx-pattern):not(.fx-scanline):not(.wa-float):not(.fx-cursor):not(.fx-cursor-trail):not(#fx-progress):not(.toast):not(.dash-mobile-toggle):not(.header):not(.modal-back) { position: relative; z-index: 2; }
+/* Header fica num stacking context elevado para nav mobile flutuar acima do conteúdo */
+body > .header { position: sticky; top: 0; z-index: 1000; }
 
 /* Grid de circuito sutil (background base, bem discreto) */
 body::before {
