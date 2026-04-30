@@ -1124,42 +1124,42 @@
       'Fale com a Prolans',
       'Escolha o canal que preferir, respondemos rapidinho.', y);
 
-    /* Cards de contato em padrão UNIFICADO:
-       icon a esquerda (PAD, PAD), title alinhado vertical */
+    /* Cards de contato — grid 2x2 (cada card ~84mm de largura, fitment ideal) */
     const contacts = [
-      { icon: 'phone',     l: 'WHATSAPP / TEL', v: '(21) 99711-2008' },
-      { icon: 'envelope',  l: 'E-MAIL',         v: 'contato@prolans.com.br' },
-      { icon: 'instagram', l: 'INSTAGRAM',      v: '@contato.prolans' },
-      { icon: 'globe',     l: 'SITE',           v: 'www.prolans.com.br' }
+      { icon: 'phone',     l: 'WHATSAPP / TELEFONE', v: '(21) 99711-2008' },
+      { icon: 'envelope',  l: 'E-MAIL',              v: 'contato@prolans.com.br' },
+      { icon: 'instagram', l: 'INSTAGRAM',           v: '@contato.prolans' },
+      { icon: 'globe',     l: 'SITE',                v: 'www.prolans.com.br' }
     ];
-    const cW = (CW - 12) / 4;
-    const cH = 30;
-    const cIcon = 9;
+    const cW = (CW - 6) / 2;
+    const cH = 22;
+    const cIcon = 10;
     contacts.forEach((c, i) => {
-      const x = M + i * (cW + 4);
-      card(doc, x, y, cW, cH);
+      const col = i % 2, row = Math.floor(i / 2);
+      const x = M + col * (cW + 6);
+      const yy = y + row * (cH + 5);
+      card(doc, x, yy, cW, cH);
 
-      // Ícone (canto esquerdo)
-      iconBadge(doc, x + PAD, y + PAD, cIcon, c.icon, C.primary);
+      // Ícone à esquerda
+      iconBadge(doc, x + PAD, yy + PAD, cIcon, c.icon, C.primary);
 
-      // Label (uppercase pequeno) + value (bold)
-      const tx = x + PAD + cIcon + 5;
+      // Label (uppercase, pequeno, dim)
+      const tx = x + PAD + cIcon + 6;
       f.text(C.textMuted);
-      doc.setFontSize(6.5);
+      doc.setFontSize(6.8);
       doc.setFont('helvetica', 'bold');
-      doc.setCharSpace(1.2);
-      doc.text(c.l, tx, y + PAD + 3.5);
+      doc.setCharSpace(1.4);
+      doc.text(c.l, tx, yy + PAD + 3);
       doc.setCharSpace(0);
 
+      // Value (bold, branco) — agora sem quebra
       f.text(C.white);
-      doc.setFontSize(8.6);
+      doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
-      // Quebra automática se o valor for longo
-      const vLines = doc.splitTextToSize(c.v, cW - PAD - cIcon - 5 - PAD);
-      vLines.forEach((l, idx) => doc.text(l, tx, y + PAD + 9 + idx * 4));
+      doc.text(c.v, tx, yy + PAD + 9.5);
     });
 
-    y += cH + 6;
+    y += 2 * cH + 5 + 8;
 
     // Endereço (linha cheia)
     const addrH = 22;
