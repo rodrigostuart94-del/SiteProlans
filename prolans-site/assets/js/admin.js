@@ -109,14 +109,64 @@
     let receita = 0;
     allCtr.forEach(c => { if (c.status === "approved") receita += Number(c.valor||0); });
     g("kpiRevenue",  fmtBRL(receita));
+    renderPaymentAlerts();
   }
+
+  // ===== NOTIFICAÇÕES de pagamentos a verificar
+  let lastNotifiedCount = -1;
+  function pendingConfirmCount() {
+    return allBol.filter(b => b.status === "pending_confirm").length;
+  }
+  function renderPaymentAlerts() {
+    const n = pendingConfirmCount();
+    // Badge no menu
+    const badge = document.getElementById("badgeBoletos");
+    if (badge) {
+      if (n > 0) { badge.textContent = n; badge.hidden = false; }
+      else { badge.hidden = true; }
+    }
+    // Banner no overview e na aba boletos
+    const banner = (target) => `
+      <div class="alert-banner" data-go="boletos" id="${target}_banner">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+        <div>
+          <strong>${n} pagamento${n>1?"s":""} para verificar</strong>
+          <div class="muted" style="font-size:.82rem;margin-top:2px">Cliente${n>1?"s":""} marcou como pago. Confirme para dar baixa.</div>
+        </div>
+        <span class="arrow">→</span>
+      </div>`;
+    const c1 = document.getElementById("alertContainer");
+    const c2 = document.getElementById("alertContainerBol");
+    if (c1) c1.innerHTML = n > 0 ? banner("ov") : "";
+    if (c2) c2.innerHTML = n > 0 ? banner("bol") : "";
+
+    // Toast quando o número aumentar
+    if (lastNotifiedCount !== -1 && n > lastNotifiedCount) {
+      window.toast(`${n - lastNotifiedCount} novo${n - lastNotifiedCount > 1 ? "s" : ""} pagamento${n - lastNotifiedCount > 1 ? "s" : ""} para verificar!`, "info", 6000);
+    }
+    lastNotifiedCount = n;
+  }
+
+  // Polling automático para detectar novos pagamentos a verificar (a cada 30s)
+  setInterval(async () => {
+    const r = await DB.table("boletos").list();
+    if (r.error) return;
+    const newBol = r.data || [];
+    const newCount = newBol.filter(b => b.status === "pending_confirm").length;
+    if (newCount !== pendingConfirmCount()) {
+      allBol = newBol;
+      renderPaymentAlerts();
+      if (typeof tblBol !== "undefined" && tblBol && tblBol.render) tblBol.render();
+      renderKPI();
+    }
+  }, 30000);
 
   function pillFor(s) {
     const map = { pending:"pill-pending", pending_confirm:"pill-progress", approved:"pill-approved", "in-progress":"pill-progress",
                   done:"pill-done", emitida:"pill-approved", cancelada:"pill-pending", active:"pill-active" };
     const lbl = {
       pending: "Aguardando",
-      pending_confirm: "Aguardando confirmação",
+      pending_confirm: "Verificar Pagamento",
       approved: "Aprovado",
       "in-progress": "Em andamento",
       done: "Concluído",
@@ -410,7 +460,7 @@
     listVar: () => allBol, tableName: "boletos", idField: "id",
     filterId: "filterBolClient", btnId: "btnNewBol",
     extraActions: (b) => b.status === "pending_confirm"
-      ? `<button class="btn btn-primary btn-xs pulse-cta" data-confirm-pay="${esc(b.id)}" style="background:linear-gradient(135deg,#00d4ff,#7c5cff);box-shadow:0 0 0 0 rgba(0,212,255,.6);animation:pulseGlow 1.6s ease-in-out infinite;font-weight:700">Confirmar pagamento?</button>`
+      ? `<button class="btn btn-primary btn-xs pulse-cta" data-confirm-pay="${esc(b.id)}" style="background:linear-gradient(135deg,#00d4ff,#7c5cff);box-shadow:0 0 0 0 rgba(0,212,255,.6);animation:pulseGlow 1.6s ease-in-out infinite;font-weight:700">Verificar Pagamento</button>`
       : "",
     columns: (b) => Object.keys(b).length ? [
       `<strong>${esc(b.id.slice(0,8))}</strong>`,

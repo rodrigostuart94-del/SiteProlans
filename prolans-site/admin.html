@@ -91,6 +91,44 @@
     50% { box-shadow: 0 0 0 8px rgba(0,212,255,0); transform: scale(1.04); }
   }
 
+  /* Badge de notificação no menu lateral */
+  .nav-badge {
+    margin-left: auto;
+    min-width: 20px; height: 20px;
+    padding: 0 7px;
+    background: linear-gradient(135deg, #ff5959, #ff7a7a);
+    color: #fff;
+    font-size: .7rem; font-weight: 800;
+    border-radius: 99px;
+    display: inline-flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 0 0 rgba(255,89,89,.6);
+    animation: badgePulse 1.6s ease-in-out infinite;
+  }
+  @keyframes badgePulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,89,89,.55); }
+    50% { box-shadow: 0 0 0 8px rgba(255,89,89,0); }
+  }
+  .admin-side nav a { position: relative; }
+
+  /* Banner de alerta no topo do painel */
+  .alert-banner {
+    background: linear-gradient(135deg, rgba(0,212,255,.12), rgba(124,92,255,.12));
+    border: 1px solid rgba(0,212,255,.35);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer;
+    animation: bannerPulse 2.2s ease-in-out infinite;
+  }
+  .alert-banner svg { flex-shrink: 0; color: #9ee9ff; }
+  .alert-banner strong { color: #fff; }
+  .alert-banner .arrow { margin-left: auto; color: var(--primary); }
+  @keyframes bannerPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0,212,255,.4); }
+    50% { box-shadow: 0 0 0 6px rgba(0,212,255,0); }
+  }
+
   .btn-xs { padding: 6px 10px; font-size: .78rem; min-height: 32px; border-radius: 8px; }
 
   @media (max-width: 980px) {
@@ -133,9 +171,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a4 4 0 0 0 5 5L17 14l3 3a2 2 0 0 1-3 3l-3-3-2.7 2.7a4 4 0 0 0-5-5L9 12 6 9a2 2 0 0 1 3-3l3 3 2.7-2.7z"/></svg>
         Ordens de Serviço
       </a>
-      <a data-go="boletos">
+      <a data-go="boletos" id="navBoletos">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
         Boletos
+        <span id="badgeBoletos" class="nav-badge" hidden>0</span>
       </a>
       <a data-go="notas">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
@@ -168,6 +207,7 @@
 
     <!-- OVERVIEW -->
     <section data-panel="overview">
+      <div id="alertContainer"></div>
       <div class="admin-grid-3">
         <div class="stat-card"><div class="lbl">Clientes ativos</div><div class="val gradient-text" id="kpiClients">0</div></div>
         <div class="stat-card"><div class="lbl">Leads novos</div><div class="val gradient-text" id="kpiLeads">0</div></div>
@@ -241,6 +281,7 @@
 
     <!-- BOLETOS -->
     <section data-panel="boletos" hidden>
+      <div id="alertContainerBol"></div>
       <div class="panel">
         <h2>Boletos <span class="count" id="cntBol">0</span></h2>
         <div class="tools">
