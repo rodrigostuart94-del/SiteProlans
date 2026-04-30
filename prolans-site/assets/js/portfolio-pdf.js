@@ -1,26 +1,29 @@
 /* ============================================================
    PROLANS · Portfólio em PDF
-   Layout limpo, fundo único azul sombreado, fitment validado.
+   Layout premium · fitment validado · grid de alinhamento.
    ============================================================ */
 (function () {
+  /* Geometria / grid */
   const A4_W = 210;
   const A4_H = 297;
-  const M = 18;             // margem externa generosa
-  const CW = A4_W - 2*M;    // largura útil
-  const TOP = 26;           // início do conteúdo (após cabeçalho)
-  const BOTTOM = A4_H - 22; // limite inferior (antes do rodapé)
+  const M = 18;                  // margem externa
+  const CW = A4_W - 2*M;         // largura útil
+  const TOP = 26;                // início do conteúdo (após cabeçalho)
+  const BOTTOM = A4_H - 22;      // limite inferior (antes do rodapé)
+  const PAD = 6;                 // padding interno padrão dos cards
+  const LH = 4.5;                // line-height body
+  const ICON = 10;               // tamanho padrão do ícone
 
-  // Paleta — uma única cor de fundo sólida navy (sem gradiente, sem grid)
+  /* Paleta — fundo único navy sólido */
   const C = {
-    bg:           [10, 21, 48],      // navy sólido — fundo de TODAS as páginas
-    surface:      [18, 32, 64],      // card padrão (uma sombra acima do bg)
-    surfaceAlt:   [26, 44, 84],      // card destacado
-    surfaceSoft:  [14, 26, 56],      // card sutil/muted
-    border:       [40, 56, 96],      // borda discreta
-    borderStrong: [0, 130, 184],     // borda em destaque ciano
-    primary:      [88, 222, 255],    // ciano principal
-    primaryDeep:  [0, 145, 220],
-    accent:       [156, 132, 255],   // roxo suave
+    bg:           [10, 21, 48],
+    surface:      [18, 32, 64],
+    surfaceAlt:   [26, 44, 84],
+    surfaceSoft:  [14, 26, 56],
+    border:       [40, 56, 96],
+    borderStrong: [0, 130, 184],
+    primary:      [88, 222, 255],
+    accent:       [156, 132, 255],
     success:      [76, 235, 180],
     warning:      [255, 196, 100],
     text:         [240, 244, 255],
@@ -35,7 +38,9 @@
     text:   c => doc.setTextColor(c[0], c[1], c[2])
   });
 
-  /* ---------- Imagem ---------- */
+  /* ============================================================
+     UTILITÁRIOS
+     ============================================================ */
   async function loadImage(src) {
     try {
       const r = await fetch(src);
@@ -49,19 +54,24 @@
     } catch (e) { return null; }
   }
 
-  /* ---------- Background único sólido (cor uniforme, premium) ---------- */
+  // Mede altura em mm de um bloco de texto (após split)
+  function textHeight(lines, lineHeight) {
+    return lines.length * (lineHeight || LH);
+  }
+
+  /* ============================================================
+     BACKGROUND + HEADER + FOOTER
+     ============================================================ */
   function background(doc) {
     const f = F(doc);
-    // Uma única cor sólida — sem gradiente em bandas, sem grid, sem padrões.
+    // Cor sólida única
     f.fill(C.bg);
     doc.rect(0, 0, A4_W, A4_H, 'F');
-
-    // Acento premium: barra ciano fina no topo (3px), única ornamentação fixa
+    // Acento ciano premium no topo (única ornamentação)
     f.fill(C.primary);
     doc.rect(0, 0, A4_W, 1.2, 'F');
   }
 
-  /* ---------- Cabeçalho/Rodapé sutis ---------- */
   function header(doc) {
     const f = F(doc);
     f.text(C.primary);
@@ -70,6 +80,7 @@
     doc.setCharSpace(1.6);
     doc.text('PROLANS', M, 16);
     doc.setCharSpace(0);
+
     f.text(C.textMuted);
     doc.setFont('helvetica', 'normal');
     doc.text('Portfólio Oficial · 2026', A4_W - M, 16, { align: 'right' });
@@ -82,7 +93,7 @@
   function footer(doc, n, total) {
     const f = F(doc);
     f.stroke(C.border);
-    doc.setLineWidth(0.15);
+    doc.setLineWidth(0.12);
     doc.line(M, A4_H - 18, A4_W - M, A4_H - 18);
 
     f.text(C.textDim);
@@ -96,28 +107,29 @@
       A4_W - M, A4_H - 12, { align: 'right' });
   }
 
-  /* ---------- Elementos básicos ---------- */
+  /* ============================================================
+     COMPONENTES (todos seguem o mesmo grid)
+     ============================================================ */
   function eyebrow(doc, x, y, label, color) {
     const f = F(doc);
     f.text(color || C.primary);
     doc.setFontSize(7.5);
     doc.setFont('helvetica', 'bold');
-    doc.setCharSpace(1.4);
+    doc.setCharSpace(1.6);
     doc.text(label, x, y);
     doc.setCharSpace(0);
   }
 
-  // Título de seção limpo (eyebrow + título + descrição + linha sutil)
-  function sectionTitle(doc, num, eyebrowLabel, title, subtitle, y) {
+  function sectionTitle(doc, num, label, title, subtitle, y) {
     const f = F(doc);
-    eyebrow(doc, M, y, num + ' · ' + eyebrowLabel);
+    eyebrow(doc, M, y, num + ' · ' + label);
     y += 9;
 
     f.text(C.white);
     doc.setFontSize(22);
     doc.setFont('helvetica', 'bold');
-    const tLines = doc.splitTextToSize(title, CW * 0.9);
-    doc.text(tLines, M, y);
+    const tLines = doc.splitTextToSize(title, CW * 0.92);
+    tLines.forEach((l, i) => doc.text(l, M, y + i * 8));
     y += tLines.length * 8;
 
     if (subtitle) {
@@ -126,7 +138,7 @@
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
       const sLines = doc.splitTextToSize(subtitle, CW * 0.88);
-      doc.text(sLines, M, y);
+      sLines.forEach((l, i) => doc.text(l, M, y + i * 5));
       y += sLines.length * 5;
     }
 
@@ -134,7 +146,7 @@
     f.stroke(C.borderStrong);
     doc.setLineWidth(0.6);
     doc.line(M, y, M + 22, y);
-    return y + 8;
+    return y + 10;
   }
 
   function card(doc, x, y, w, h, opts) {
@@ -146,7 +158,7 @@
     doc.roundedRect(x, y, w, h, 2.5, 2.5, 'FD');
   }
 
-  // Quadradinho com glyph (contorno fino, alinhado)
+  // Ícone quadrado com glyph - centro do quadrado em (x+size/2, y+size/2)
   function iconBadge(doc, x, y, size, glyph, color) {
     const f = F(doc);
     f.fill(C.surfaceAlt);
@@ -155,59 +167,66 @@
     doc.roundedRect(x, y, size, size, 1.6, 1.6, 'FD');
     if (glyph) {
       f.text(color || C.primary);
-      doc.setFontSize(size * 1.2);
+      doc.setFontSize(size * 1.15);
       doc.setFont('helvetica', 'bold');
-      doc.text(glyph, x + size/2, y + size * 0.74, { align: 'center' });
+      // Centro vertical do glyph: y + size/2 + offset
+      doc.text(glyph, x + size/2, y + size * 0.72, { align: 'center' });
     }
   }
 
-  // Bullet ponto ciano
   function bullet(doc, x, y, color) {
-    const f = F(doc);
-    f.fill(color || C.primary);
+    F(doc).fill(color || C.primary);
     doc.circle(x, y, 0.7, 'F');
   }
 
-  // Quote / frase de impacto centralizada
-  function impactLine(doc, y, text) {
-    const f = F(doc);
-    f.text(C.primary);
-    doc.setFontSize(11);
-    doc.setFont('helvetica', 'italic');
-    doc.text(text, A4_W/2, y, { align: 'center' });
-  }
-
-  // Hairline sutil para dividir blocos
   function hairline(doc, y) {
     F(doc).stroke(C.border);
-    doc.setLineWidth(0.15);
+    doc.setLineWidth(0.12);
     doc.line(M, y, A4_W - M, y);
   }
 
+  // Cabeçalho de card com ícone à esquerda + título alinhado
+  // Retorna y de continuação (próxima linha após o header)
+  function cardHeader(doc, x, y, icon, title, color) {
+    iconBadge(doc, x + PAD, y + PAD, ICON, icon, color || C.primary);
+    F(doc).text(C.white);
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    // Baseline do título alinhada com o centro vertical do ícone
+    // Centro do ícone: y + PAD + ICON/2 = y + 11
+    // Baseline para texto bold 12pt fica a +1.5mm abaixo do centro visual
+    doc.text(title, x + PAD + ICON + 6, y + PAD + ICON/2 + 1.6);
+    return y + PAD + ICON + 4; // próxima linha
+  }
+
   /* ============================================================
-     PÁGINA 1 · CAPA — premium, arejada, sem moldura ao redor do logo
+     PÁGINA 1 · CAPA — vertical perfeitamente balanceada
      ============================================================ */
   async function pageCover(doc, logo) {
     background(doc);
     const f = F(doc);
 
-    // Marca discreta no topo (sem cabeçalho completo na capa)
+    // Marca topo
     f.text(C.primary);
-    doc.setFontSize(7.5);
+    doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
-    doc.setCharSpace(2.2);
+    doc.setCharSpace(2.4);
     doc.text('PROLANS', A4_W/2, 18, { align: 'center' });
     doc.setCharSpace(0);
 
-    // Logo no terço superior, sem caixa decorativa
-    const logoSize = 38;
-    const logoX = (A4_W - logoSize) / 2;
-    const logoY = 78;
-    if (logo) {
-      try { doc.addImage(logo, 'PNG', logoX, logoY, logoSize, logoSize); } catch(e) {}
-    }
+    /* Bloco principal centralizado verticalmente
+       Altura total ≈ logo(40) + gap(20) + eyebrow(4) + gap(14) + title(14)
+                    + gap(6) + subtitle(5) + gap(12) + line(0) + gap(10) + slogan(5)
+                    ≈ 130mm
+       Centro do bloco em y = 145 (pouco acima do meio para olhar respirar embaixo) */
+    const logoSize = 40;
+    const blockTop = 60;
 
-    let y = logoY + logoSize + 26;
+    // Logo
+    if (logo) {
+      try { doc.addImage(logo, 'PNG', (A4_W - logoSize)/2, blockTop, logoSize, logoSize); } catch(e) {}
+    }
+    let y = blockTop + logoSize + 22;
 
     // Eyebrow tag
     f.text(C.primary);
@@ -218,9 +237,9 @@
     doc.setCharSpace(0);
     y += 16;
 
-    // Título principal grande
+    // Título
     f.text(C.white);
-    doc.setFontSize(42);
+    doc.setFontSize(44);
     doc.setFont('helvetica', 'bold');
     doc.text('Prolans', A4_W/2, y, { align: 'center' });
     y += 12;
@@ -230,13 +249,13 @@
     doc.setFontSize(13);
     doc.setFont('helvetica', 'normal');
     doc.text('Soluções em Tecnologia e Serviços', A4_W/2, y, { align: 'center' });
-    y += 18;
+    y += 14;
 
-    // Linha decorativa central, mais elegante (mais fina, mais curta)
+    // Linha decorativa
     f.stroke(C.primary);
-    doc.setLineWidth(0.6);
-    doc.line(A4_W/2 - 10, y, A4_W/2 + 10, y);
-    y += 12;
+    doc.setLineWidth(0.7);
+    doc.line(A4_W/2 - 12, y, A4_W/2 + 12, y);
+    y += 10;
 
     // Slogan
     f.text(C.textMuted);
@@ -244,48 +263,54 @@
     doc.setFont('helvetica', 'italic');
     doc.text('Protegendo o presente, garantindo o futuro.', A4_W/2, y, { align: 'center' });
 
-    // Meta info — apenas tipografia (sem caixa) para visual ainda mais clean
-    y = A4_H - 70;
+    /* Bloco inferior — meta info perfeitamente alinhada em 3 colunas */
+    const metaY = A4_H - 70;
+
+    // Linha sutil acima
+    f.stroke(C.border);
+    doc.setLineWidth(0.12);
+    doc.line(A4_W/2 - 70, metaY - 8, A4_W/2 + 70, metaY - 8);
+
+    // Labels (uppercase, dim)
     f.text(C.textDim);
     doc.setFontSize(7.5);
     doc.setFont('helvetica', 'bold');
-    doc.setCharSpace(1.6);
-    const colX = [A4_W/2 - 56, A4_W/2, A4_W/2 + 56];
-    doc.text('FUNDADA',         colX[0], y, { align: 'center' });
-    doc.text('SEDE',            colX[1], y, { align: 'center' });
-    doc.text('CNPJ',            colX[2], y, { align: 'center' });
+    doc.setCharSpace(1.8);
+    const cols = [A4_W/2 - 50, A4_W/2, A4_W/2 + 50];
+    doc.text('FUNDADA', cols[0], metaY, { align: 'center' });
+    doc.text('SEDE',    cols[1], metaY, { align: 'center' });
+    doc.text('CNPJ',    cols[2], metaY, { align: 'center' });
     doc.setCharSpace(0);
 
-    y += 6;
+    // Values (white, bold)
     f.text(C.white);
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
-    doc.text('Ago/2020',          colX[0], y, { align: 'center' });
-    doc.text('Teresópolis · RJ',  colX[1], y, { align: 'center' });
-    doc.text('38.408.286/0001-11',colX[2], y, { align: 'center' });
-
-    // Linha sutil acima das tags do final
-    y = A4_H - 38;
-    f.stroke(C.border);
-    doc.setLineWidth(0.12);
-    doc.line(A4_W/2 - 60, y, A4_W/2 + 60, y);
+    doc.text('Ago/2020',           cols[0], metaY + 7, { align: 'center' });
+    doc.text('Teresópolis · RJ',   cols[1], metaY + 7, { align: 'center' });
+    doc.text('38.408.286/0001-11', cols[2], metaY + 7, { align: 'center' });
 
     // Tags rodapé
-    y += 7;
+    let bottomY = A4_H - 36;
+    f.stroke(C.border);
+    doc.setLineWidth(0.12);
+    doc.line(A4_W/2 - 70, bottomY, A4_W/2 + 70, bottomY);
+    bottomY += 7;
+
     f.text(C.primary);
     doc.setFontSize(7.5);
     doc.setFont('helvetica', 'bold');
     doc.setCharSpace(2);
     doc.text('SEGURANÇA   ·   AUTOMAÇÃO   ·   REDES   ·   MANUTENÇÃO',
-      A4_W/2, y, { align: 'center' });
+      A4_W/2, bottomY, { align: 'center' });
     doc.setCharSpace(0);
 
-    y += 6;
+    bottomY += 6;
     f.text(C.textDim);
     doc.setFontSize(7);
     doc.setFont('helvetica', 'normal');
     doc.text('Documento gerado em ' + new Date().toLocaleDateString('pt-BR'),
-      A4_W/2, y, { align: 'center' });
+      A4_W/2, bottomY, { align: 'center' });
   }
 
   /* ============================================================
@@ -311,15 +336,14 @@
     ];
     historia.forEach(p => {
       const lines = doc.splitTextToSize(p, CW);
-      lines.forEach(l => { doc.text(l, M, y); y += 5.2; });
-      y += 4;
+      lines.forEach((l, i) => doc.text(l, M, y + i * 5));
+      y += lines.length * 5 + 4;
     });
 
-    y += 4;
+    y += 3;
     hairline(doc, y);
     y += 10;
 
-    // Mini-eyebrow para timeline
     eyebrow(doc, M, y, 'NOSSA TRAJETÓRIA');
     y += 9;
 
@@ -335,29 +359,32 @@
     ];
     events.forEach(ev => {
       const isToday = ev.d === 'HOJE';
-      const h = 16;
+      const h = 18;
       card(doc, M, y, CW, h, {
         fill: C.surface,
         stroke: isToday ? C.borderStrong : C.border,
         lineWidth: isToday ? 0.5 : 0.25
       });
 
+      // Data (esquerda) - alinhada verticalmente no centro do card
       f.text(isToday ? C.success : C.primary);
       doc.setFontSize(7.5);
       doc.setFont('helvetica', 'bold');
       doc.setCharSpace(1);
-      doc.text(ev.d, M + 6, y + 6.5);
+      doc.text(ev.d, M + PAD, y + 7);
       doc.setCharSpace(0);
 
+      // Título da data (direita)
       f.text(C.white);
       doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
-      doc.text(ev.t, M + 42, y + 6.5);
+      doc.text(ev.t, M + 44, y + 7);
 
+      // Subtexto
       f.text(C.textMuted);
       doc.setFontSize(8.5);
       doc.setFont('helvetica', 'normal');
-      doc.text(ev.s, M + 42, y + 12);
+      doc.text(ev.s, M + 44, y + 13);
 
       y += h + 3;
     });
@@ -366,7 +393,7 @@
   }
 
   /* ============================================================
-     PÁGINA 3 · IDENTIDADE (Missão, Visão, Valores + Diferenciais)
+     PÁGINA 3 · IDENTIDADE (MVV + Diferenciais)
      ============================================================ */
   function pageIdentidade(doc) {
     background(doc); header(doc);
@@ -386,20 +413,29 @@
         s: 'Fé, gratidão, compromisso, transparência, qualidade e inovação. Fazer mais do que o esperado e entregar tranquilidade, sempre.' }
     ];
     mvv.forEach(it => {
-      const h = 28;
-      card(doc, M, y, CW, h);
-      iconBadge(doc, M + 6, y + 6, 10, it.glyph, C.primary);
-
-      f.text(C.white);
-      doc.setFontSize(12);
-      doc.setFont('helvetica', 'bold');
-      doc.text(it.t, M + 22, y + 11);
-
+      // Calcula altura precisa
       f.text(C.textMuted);
       doc.setFontSize(9);
       doc.setFont('helvetica', 'normal');
-      const lines = doc.splitTextToSize(it.s, CW - 28);
-      doc.text(lines, M + 22, y + 17);
+      const sLines = doc.splitTextToSize(it.s, CW - PAD - ICON - 6 - PAD);
+
+      const h = PAD + ICON + 4 + sLines.length * LH + PAD - 2;
+      card(doc, M, y, CW, h);
+
+      // Header (icon + title alinhados)
+      iconBadge(doc, M + PAD, y + PAD, ICON, it.glyph, C.primary);
+
+      f.text(C.white);
+      doc.setFontSize(13);
+      doc.setFont('helvetica', 'bold');
+      doc.text(it.t, M + PAD + ICON + 6, y + PAD + ICON/2 + 1.4);
+
+      // Subtítulo abaixo do header
+      f.text(C.textMuted);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      const txtY = y + PAD + ICON + 4;
+      sLines.forEach((l, i) => doc.text(l, M + PAD + ICON + 6, txtY + i * LH));
 
       y += h + 4;
     });
@@ -415,7 +451,7 @@
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
     doc.text('O que nos torna diferentes', M, y);
-    y += 8;
+    y += 9;
 
     const diffs = [
       { num: '6+',   l: 'anos de mercado e clientes referência' },
@@ -424,44 +460,47 @@
       { num: '100%', l: 'atendimento humano via WhatsApp' }
     ];
     const dW = (CW - 12) / 4;
+    const dH = 28;
     diffs.forEach((d, i) => {
       const x = M + i * (dW + 4);
-      card(doc, x, y, dW, 26);
+      card(doc, x, y, dW, dH);
+      // Número grande centralizado
       f.text(C.primary);
       doc.setFontSize(20);
       doc.setFont('helvetica', 'bold');
       doc.text(d.num, x + dW/2, y + 12, { align: 'center' });
+      // Label
       f.text(C.textMuted);
       doc.setFontSize(7.5);
       doc.setFont('helvetica', 'normal');
-      const lines = doc.splitTextToSize(d.l, dW - 6);
-      doc.text(lines, x + dW/2, y + 18, { align: 'center' });
+      const ll = doc.splitTextToSize(d.l, dW - 6);
+      ll.forEach((l, idx) => doc.text(l, x + dW/2, y + 18 + idx * 3.5, { align: 'center' }));
     });
 
     footer(doc, 3, 10);
   }
 
   /* ============================================================
-     PÁGINAS 4 e 5 · SOLUÇÕES (3 + 3, em coluna única arejada)
+     PÁGINAS 4 e 5 · SOLUÇÕES (3 cards arejados por página)
      ============================================================ */
   const SOLUTIONS = [
     { t: 'Segurança Eletrônica', g: '◊',
       lead: 'Olhos atentos 24h em cada canto do seu espaço. Veja tudo de qualquer lugar, em tempo real.',
       items: ['Câmeras CFTV (Full HD, 4K, Wi-Fi)','Sistemas de alarme com sensores e sirenes','Monitoramento remoto pelo celular','Visão noturna e detecção de movimento'] },
     { t: 'Controle de Acesso', g: '⊙',
-      lead: 'Quem entra, quando entra e por onde passa — você no comando, sem chaves perdidas.',
+      lead: 'Quem entra, quando entra e por onde passa. Você no comando, sem chaves perdidas.',
       items: ['Fechaduras digitais (senha, biometria, tag)','Interfones e vídeoporteiros inteligentes','Reconhecimento facial corporativo','Gestão de visitantes e horários'] },
     { t: 'Redes e Conectividade', g: '≋',
-      lead: 'Internet rápida, estável e com cobertura em cada cantinho — pronta para trabalho e lazer.',
+      lead: 'Internet rápida, estável e com cobertura em cada cantinho. Pronta para trabalho e lazer.',
       items: ['Wi-Fi profissional (Mesh e Wi-Fi 6)','Cabeamento estruturado','Redes corporativas com segurança','Diagnóstico de pontos cegos'] },
     { t: 'Automação Inteligente', g: '⌂',
-      lead: 'Sua casa respondendo à sua voz, ao seu toque ou sozinha — do jeito que você quiser.',
+      lead: 'Sua casa respondendo à sua voz, ao seu toque ou sozinha. Do jeito que você quiser.',
       items: ['Integração com Alexa e Google Assistente','Iluminação inteligente e cenas programadas','Tomadas, cortinas e portões via app','Cenários automáticos (chegar, dormir)'] },
     { t: 'Infraestrutura e Elétrica', g: '⚡',
       lead: 'A base bem feita evita dor de cabeça lá na frente. Cada cabo no lugar certo.',
       items: ['Instalações elétricas residenciais e comerciais','Quadros e proteção contra surtos','Organização e melhoria de redes','Adequações para automação'] },
     { t: 'Manutenção', g: '⚙',
-      lead: 'Seu sistema sempre funcionando — sem surpresas, sem stress, sem falha quando precisar.',
+      lead: 'Seu sistema sempre funcionando. Sem surpresas, sem stress, sem falha quando precisar.',
       items: ['Manutenção preventiva periódica','Manutenção corretiva ágil','Planos mensais com prioridade','Limpeza, calibragem e firmware'] }
   ];
 
@@ -480,41 +519,60 @@
     }
 
     slice.forEach(s => {
-      // Calcula altura dinâmica do card
-      const leadLines = doc.splitTextToSize(s.lead, CW - 16);
-      const itemLines = s.items.map(it => doc.splitTextToSize(it, CW - 30));
-      const itemsHeight = itemLines.reduce((acc, ll) => acc + ll.length * 4 + 2, 0);
-      const h = 14 + leadLines.length * 4 + 4 + itemsHeight + 4;
-
-      card(doc, M, y, CW, h);
-
-      // Cabeçalho do card
-      iconBadge(doc, M + 6, y + 6, 10, s.g, C.primary);
-      f.text(C.white);
-      doc.setFontSize(13);
-      doc.setFont('helvetica', 'bold');
-      doc.text(s.t, M + 22, y + 12);
-
-      // Lead
+      // Calcula tudo antes de desenhar
       f.text(C.textMuted);
       doc.setFontSize(9);
       doc.setFont('helvetica', 'italic');
-      doc.text(leadLines, M + 6, y + 20);
+      const leadLines = doc.splitTextToSize(s.lead, CW - PAD * 2);
+
+      const colW = (CW - PAD * 2 - 8) / 2;
+      const itemMeasured = s.items.map(it => {
+        f.text(C.text);
+        doc.setFontSize(8.5);
+        doc.setFont('helvetica', 'normal');
+        return doc.splitTextToSize(it, colW - 4);
+      });
+      // Items distribuídos em 2 colunas → metade superior + metade inferior
+      const colItemCount = Math.ceil(s.items.length / 2);
+      let colHeights = [0, 0];
+      itemMeasured.forEach((lines, idx) => {
+        const col = Math.floor(idx / colItemCount);
+        colHeights[col] += lines.length * 4 + 1.5;
+      });
+      const itemsBlock = Math.max(colHeights[0], colHeights[1]);
+
+      const headerBlock = ICON + 2;                       // icon row
+      const leadBlock = leadLines.length * 4 + 4;
+      const h = PAD + headerBlock + 4 + leadBlock + itemsBlock + PAD;
+
+      card(doc, M, y, CW, h);
+
+      // Header
+      iconBadge(doc, M + PAD, y + PAD, ICON, s.g, C.primary);
+      f.text(C.white);
+      doc.setFontSize(13);
+      doc.setFont('helvetica', 'bold');
+      doc.text(s.t, M + PAD + ICON + 6, y + PAD + ICON/2 + 1.6);
+
+      // Lead
+      let cy = y + PAD + ICON + 6;
+      f.text(C.textMuted);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'italic');
+      leadLines.forEach((l, i) => doc.text(l, M + PAD, cy + i * 4));
+      cy += leadLines.length * 4 + 4;
 
       // Items em 2 colunas
-      let ly = y + 20 + leadLines.length * 4 + 4;
-      const colItem = Math.ceil(s.items.length / 2);
-      const colW = (CW - 24) / 2;
       f.text(C.text);
       doc.setFontSize(8.5);
       doc.setFont('helvetica', 'normal');
-      itemLines.forEach((lines, idx) => {
-        const col = Math.floor(idx / colItem);
-        const row = idx % colItem;
-        const cx = M + 10 + col * (colW + 8);
-        const cy = ly + row * 7;
-        bullet(doc, cx, cy - 1.4, C.primary);
-        doc.text(lines, cx + 3.5, cy);
+      let curY = [cy, cy];
+      itemMeasured.forEach((lines, idx) => {
+        const col = Math.floor(idx / colItemCount);
+        const cx = M + PAD + col * (colW + 8);
+        bullet(doc, cx + 1.2, curY[col] - 1.4, C.primary);
+        lines.forEach((l, i) => doc.text(l, cx + 4, curY[col] + i * 4));
+        curY[col] += lines.length * 4 + 1.5;
       });
 
       y += h + 6;
@@ -524,7 +582,7 @@
   }
 
   /* ============================================================
-     PÁGINA 6 · BENEFÍCIOS
+     PÁGINA 6 · BENEFÍCIOS (8 cards em 2 colunas)
      ============================================================ */
   function pageBeneficios(doc) {
     background(doc); header(doc);
@@ -536,17 +594,18 @@
       'Mais que instalar equipamentos, entregamos tranquilidade.', y);
 
     const items = [
-      { t: 'Segurança real', d: 'Equipamentos de qualidade e cobertura sem pontos cegos.' },
-      { t: 'Atendimento humano', d: 'Você fala direto com quem entende. Sem robôs, sem fila.' },
-      { t: '100% personalizado', d: 'Cada projeto sob medida. Nada de pacote pronto.' },
+      { t: 'Segurança real',          d: 'Equipamentos de qualidade e cobertura sem pontos cegos.' },
+      { t: 'Atendimento humano',      d: 'Você fala direto com quem entende. Sem robôs, sem fila.' },
+      { t: '100% personalizado',      d: 'Cada projeto sob medida. Nada de pacote pronto.' },
       { t: 'Equipamentos confiáveis', d: 'Marcas reconhecidas e com garantia de fábrica.' },
-      { t: 'Suporte especializado', d: 'Mais de 13 anos de experiência prática e 40+ capacitações.' },
-      { t: 'Economia a longo prazo', d: 'Instalação correta na primeira vez evita retrabalho.' },
-      { t: 'Empresa de referência', d: 'Confiada por Rio Sul, Zimbrão, Burrata, Unifeso e outros.' },
-      { t: 'Transparência total', d: 'Orçamento detalhado, prazos claros, sem surpresas.' }
+      { t: 'Suporte especializado',   d: '+13 anos de experiência prática e 40+ capacitações.' },
+      { t: 'Economia a longo prazo',  d: 'Instalação correta na primeira vez evita retrabalho.' },
+      { t: 'Empresa de referência',   d: 'Confiada por Rio Sul, Zimbrão, Burrata, Unifeso e outros.' },
+      { t: 'Transparência total',     d: 'Orçamento detalhado, prazos claros, sem surpresas.' }
     ];
     const colW = (CW - 6) / 2;
-    const h = 24;
+    const h = 26;
+    const checkSize = 8;
     items.forEach((b, i) => {
       const col = i % 2, row = Math.floor(i / 2);
       const x = M + col * (colW + 6);
@@ -554,33 +613,35 @@
 
       card(doc, x, yy, colW, h);
 
-      // Check verde
+      // Check verde alinhado verticalmente com o título
       f.fill([18, 50, 38]);
       f.stroke(C.success);
       doc.setLineWidth(0.35);
-      doc.roundedRect(x + 6, yy + 6, 8, 8, 1.6, 1.6, 'FD');
+      doc.roundedRect(x + PAD, yy + PAD, checkSize, checkSize, 1.6, 1.6, 'FD');
       f.text(C.success);
       doc.setFontSize(9);
       doc.setFont('helvetica', 'bold');
-      doc.text('✓', x + 10, yy + 11.6, { align: 'center' });
+      doc.text('✓', x + PAD + checkSize/2, yy + PAD + checkSize * 0.7, { align: 'center' });
 
+      // Título alinhado com o centro do check
       f.text(C.white);
       doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
-      doc.text(b.t, x + 18, yy + 9);
+      doc.text(b.t, x + PAD + checkSize + 4, yy + PAD + checkSize/2 + 1.4);
 
+      // Descrição
       f.text(C.textMuted);
       doc.setFontSize(8);
       doc.setFont('helvetica', 'normal');
-      const lines = doc.splitTextToSize(b.d, colW - 22);
-      doc.text(lines, x + 18, yy + 14.5);
+      const lines = doc.splitTextToSize(b.d, colW - PAD * 2 - checkSize - 4);
+      lines.forEach((l, idx) => doc.text(l, x + PAD + checkSize + 4, yy + PAD + checkSize + 4 + idx * 4));
     });
 
     footer(doc, 6, 10);
   }
 
   /* ============================================================
-     PÁGINA 7 · PROCESSO
+     PÁGINA 7 · PROCESSO (6 passos em 2 colunas)
      ============================================================ */
   function pageProcesso(doc) {
     background(doc); header(doc);
@@ -592,15 +653,15 @@
       'Um caminho simples, transparente e sem mistério. Você sabe sempre o próximo passo.', y);
 
     const steps = [
-      { t: 'Atendimento inicial', d: 'Você fala com a gente pelo WhatsApp, e-mail ou formulário. Resposta rápida e humana.' },
+      { t: 'Atendimento inicial',         d: 'Você fala com a gente pelo WhatsApp, e-mail ou formulário. Resposta rápida e humana.' },
       { t: 'Levantamento de necessidade', d: 'Entendemos seu cenário, suas dores e o que você quer resolver.' },
-      { t: 'Visita técnica', d: 'Avaliação no local da estrutura, ângulos, distâncias e pontos críticos.' },
-      { t: 'Proposta personalizada', d: 'Orçamento detalhado, com escopo, prazo e cada item bem explicado.' },
-      { t: 'Instalação profissional', d: 'Equipe qualificada com cuidado, organização e respeito ao seu espaço.' },
-      { t: 'Suporte contínuo', d: 'Treinamento, acompanhamento e canal direto sempre que precisar.' }
+      { t: 'Visita técnica',              d: 'Avaliação no local da estrutura, ângulos, distâncias e pontos críticos.' },
+      { t: 'Proposta personalizada',      d: 'Orçamento detalhado, com escopo, prazo e cada item bem explicado.' },
+      { t: 'Instalação profissional',     d: 'Equipe qualificada com cuidado, organização e respeito ao seu espaço.' },
+      { t: 'Suporte contínuo',            d: 'Treinamento, acompanhamento e canal direto sempre que precisar.' }
     ];
     const colW = (CW - 6) / 2;
-    const h = 30;
+    const h = 32;
     steps.forEach((s, i) => {
       const col = i % 2, row = Math.floor(i / 2);
       const x = M + col * (colW + 6);
@@ -608,31 +669,33 @@
 
       card(doc, x, yy, colW, h);
 
-      // Numerador (badge sutil)
+      // Badge numerador (acima da borda superior do card)
       f.fill(C.primary);
-      doc.roundedRect(x + 6, yy - 4, 14, 9, 1.8, 1.8, 'F');
+      doc.roundedRect(x + PAD, yy - 4, 14, 9, 1.8, 1.8, 'F');
       f.text([5, 16, 35]);
       doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
-      doc.text(String(i+1).padStart(2,'0'), x + 13, yy + 2.4, { align: 'center' });
+      doc.text(String(i+1).padStart(2,'0'), x + PAD + 7, yy + 2.4, { align: 'center' });
 
+      // Título
       f.text(C.white);
       doc.setFontSize(11);
       doc.setFont('helvetica', 'bold');
-      doc.text(s.t, x + 6, yy + 13);
+      doc.text(s.t, x + PAD, yy + 13);
 
+      // Descrição
       f.text(C.textMuted);
       doc.setFontSize(8.5);
       doc.setFont('helvetica', 'normal');
-      const lines = doc.splitTextToSize(s.d, colW - 12);
-      doc.text(lines, x + 6, yy + 19);
+      const lines = doc.splitTextToSize(s.d, colW - PAD * 2);
+      lines.forEach((l, idx) => doc.text(l, x + PAD, yy + 19 + idx * 4));
     });
 
     footer(doc, 7, 10);
   }
 
   /* ============================================================
-     PÁGINA 8 · PLANOS
+     PÁGINA 8 · PLANOS (3 cards lado a lado, altura justa)
      ============================================================ */
   function pagePlanos(doc) {
     background(doc); header(doc);
@@ -649,69 +712,82 @@
         items: ['Visita técnica e orçamento','Equipamentos de qualidade','Mão de obra certificada','Garantia na execução','Treinamento pós-instalação'] },
       { tag: 'MODELO 02', t: 'Manutenção Mensal',
         d: 'Mensalidade que cuida do seu sistema todo mês.',
-        items: ['Visitas preventivas periódicas','Limpeza e checagem','Atendimento prioritário','Atualização de firmware','Pequenos reparos sem custo'] },
+        items: ['Visitas preventivas periódicas','Limpeza e checagem','Atendimento prioritário','Atualização de firmware','Reparos pequenos sem custo'] },
       { tag: '★ PREMIUM', t: 'Signature+',
         d: 'Plano completo com benefícios exclusivos.',
         items: ['Tudo da Manutenção Mensal','Desconto em mão de obra','Vantagens em novos projetos','SLA prioritário','Atendimento dedicado'],
         featured: true }
     ];
     const colW = (CW - 12) / 3;
-    const h = 130;
+    // Calcula altura uniforme para os 3 cards (alinhamento)
+    const cardH = 110;
+
     plans.forEach((p, i) => {
       const x = M + i * (colW + 6);
-      card(doc, x, y, colW, h, {
+      card(doc, x, y, colW, cardH, {
         fill: p.featured ? C.surfaceAlt : C.surface,
         stroke: p.featured ? C.borderStrong : C.border,
         lineWidth: p.featured ? 0.6 : 0.25
       });
 
+      // Tag pequena no topo
       f.text(p.featured ? C.accent : C.primary);
       doc.setFontSize(7.5);
       doc.setFont('helvetica', 'bold');
       doc.setCharSpace(1.4);
-      doc.text(p.tag, x + 6, y + 8);
+      doc.text(p.tag, x + PAD, y + PAD + 3);
       doc.setCharSpace(0);
 
+      // Título
       f.text(C.white);
       doc.setFontSize(13);
       doc.setFont('helvetica', 'bold');
-      const tLines = doc.splitTextToSize(p.t, colW - 12);
-      doc.text(tLines, x + 6, y + 18);
-      let cy = y + 18 + tLines.length * 5;
+      const tLines = doc.splitTextToSize(p.t, colW - PAD * 2);
+      tLines.forEach((l, idx) => doc.text(l, x + PAD, y + PAD + 12 + idx * 5));
+      let cy = y + PAD + 12 + tLines.length * 5;
 
+      // Descrição
       f.text(C.textMuted);
       doc.setFontSize(8.5);
       doc.setFont('helvetica', 'italic');
-      const dLines = doc.splitTextToSize(p.d, colW - 12);
-      doc.text(dLines, x + 6, cy + 4);
-      cy += dLines.length * 4 + 8;
+      const dLines = doc.splitTextToSize(p.d, colW - PAD * 2);
+      dLines.forEach((l, idx) => doc.text(l, x + PAD, cy + 2 + idx * 4));
+      cy += dLines.length * 4 + 6;
+
+      // Hairline divisor
+      f.stroke(p.featured ? C.borderStrong : C.border);
+      doc.setLineWidth(0.15);
+      doc.line(x + PAD, cy, x + colW - PAD, cy);
+      cy += 4;
 
       // Items
       f.text(C.text);
       doc.setFontSize(8.5);
       doc.setFont('helvetica', 'normal');
       p.items.forEach(it => {
-        bullet(doc, x + 7, cy - 1.2, p.featured ? C.accent : C.primary);
-        const lines = doc.splitTextToSize(it, colW - 14);
-        doc.text(lines, x + 11, cy);
+        bullet(doc, x + PAD + 1, cy - 1.2, p.featured ? C.accent : C.primary);
+        const lines = doc.splitTextToSize(it, colW - PAD * 2 - 4);
+        lines.forEach((l, idx) => doc.text(l, x + PAD + 4, cy + idx * 4));
         cy += lines.length * 4 + 1.5;
       });
     });
 
-    // Faixa "cliente recorrente"
-    y += h + 8;
+    // Faixa "cliente recorrente" abaixo dos cards
+    y += cardH + 8;
+    const bH = 18;
     f.fill(C.surface);
     f.stroke(C.borderStrong);
     doc.setLineWidth(0.4);
-    doc.roundedRect(M, y, CW, 18, 2.5, 2.5, 'FD');
+    doc.roundedRect(M, y, CW, bH, 2.5, 2.5, 'FD');
+
     f.text(C.white);
     doc.setFontSize(9.5);
     doc.setFont('helvetica', 'bold');
-    doc.text('Cliente recorrente sai ganhando.', M + 6, y + 8);
+    doc.text('Cliente recorrente sai ganhando.', M + PAD, y + 7.5);
     f.text(C.textMuted);
     doc.setFontSize(8.5);
     doc.setFont('helvetica', 'normal');
-    doc.text('Desconto em mão de obra, prioridade no atendimento e vantagens em novos projetos.', M + 6, y + 13.5);
+    doc.text('Desconto em mão de obra, prioridade no atendimento e vantagens em novos projetos.', M + PAD, y + 13);
 
     footer(doc, 8, 10);
   }
@@ -735,50 +811,55 @@
       { g: '↻', t: 'Mensal',  d: 'Para planos de manutenção.' }
     ];
     const pW = (CW - 12) / 4;
+    const pH = 36;
     pays.forEach((p, i) => {
       const x = M + i * (pW + 4);
-      card(doc, x, y, pW, 36);
+      card(doc, x, y, pW, pH);
+      // Ícone centralizado horizontalmente
       iconBadge(doc, x + (pW - 11)/2, y + 5, 11, p.g, C.primary);
+      // Título centralizado
       f.text(C.white);
       doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
       doc.text(p.t, x + pW/2, y + 23, { align: 'center' });
+      // Descrição
       f.text(C.textMuted);
       doc.setFontSize(7.5);
       doc.setFont('helvetica', 'normal');
       const lines = doc.splitTextToSize(p.d, pW - 4);
-      doc.text(lines, x + pW/2, y + 28, { align: 'center' });
+      lines.forEach((l, idx) => doc.text(l, x + pW/2, y + 28 + idx * 3.5, { align: 'center' }));
     });
 
-    y += 50;
-    hairline(doc, y - 8);
+    y += pH + 14;
+    hairline(doc, y - 6);
 
     y = sectionTitle(doc, '08', 'GARANTIAS',
       'Nossos compromissos com você',
       'Estamos com você antes, durante e depois.', y);
 
     const seals = [
-      { g: '✓', t: 'Qualidade na execução', d: 'Cada projeto entregue com cuidado, organização e padrão técnico.' },
-      { g: '◉', t: 'Transparência total',   d: 'Orçamento aberto, escopo claro, prazos realistas, sem cobrança surpresa.' },
-      { g: '☎', t: 'Suporte pós-venda',     d: 'Canal direto pelo WhatsApp. Atendimento de quem entende do produto.' },
-      { g: '★', t: 'Compromisso com resultado', d: 'Trabalhamos até o sistema funcionar como você espera.' }
+      { g: '✓', t: 'Qualidade na execução',     d: 'Cada projeto entregue com cuidado, organização e padrão técnico.' },
+      { g: '◉', t: 'Transparência total',        d: 'Orçamento aberto, escopo claro, prazos realistas, sem cobrança surpresa.' },
+      { g: '☎', t: 'Suporte pós-venda',          d: 'Canal direto pelo WhatsApp. Atendimento de quem entende do produto.' },
+      { g: '★', t: 'Compromisso com resultado',  d: 'Trabalhamos até o sistema funcionar como você espera.' }
     ];
     const sCol = (CW - 6) / 2;
+    const sH = 26;
     seals.forEach((s, i) => {
       const col = i % 2, row = Math.floor(i / 2);
       const x = M + col * (sCol + 6);
-      const yy = y + row * 28;
-      card(doc, x, yy, sCol, 24);
-      iconBadge(doc, x + 6, yy + 6, 10, s.g, C.warning);
+      const yy = y + row * (sH + 4);
+      card(doc, x, yy, sCol, sH);
+      iconBadge(doc, x + PAD, yy + PAD, ICON, s.g, C.warning);
       f.text(C.white);
       doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
-      doc.text(s.t, x + 22, yy + 9);
+      doc.text(s.t, x + PAD + ICON + 6, yy + PAD + ICON/2 + 1.4);
       f.text(C.textMuted);
       doc.setFontSize(8);
       doc.setFont('helvetica', 'normal');
-      const lines = doc.splitTextToSize(s.d, sCol - 26);
-      doc.text(lines, x + 22, yy + 14.5);
+      const lines = doc.splitTextToSize(s.d, sCol - PAD * 2 - ICON - 6);
+      lines.forEach((l, idx) => doc.text(l, x + PAD + ICON + 6, yy + PAD + ICON + 4 + idx * 4));
     });
 
     footer(doc, 9, 10);
@@ -800,31 +881,32 @@
     doc.setLineWidth(0.5);
     doc.roundedRect(M, y, CW, bannerH, 4, 4, 'FD');
 
-    eyebrow(doc, M + 8, y + 10, 'VAMOS COMEÇAR');
+    eyebrow(doc, M + PAD, y + 11, 'VAMOS COMEÇAR');
 
     f.text(C.white);
-    doc.setFontSize(18);
+    doc.setFontSize(17);
     doc.setFont('helvetica', 'bold');
-    const ttl = doc.splitTextToSize('Pronto para elevar a segurança e a tecnologia do seu espaço?', CW - 16);
-    doc.text(ttl, M + 8, y + 22);
+    const ttl = doc.splitTextToSize('Pronto para elevar a segurança e a tecnologia do seu espaço?', CW - PAD * 2);
+    ttl.forEach((l, idx) => doc.text(l, M + PAD, y + 21 + idx * 7));
+
+    let cy = y + 21 + ttl.length * 7 + 2;
 
     f.text(C.textMuted);
     doc.setFontSize(9.5);
     doc.setFont('helvetica', 'normal');
-    const sub = doc.splitTextToSize('O melhor momento para proteger e modernizar é antes de precisar. A gente faz isso por você, do jeito que precisa ser feito.', CW - 16);
-    doc.text(sub, M + 8, y + 22 + ttl.length * 6 + 3);
+    const sub = doc.splitTextToSize('O melhor momento para proteger e modernizar é antes de precisar. A gente faz isso por você, do jeito que precisa ser feito.', CW - PAD * 2);
+    sub.forEach((l, idx) => doc.text(l, M + PAD, cy + idx * 4.5));
 
     f.text(C.primary);
     doc.setFontSize(7.5);
     doc.setFont('helvetica', 'bold');
-    doc.setCharSpace(1);
+    doc.setCharSpace(1.4);
     doc.text('✓ RESPOSTA RÁPIDA      ✓ VISITA SEM COMPROMISSO      ✓ ATENDIMENTO HUMANO',
-      M + 8, y + bannerH - 6);
+      M + PAD, y + bannerH - 6);
     doc.setCharSpace(0);
 
     y += bannerH + 14;
 
-    // CONTATO
     y = sectionTitle(doc, '09', 'CONTATO',
       'Fale com a Prolans',
       'Escolha o canal que preferir, respondemos rapidinho.', y);
@@ -836,56 +918,59 @@
       { g: '⊕', l: 'SITE',           v: 'www.prolans.com.br' }
     ];
     const cW = (CW - 12) / 4;
+    const cH = 28;
     contacts.forEach((c, i) => {
       const x = M + i * (cW + 4);
-      card(doc, x, y, cW, 28);
-      iconBadge(doc, x + 4, y + 5, 8, c.g, C.primary);
+      card(doc, x, y, cW, cH);
+      iconBadge(doc, x + PAD - 2, y + PAD - 1, 9, c.g, C.primary);
 
       f.text(C.textMuted);
       doc.setFontSize(6.5);
       doc.setFont('helvetica', 'bold');
-      doc.setCharSpace(1);
-      doc.text(c.l, x + 14, y + 9);
+      doc.setCharSpace(1.2);
+      doc.text(c.l, x + PAD - 2 + 9 + 4, y + PAD + 2.5);
       doc.setCharSpace(0);
 
       f.text(C.white);
       doc.setFontSize(8.8);
       doc.setFont('helvetica', 'bold');
-      doc.text(c.v, x + 14, y + 16);
+      doc.text(c.v, x + PAD - 2 + 9 + 4, y + PAD + 9);
     });
 
-    y += 34;
+    y += cH + 6;
 
     // Endereço (linha cheia)
-    card(doc, M, y, CW, 22);
-    iconBadge(doc, M + 6, y + 6, 10, '◉', C.primary);
+    const addrH = 22;
+    card(doc, M, y, CW, addrH);
+    iconBadge(doc, M + PAD, y + PAD, ICON, '◉', C.primary);
     f.text(C.textMuted);
     doc.setFontSize(7);
     doc.setFont('helvetica', 'bold');
-    doc.setCharSpace(1.2);
-    doc.text('ENDEREÇO', M + 22, y + 9);
+    doc.setCharSpace(1.4);
+    doc.text('ENDEREÇO', M + PAD + ICON + 6, y + PAD + 3);
     doc.setCharSpace(0);
     f.text(C.white);
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
-    doc.text('Praça Baltazar da Silveira, 90 · Várzea, Teresópolis/RJ', M + 22, y + 16);
+    doc.text('Praça Baltazar da Silveira, 90 · Várzea, Teresópolis/RJ',
+      M + PAD + ICON + 6, y + PAD + 9);
 
-    // Assinatura
-    y = A4_H - 36;
-    hairline(doc, y);
-    y += 7;
+    // Assinatura final
+    let aY = A4_H - 38;
+    hairline(doc, aY);
+    aY += 8;
     f.text(C.primary);
     doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
-    doc.setCharSpace(1.2);
-    doc.text('PROLANS · CNPJ 38.408.286/0001-11', A4_W/2, y, { align: 'center' });
+    doc.setCharSpace(1.4);
+    doc.text('PROLANS · CNPJ 38.408.286/0001-11', A4_W/2, aY, { align: 'center' });
     doc.setCharSpace(0);
-    y += 5;
+    aY += 5;
     f.text(C.textMuted);
     doc.setFontSize(8.5);
     doc.setFont('helvetica', 'italic');
     doc.text('© ' + new Date().getFullYear() + ' Prolans · Protegendo o presente, garantindo o futuro.',
-      A4_W/2, y, { align: 'center' });
+      A4_W/2, aY, { align: 'center' });
 
     footer(doc, 10, 10);
   }
