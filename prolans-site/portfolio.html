@@ -85,11 +85,14 @@
 
 /* Toolbar (não imprime) */
 .pf-toolbar {
-  position: sticky; top: var(--header-h); z-index: 50;
+  position: sticky !important; top: var(--header-h); z-index: 999 !important;
   background: rgba(6,9,18,.85); backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
   padding: 12px 0;
+  pointer-events: auto;
 }
+.pf-toolbar * { pointer-events: auto; }
+.pf-toolbar .btn { position: relative; z-index: 2; }
 .pf-toolbar .container {
   display: flex; align-items: center; justify-content: space-between;
   gap: 16px; flex-wrap: wrap;
@@ -104,7 +107,7 @@
   padding: 4px 10px; border: 1px solid rgba(0,230,168,.3);
   border-radius: 999px; background: rgba(0,230,168,.08);
 }
-.pf-toolbar-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.pf-toolbar-actions { display: flex; gap: 10px; flex-wrap: wrap; position: relative; z-index: 2; }
 
 /* Quote / frase de impacto */
 .pf-quote {
@@ -552,7 +555,7 @@ body.pdf-generating .pf-page-break { page-break-before: always; }
 
 @media (max-width: 860px) {
   .pf-cover-meta { grid-auto-flow: row; gap: 8px; padding: 14px 18px; }
-  .pf-toolbar { position: relative; top: 0; }
+  .pf-toolbar { position: sticky !important; top: var(--header-h); z-index: 999 !important; }
 }
 </style>
 </head>
