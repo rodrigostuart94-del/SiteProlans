@@ -67,9 +67,14 @@
         if (filterUserId) q = q.eq("user_id", filterUserId);
         return q;
       },
-      async byId(id) { return sb.from(name).select("*").eq("id", id).single(); },
-      async insert(row) { return sb.from(name).insert(row).select().single(); },
-      async update(id, patch) { return sb.from(name).update(patch).eq("id", id).select().single(); },
+      async byId(id) { return sb.from(name).select("*").eq("id", id).maybeSingle(); },
+      async insert(row) { return sb.from(name).insert(row).select().maybeSingle(); },
+      async update(id, patch) {
+        // Sem .single() — RLS pode bloquear o select e o update funciona mesmo assim
+        const r = await sb.from(name).update(patch).eq("id", id).select();
+        if (r.error) return r;
+        return { data: (r.data && r.data[0]) || null, error: null };
+      },
       async remove(id) { return sb.from(name).delete().eq("id", id); }
     };
   }
