@@ -434,13 +434,13 @@
   }
 
   /* ============================================================
-     PÁGINA 1 · CAPA — vertical balanceada
+     PÁGINA 1 · CAPA — bloco principal centralizado verticalmente
      ============================================================ */
   async function pageCover(doc, logo) {
     background(doc);
     const f = F(doc);
 
-    // Marca topo (centralizada)
+    // Marca topo
     f.text(C.primary);
     doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
@@ -448,20 +448,22 @@
     doc.text('PROLANS', A4_W/2, 18, { align: 'center' });
     doc.setCharSpace(0);
 
-    /* Layout em terços visuais:
-       - Topo livre (0-75) com a marca
-       - Bloco principal centrado (75-200)
-       - Bloco inferior info (200-285) */
-
-    // Logo no terço superior do bloco principal
+    /* Bloco principal centrado: logo + título + subtítulo + linha + slogan
+       Calculamos a altura total e posicionamos no centro vertical da página */
     const logoSize = 40;
-    const logoY = 80;
+    const blockH = logoSize + 22 + 4 + 16 + 14 + 11 + 5 + 13 + 10 + 5; // ≈140mm
+    // Centro visual ligeiramente acima do meio para deixar respiro embaixo
+    const pageCenter = A4_H * 0.46;
+    const logoY = Math.round(pageCenter - blockH/2);
+
+    // Logo
     if (logo) {
       try { doc.addImage(logo, 'PNG', (A4_W - logoSize)/2, logoY, logoSize, logoSize); } catch(e) {}
     }
 
     let y = logoY + logoSize + 22;
 
+    // Eyebrow
     f.text(C.primary);
     doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
@@ -470,46 +472,54 @@
     doc.setCharSpace(0);
     y += 16;
 
+    // Título
     f.text(C.white);
     doc.setFontSize(44);
     doc.setFont('helvetica', 'bold');
     doc.text('Prolans', A4_W/2, y, { align: 'center' });
     y += 11;
 
+    // Subtítulo
     f.text(C.text);
     doc.setFontSize(13);
     doc.setFont('helvetica', 'normal');
     doc.text('Soluções em Tecnologia e Serviços', A4_W/2, y, { align: 'center' });
     y += 13;
 
+    // Linha decorativa
     f.stroke(C.primary);
     doc.setLineWidth(0.7);
     doc.line(A4_W/2 - 12, y, A4_W/2 + 12, y);
     y += 10;
 
+    // Slogan
     f.text(C.textMuted);
     doc.setFontSize(11);
     doc.setFont('helvetica', 'italic');
     doc.text('Protegendo o presente, garantindo o futuro.', A4_W/2, y, { align: 'center' });
 
-    // Bloco inferior — meta info perfeitamente alinhada
+    /* Bloco inferior fixo no rodapé, com fitment validado */
     let infoY = A4_H - 78;
 
-    // Linha sutil acima
+    // Hairline acima
     f.stroke(C.border);
     doc.setLineWidth(0.12);
-    doc.line(A4_W/2 - 80, infoY - 10, A4_W/2 + 80, infoY - 10);
+    doc.line(M + 6, infoY - 10, A4_W - M - 6, infoY - 10);
 
-    // Tags categoria
+    // 4 tags categoria distribuídas em colunas iguais (sem charSpace excessivo)
     f.text(C.primary);
     doc.setFontSize(7.5);
     doc.setFont('helvetica', 'bold');
-    doc.setCharSpace(2.2);
-    doc.text('SEGURANÇA   ·   AUTOMAÇÃO   ·   REDES   ·   MANUTENÇÃO',
-      A4_W/2, infoY, { align: 'center' });
+    doc.setCharSpace(1.5);
+    const tags = ['SEGURANÇA', 'AUTOMAÇÃO', 'REDES', 'MANUTENÇÃO'];
+    const tagAreaW = CW - 4;            // largura útil
+    const tagColW = tagAreaW / tags.length;
+    tags.forEach((t, i) => {
+      doc.text(t, M + 2 + tagColW/2 + i * tagColW, infoY, { align: 'center' });
+    });
     doc.setCharSpace(0);
 
-    // Meta info em 3 colunas
+    // Meta info 3 colunas centralizadas
     infoY += 18;
     f.text(C.textDim);
     doc.setFontSize(7.5);
@@ -1088,13 +1098,25 @@
     const sub = doc.splitTextToSize('O melhor momento para proteger e modernizar é antes de precisar. A gente faz isso por você, do jeito que precisa ser feito.', CW - PAD * 2);
     sub.forEach((l, idx) => doc.text(l, M + PAD, cy + idx * 4.5));
 
+    // Selos em 3 colunas centralizadas — fitment garantido dentro do card
     f.text(C.primary);
-    doc.setFontSize(7.5);
+    doc.setFontSize(7);
     doc.setFont('helvetica', 'bold');
-    doc.setCharSpace(1.4);
-    doc.text('RESPOSTA RÁPIDA      VISITA SEM COMPROMISSO      ATENDIMENTO HUMANO',
-      M + PAD, y + bannerH - 6);
+    doc.setCharSpace(0.8);
+    const selos = ['RESPOSTA RÁPIDA', 'VISITA SEM COMPROMISSO', 'ATENDIMENTO HUMANO'];
+    const innerW = CW - PAD * 2;
+    const selW = innerW / 3;
+    const selY = y + bannerH - 6;
+    selos.forEach((s, i) => {
+      const cx = M + PAD + selW/2 + i * selW;
+      doc.text(s, cx, selY, { align: 'center' });
+    });
     doc.setCharSpace(0);
+
+    // Linha sutil acima dos selos para divisão visual
+    f.stroke(C.borderStrong);
+    doc.setLineWidth(0.15);
+    doc.line(M + PAD + 6, selY - 6, M + CW - PAD - 6, selY - 6);
 
     y += bannerH + 14;
 
