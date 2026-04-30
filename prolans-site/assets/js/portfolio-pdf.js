@@ -10,23 +10,22 @@
   const TOP = 26;           // início do conteúdo (após cabeçalho)
   const BOTTOM = A4_H - 22; // limite inferior (antes do rodapé)
 
-  // Paleta — fundo azul sombreado único + acentos discretos
+  // Paleta — uma única cor de fundo sólida navy (sem gradiente, sem grid)
   const C = {
-    bgTop:        [14, 26, 53],      // navy royal mais claro (topo)
-    bgMid:        [10, 20, 40],      // intermediário
-    bgBottom:     [5, 10, 24],       // quase preto-azulado (base)
-    surface:      [19, 30, 61],      // card
-    surfaceAlt:   [24, 38, 76],
-    border:       [38, 54, 92],      // borda discreta
-    borderStrong: [0, 110, 158],     // borda destaque ciano
-    primary:      [77, 217, 255],    // ciano suave
+    bg:           [10, 21, 48],      // navy sólido — fundo de TODAS as páginas
+    surface:      [18, 32, 64],      // card padrão (uma sombra acima do bg)
+    surfaceAlt:   [26, 44, 84],      // card destacado
+    surfaceSoft:  [14, 26, 56],      // card sutil/muted
+    border:       [40, 56, 96],      // borda discreta
+    borderStrong: [0, 130, 184],     // borda em destaque ciano
+    primary:      [88, 222, 255],    // ciano principal
     primaryDeep:  [0, 145, 220],
-    accent:       [148, 124, 255],
+    accent:       [156, 132, 255],   // roxo suave
     success:      [76, 235, 180],
     warning:      [255, 196, 100],
     text:         [240, 244, 255],
-    textMuted:    [152, 163, 196],
-    textDim:      [93, 105, 133],
+    textMuted:    [156, 168, 200],
+    textDim:      [98, 110, 140],
     white:        [255, 255, 255]
   };
 
@@ -50,28 +49,16 @@
     } catch (e) { return null; }
   }
 
-  /* ---------- Background único sombreado (gradiente vertical) ---------- */
+  /* ---------- Background único sólido (cor uniforme, premium) ---------- */
   function background(doc) {
     const f = F(doc);
-    // Gradiente em duas fases: topo→meio (mais claro) e meio→base (mais escuro)
-    const steps = 60;
-    for (let i = 0; i < steps; i++) {
-      const t = i / (steps - 1);
-      let r, g, bb;
-      if (t < 0.5) {
-        const k = t / 0.5;
-        r = C.bgTop[0] + (C.bgMid[0] - C.bgTop[0]) * k;
-        g = C.bgTop[1] + (C.bgMid[1] - C.bgTop[1]) * k;
-        bb = C.bgTop[2] + (C.bgMid[2] - C.bgTop[2]) * k;
-      } else {
-        const k = (t - 0.5) / 0.5;
-        r = C.bgMid[0] + (C.bgBottom[0] - C.bgMid[0]) * k;
-        g = C.bgMid[1] + (C.bgBottom[1] - C.bgMid[1]) * k;
-        bb = C.bgMid[2] + (C.bgBottom[2] - C.bgMid[2]) * k;
-      }
-      f.fill([Math.round(r), Math.round(g), Math.round(bb)]);
-      doc.rect(0, (A4_H * i) / steps, A4_W, A4_H / steps + 0.5, 'F');
-    }
+    // Uma única cor sólida — sem gradiente em bandas, sem grid, sem padrões.
+    f.fill(C.bg);
+    doc.rect(0, 0, A4_W, A4_H, 'F');
+
+    // Acento premium: barra ciano fina no topo (3px), única ornamentação fixa
+    f.fill(C.primary);
+    doc.rect(0, 0, A4_W, 1.2, 'F');
   }
 
   /* ---------- Cabeçalho/Rodapé sutis ---------- */
@@ -80,16 +67,16 @@
     f.text(C.primary);
     doc.setFontSize(7.5);
     doc.setFont('helvetica', 'bold');
-    doc.setCharSpace(1.2);
-    doc.text('PROLANS', M, 14);
+    doc.setCharSpace(1.6);
+    doc.text('PROLANS', M, 16);
     doc.setCharSpace(0);
     f.text(C.textMuted);
     doc.setFont('helvetica', 'normal');
-    doc.text('Portfólio Oficial · 2026', A4_W - M, 14, { align: 'right' });
+    doc.text('Portfólio Oficial · 2026', A4_W - M, 16, { align: 'right' });
 
     f.stroke(C.border);
-    doc.setLineWidth(0.15);
-    doc.line(M, 18, A4_W - M, 18);
+    doc.setLineWidth(0.12);
+    doc.line(M, 20, A4_W - M, 20);
   }
 
   function footer(doc, n, total) {
@@ -198,54 +185,57 @@
   }
 
   /* ============================================================
-     PÁGINA 1 · CAPA
+     PÁGINA 1 · CAPA — premium, arejada, sem moldura ao redor do logo
      ============================================================ */
   async function pageCover(doc, logo) {
     background(doc);
     const f = F(doc);
 
-    // Logo no centro
-    const logoSize = 32;
-    const logoX = (A4_W - logoSize) / 2;
-    const logoY = 80;
+    // Marca discreta no topo (sem cabeçalho completo na capa)
+    f.text(C.primary);
+    doc.setFontSize(7.5);
+    doc.setFont('helvetica', 'bold');
+    doc.setCharSpace(2.2);
+    doc.text('PROLANS', A4_W/2, 18, { align: 'center' });
+    doc.setCharSpace(0);
 
-    // Moldura sutil em volta do logo
-    f.fill(C.surface);
-    f.stroke(C.borderStrong);
-    doc.setLineWidth(0.4);
-    doc.roundedRect(logoX - 6, logoY - 6, logoSize + 12, logoSize + 12, 4, 4, 'FD');
+    // Logo no terço superior, sem caixa decorativa
+    const logoSize = 38;
+    const logoX = (A4_W - logoSize) / 2;
+    const logoY = 78;
     if (logo) {
       try { doc.addImage(logo, 'PNG', logoX, logoY, logoSize, logoSize); } catch(e) {}
     }
 
-    let y = logoY + logoSize + 22;
+    let y = logoY + logoSize + 26;
 
-    // Eyebrow
+    // Eyebrow tag
     f.text(C.primary);
     doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
-    doc.setCharSpace(1.8);
+    doc.setCharSpace(2.4);
     doc.text('PORTFÓLIO OFICIAL · 2026', A4_W/2, y, { align: 'center' });
     doc.setCharSpace(0);
-    y += 14;
+    y += 16;
 
-    // Título
+    // Título principal grande
     f.text(C.white);
-    doc.setFontSize(38);
+    doc.setFontSize(42);
     doc.setFont('helvetica', 'bold');
     doc.text('Prolans', A4_W/2, y, { align: 'center' });
-    y += 11;
+    y += 12;
 
+    // Subtítulo
     f.text(C.text);
-    doc.setFontSize(14);
+    doc.setFontSize(13);
     doc.setFont('helvetica', 'normal');
     doc.text('Soluções em Tecnologia e Serviços', A4_W/2, y, { align: 'center' });
-    y += 14;
+    y += 18;
 
-    // Linha decorativa
-    f.stroke(C.borderStrong);
-    doc.setLineWidth(0.5);
-    doc.line(A4_W/2 - 14, y, A4_W/2 + 14, y);
+    // Linha decorativa central, mais elegante (mais fina, mais curta)
+    f.stroke(C.primary);
+    doc.setLineWidth(0.6);
+    doc.line(A4_W/2 - 10, y, A4_W/2 + 10, y);
     y += 12;
 
     // Slogan
@@ -254,37 +244,48 @@
     doc.setFont('helvetica', 'italic');
     doc.text('Protegendo o presente, garantindo o futuro.', A4_W/2, y, { align: 'center' });
 
-    // Meta info no rodapé
-    y = A4_H - 60;
-    const cardW = 130;
-    f.fill(C.surface);
-    f.stroke(C.border);
-    doc.setLineWidth(0.25);
-    doc.roundedRect((A4_W - cardW)/2, y, cardW, 30, 3, 3, 'FD');
-
-    f.text(C.textMuted);
-    doc.setFontSize(8);
-    doc.setFont('helvetica', 'bold');
-    doc.setCharSpace(1.2);
-    doc.text('FUNDADA', (A4_W - cardW)/2 + cardW * 0.18, y + 11, { align: 'center' });
-    doc.text('SEDE',     (A4_W - cardW)/2 + cardW * 0.50, y + 11, { align: 'center' });
-    doc.text('CNPJ',     (A4_W - cardW)/2 + cardW * 0.82, y + 11, { align: 'center' });
-    doc.setCharSpace(0);
-
-    f.text(C.white);
-    doc.setFontSize(9.5);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Ago/2020',     (A4_W - cardW)/2 + cardW * 0.18, y + 20, { align: 'center' });
-    doc.text('Teresópolis · RJ', (A4_W - cardW)/2 + cardW * 0.50, y + 20, { align: 'center' });
-    doc.text('38.408.286/0001-11', (A4_W - cardW)/2 + cardW * 0.82, y + 20, { align: 'center' });
-
-    y = A4_H - 22;
+    // Meta info — apenas tipografia (sem caixa) para visual ainda mais clean
+    y = A4_H - 70;
     f.text(C.textDim);
     doc.setFontSize(7.5);
-    doc.setFont('helvetica', 'normal');
-    doc.setCharSpace(1.5);
-    doc.text('SEGURANÇA   ·   AUTOMAÇÃO   ·   REDES   ·   MANUTENÇÃO', A4_W/2, y, { align: 'center' });
+    doc.setFont('helvetica', 'bold');
+    doc.setCharSpace(1.6);
+    const colX = [A4_W/2 - 56, A4_W/2, A4_W/2 + 56];
+    doc.text('FUNDADA',         colX[0], y, { align: 'center' });
+    doc.text('SEDE',            colX[1], y, { align: 'center' });
+    doc.text('CNPJ',            colX[2], y, { align: 'center' });
     doc.setCharSpace(0);
+
+    y += 6;
+    f.text(C.white);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Ago/2020',          colX[0], y, { align: 'center' });
+    doc.text('Teresópolis · RJ',  colX[1], y, { align: 'center' });
+    doc.text('38.408.286/0001-11',colX[2], y, { align: 'center' });
+
+    // Linha sutil acima das tags do final
+    y = A4_H - 38;
+    f.stroke(C.border);
+    doc.setLineWidth(0.12);
+    doc.line(A4_W/2 - 60, y, A4_W/2 + 60, y);
+
+    // Tags rodapé
+    y += 7;
+    f.text(C.primary);
+    doc.setFontSize(7.5);
+    doc.setFont('helvetica', 'bold');
+    doc.setCharSpace(2);
+    doc.text('SEGURANÇA   ·   AUTOMAÇÃO   ·   REDES   ·   MANUTENÇÃO',
+      A4_W/2, y, { align: 'center' });
+    doc.setCharSpace(0);
+
+    y += 6;
+    f.text(C.textDim);
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Documento gerado em ' + new Date().toLocaleDateString('pt-BR'),
+      A4_W/2, y, { align: 'center' });
   }
 
   /* ============================================================
