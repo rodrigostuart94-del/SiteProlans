@@ -253,7 +253,7 @@
     render();
 
     setTimeout(() => {
-      window.open(`https://wa.me/prolans?text=${msg}`, "_blank");
+      window.open(`https://wa.me/5521997112008?text=${msg}`, "_blank");
     }, 700);
   });
 

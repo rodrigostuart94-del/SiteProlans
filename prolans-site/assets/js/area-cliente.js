@@ -398,7 +398,7 @@
       const input = chatForm.querySelector("input");
       const txt = String(input.value || "").trim().slice(0,500);
       if (!txt) return;
-      const url = "https://wa.me/prolans?text=" + encodeURIComponent(`[${userName}] ${txt}`);
+      const url = "https://wa.me/5521997112008?text=" + encodeURIComponent(`[${userName}] ${txt}`);
       window.open(url, "_blank", "noopener,noreferrer");
       input.value = "";
       window.toast("Abrindo WhatsApp...", "info");
