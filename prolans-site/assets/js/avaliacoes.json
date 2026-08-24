@@ -1,0 +1,23 @@
+{
+  "average": 5.0,
+  "count": 21,
+  "updated": "2026-08-24",
+  "reviews": [
+    {"name":"Esther Maggessi","when":"abr. 2026","service":"Fechadura, câmeras e automação","text":"Fiz toda a parte tecnológica da minha casa com a empresa, fechadura eletrônica, câmeras e toda a automação. Serviço e material de qualidade, nunca precisei fazer nada além da manutenção preventiva para manter os equipamentos funcionando. Nota 1000."},
+    {"name":"Alessandra Marques","when":"abr. 2026","service":"Instalação","text":"Empresa extremamente confiável. Atendimento excelente, instalação rápida e deixaram tudo organizado. Super indico"},
+    {"name":"Marinéa Medeiros","when":"abr. 2026","text":"Surpreendente. Compromisso. Sem deixar bagunça. Explicação nota 1000. Fora a segurança e facilidade em manusear"},
+    {"name":"Antoniel Atanazio","when":"abr. 2026","text":"Confiança no trabalho e qualidade na entrega do serviço. Nota 10"},
+    {"name":"Marcos","when":"abr. 2026","text":"Excelente atendimento, produtos e serviços de qualidade"},
+    {"name":"Lara Carvalho","when":"abr. 2026","text":"Produtos de qualidade e atendimento de excelência."},
+    {"name":"Thiago Fernandes","when":"abr. 2026","text":"Produtos de qualidade e ótimo atendimento."},
+    {"name":"Érica Carvalho","when":"abr. 2026","text":"Quando o quesito é segurança, a Prolans é a melhor!"},
+    {"name":"Rodrigo Machado","when":"abr. 2026","text":"Melhor da região!!"},
+    {"name":"Mauro Sergio Diniz Machado","when":"abr. 2026","text":"Muito bom, recomendo."},
+    {"name":"Leonardo Souza","when":"abr. 2026","text":"Muito bom e recomendo..."},
+    {"name":"Marcos Machado","when":"abr. 2026","text":"Serviço de qualidade"},
+    {"name":"Julia Rodrigues","when":"abr. 2026","text":"Transparência e qualidade!"},
+    {"name":"Kamyla Faria","when":"abr. 2026","text":"Excelente!!"},
+    {"name":"Luciane de Oliveira Gaspar","when":"abr. 2026","text":"Ótima"},
+    {"name":"Patrícia Ferreira","when":"abr. 2026","text":"Adorei"}
+  ]
+}
